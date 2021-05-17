@@ -45,4 +45,17 @@ GlfwWindow::~GlfwWindow()
     windowManager.RemoveWindow(this);
 }
 
+void GlfwWindow::SwapBuffers()
+{
+    glfwSwapBuffers(this->window);
+    glfwPollEvents();
+
+    this->shouldClose = glfwWindowShouldClose(this->window);
+}
+
+bool GlfwWindow::ShouldClose()
+{
+    return this->shouldClose;
+}
+
 } // namespace mr

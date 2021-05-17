@@ -13,6 +13,9 @@ public:
     GlfwWindow(Window::CreateParams createParams);
     virtual ~GlfwWindow() override;
 
+    virtual void SwapBuffers() override;
+    virtual bool ShouldClose() override;
+
 private:
     GLFWwindow *window;
 };

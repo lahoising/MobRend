@@ -15,6 +15,11 @@ public:
 
 public:
     virtual ~Window() = 0 {};
+    virtual void SwapBuffers() = 0;
+    virtual bool ShouldClose() = 0;
+    
+protected:
+    bool shouldClose = false;
 };
 
 class WindowManager
