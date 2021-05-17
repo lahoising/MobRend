@@ -7,6 +7,8 @@ typedef void (*OnStartFn)();
 typedef void (*OnUpdateFn)();
 typedef void (*OnDestroyFn)();
 
+class Window;
+
 class Application
 {
 public:
@@ -30,6 +32,7 @@ private:
 
 private:
     bool running = false;
+    Window *window = nullptr;
 
 public:
     static Application &GetInstance()

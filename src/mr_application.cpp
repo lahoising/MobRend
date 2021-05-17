@@ -1,5 +1,6 @@
 #include <iostream>
 #include "mr_application.h"
+#include "mr_platform/mr_glfw_window.h"
 
 namespace mr
 {
@@ -9,6 +10,7 @@ Application::Application(){}
 Application::~Application()
 {
     printf("app bye!\n");
+    delete(this->window);
 }
 
 void Application::Run(RunParams params)
@@ -32,6 +34,11 @@ void Application::Run(RunParams params)
 
 bool Application::Init()
 {
+    Window::CreateParams windowCreateParams = {};
+    windowCreateParams.width = 800;
+    windowCreateParams.height = 600;
+    windowCreateParams.windowName = "ModRend";
+    this->window = new GlfwWindow(windowCreateParams);
     return true;
 }
 

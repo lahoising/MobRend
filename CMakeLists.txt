@@ -4,12 +4,14 @@ project(MobRend)
 file(
     GLOB SRC_FILES
     "src/*.cpp"
+    "src/mr_platform/*.cpp"
 )
 
 set(BASE_INC_PATH "${CMAKE_CURRENT_SOURCE_DIR}/src/include")
 file(
     GLOB INCLUDE_FILES
     "${BASE_INC_PATH}/*.h"
+    "${BASE_INC_PATH}/mr_platform/*.h"
 )
     
 add_executable(app ${SRC_FILES} ${INCLUDE_FILES})
