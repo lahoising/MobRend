@@ -1,11 +1,19 @@
 #include <iostream>
-#include <GLFW/glfw3.h>
+#include "mr_application.h"
 
-#include "mr_window.h"
+void OnUpdate();
 
 int main(int argc, char *argv[])
 {
-    printf("hey\n");
+    mr::Application::RunParams params = {};
+    params.onUpdate = OnUpdate;
+
+    mr::Application::GetInstance().Run(params);
 
     return 0;
+}
+
+void OnUpdate()
+{
+    printf("update\n");
 }
