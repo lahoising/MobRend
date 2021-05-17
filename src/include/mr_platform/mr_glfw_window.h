@@ -12,6 +12,9 @@ class GlfwWindow : public Window
 public:
     GlfwWindow(Window::CreateParams createParams);
     virtual ~GlfwWindow() override;
+
+private:
+    GLFWwindow *window;
 };
 
 } // namespace mr
