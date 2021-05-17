@@ -17,6 +17,8 @@ public:
     Input();
     void SwapState();
     void Clear();
+
+    bool WindowShouldClose();
     
     void SubmitEvent(InputEvent event);
 

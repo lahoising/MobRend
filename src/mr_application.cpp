@@ -28,6 +28,7 @@ void Application::Run(RunParams params)
             params.onUpdate();
     }
 
+    printf("sal de aqui\n");
     if(params.onDestroy)
         params.onDestroy();
 }
@@ -45,7 +46,8 @@ bool Application::Init()
 void Application::Update()
 {
     this->window->SwapBuffers();
-    this->Close();
+    if(this->window->input.WindowShouldClose())
+        this->Close();
 }
 
 void Application::Close()

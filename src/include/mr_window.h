@@ -6,6 +6,8 @@
 
 namespace mr
 {
+
+typedef void* window_handle;
     
 class Window
 {
@@ -19,7 +21,8 @@ public:
 public:
     virtual ~Window() = 0 {};
     virtual void SwapBuffers() = 0;
-    virtual void *GetHandle() = 0;
+    virtual window_handle GetHandle() = 0;
+    virtual void Close() = 0;
 
 public:
     Input input;
@@ -33,16 +36,18 @@ public:
     void AddWindow(Window *window) 
     { 
         this->windowCount++; 
-        this->windowMap[window->GetHandle()] = window;
+        // this->windowMap[window->GetHandle()] = window;
     }
     
     void RemoveWindow(Window *window) 
     { 
-        this->windowCount--; 
-        this->windowMap.erase(window->GetHandle());
+        this->windowCount--;
+        // window_handle handle = window->GetHandle();
+        // if(this->windowMap.find(handle) != this->windowMap.end())
+        //     this->windowMap.erase(window->GetHandle());
     }
     
-    Window *GetWindowByHandle(void* handle)
+    Window *GetWindowByHandle(window_handle handle)
     { 
         return this->windowMap[handle]; 
     }
@@ -56,7 +61,7 @@ public:
 
 private:
     int windowCount;
-    std::unordered_map<void*,Window*> windowMap;
+    std::unordered_map<window_handle,Window*> windowMap;
     WindowManager(){ this->windowCount = 0; }
 };
 

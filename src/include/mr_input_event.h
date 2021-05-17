@@ -26,11 +26,11 @@ typedef struct
 typedef struct
 {
     InputEventType type;
-    union
+    union event_u
     {
         KeyEvent keyEvent;
-        WindowCloseEvent windowCloseEvent;
-    };
+        WindowCloseEvent windowClose;
+    } event;
 } InputEvent;
 
 } // namespace mr
