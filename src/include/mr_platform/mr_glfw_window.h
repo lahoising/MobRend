@@ -12,9 +12,11 @@ class GlfwWindow : public Window
 public:
     GlfwWindow(Window::CreateParams createParams);
     virtual ~GlfwWindow() override;
-
     virtual void SwapBuffers() override;
-    virtual bool ShouldClose() override;
+    virtual void *GetHandle() override;
+
+    void Close(GLFWwindow *win);
+    GLFWwindow *GetWindow() { return this->window; }
 
 private:
     GLFWwindow *window;

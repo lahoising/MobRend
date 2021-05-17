@@ -45,8 +45,7 @@ bool Application::Init()
 void Application::Update()
 {
     this->window->SwapBuffers();
-    if(this->window->ShouldClose())
-        this->Close();
+    this->Close();
 }
 
 void Application::Close()

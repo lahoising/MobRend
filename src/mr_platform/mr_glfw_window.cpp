@@ -2,6 +2,19 @@
 
 namespace mr
 {
+void OnWindowClose(GLFWwindow *window)
+{
+    Window *win = WindowManager::GetInstance().GetWindowByHandle(window);
+
+    WindowCloseEvent windowCloseEvent = {};
+    windowCloseEvent.window = win;
+
+    InputEvent event = {};
+    event.type = InputEventType::WINDOW_CLOSE;
+    event.windowCloseEvent = windowCloseEvent;
+
+    win->input.SubmitEvent(event);
+}
 
 GlfwWindow::GlfwWindow(Window::CreateParams createParams)
 {
@@ -28,6 +41,9 @@ GlfwWindow::GlfwWindow(Window::CreateParams createParams)
     }
 
     glfwMakeContextCurrent(this->window);
+
+    this->input = Input();
+    glfwSetWindowCloseCallback(this->window, OnWindowClose);
 }
 
 GlfwWindow::~GlfwWindow()
@@ -49,13 +65,8 @@ void GlfwWindow::SwapBuffers()
 {
     glfwSwapBuffers(this->window);
     glfwPollEvents();
-
-    this->shouldClose = glfwWindowShouldClose(this->window);
 }
 
-bool GlfwWindow::ShouldClose()
-{
-    return this->shouldClose;
-}
+void *GlfwWindow::GetHandle() { return this->window; }
 
 } // namespace mr
