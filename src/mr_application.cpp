@@ -1,6 +1,6 @@
 #include <iostream>
 #include "mr_application.h"
-#include "mr_platform/mr_glfw_window.h"
+#include "mr_window.h"
 
 namespace mr
 {
@@ -13,11 +13,14 @@ Application::~Application()
     delete(this->window);
 }
 
-void Application::Run(RunParams params)
+void Application::Run(Application::RunParams params)
 {
     printf("app init\n");
 
-    this->running = this->Init();
+    Application::InitParams initParams = {};
+    initParams.windowCreateParams = params.windowCreateParams;
+
+    this->running = this->Init(initParams);
     if(params.onStart)
         params.onStart();
 
@@ -33,20 +36,16 @@ void Application::Run(RunParams params)
         params.onDestroy();
 }
 
-bool Application::Init()
+bool Application::Init(Application::InitParams params)
 {
-    Window::CreateParams windowCreateParams = {};
-    windowCreateParams.width = 800;
-    windowCreateParams.height = 600;
-    windowCreateParams.windowName = "ModRend";
-    this->window = new GlfwWindow(windowCreateParams);
+    this->window = Window::Create(params.windowCreateParams);
     return true;
 }
 
 void Application::Update()
 {
     this->window->SwapBuffers();
-    if(this->window->input.WindowShouldClose() || this->window->input.KeyJustReleased(GLFW_KEY_ESCAPE))
+    if(this->window->input.WindowShouldClose() || this->window->input.KeyJustReleased(256))
         this->Close();
 }
 

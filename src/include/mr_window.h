@@ -17,6 +17,8 @@ public:
     } CreateParams;
 
 public:
+    static Window *Create(CreateParams params);
+
     virtual ~Window() = 0 {};
     virtual void SwapBuffers() = 0;
 

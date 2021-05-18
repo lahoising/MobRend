@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(MobRend)
 
+set(USE_GLFW ON CACHE BOOL "Use GLFW windows")
+
 file(
     GLOB SRC_FILES
     "src/*.cpp"
@@ -21,10 +23,14 @@ target_include_directories(
 )
 
 # GLFW STUFF
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+if(${USE_GLFW})
+    add_compile_definitions(MOBREND_GLFW_WINDOW)
 
-set(EXTERNAL_INC "${CMAKE_CURRENT_SOURCE_DIR}/external")
-add_subdirectory("${EXTERNAL_INC}/glfw")
-target_link_libraries(app glfw)
+    set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+    set(EXTERNAL_INC "${CMAKE_CURRENT_SOURCE_DIR}/external")
+    add_subdirectory("${EXTERNAL_INC}/glfw")
+    target_link_libraries(app glfw)
+endif()

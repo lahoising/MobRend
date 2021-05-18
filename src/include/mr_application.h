@@ -1,13 +1,13 @@
 #ifndef _MR_APPLICATION_H_
 #define _MR_APPLICATION_H_
 
+#include "mr_window.h"
+
 namespace mr
 {
 typedef void (*OnStartFn)();
 typedef void (*OnUpdateFn)();
 typedef void (*OnDestroyFn)();
-
-class Window;
 
 class Application
 {
@@ -17,7 +17,13 @@ public:
         OnStartFn onStart;
         OnUpdateFn onUpdate;
         OnDestroyFn onDestroy;
+        Window::CreateParams windowCreateParams;
     } RunParams;
+
+    typedef struct
+    {
+        Window::CreateParams windowCreateParams;
+    } InitParams;
 
 public:
     void Run(RunParams params);
@@ -27,7 +33,7 @@ private:
     Application();
     ~Application();
 
-    bool Init();
+    bool Init(InitParams params);
     void Update();
 
 private:

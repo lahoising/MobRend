@@ -7,7 +7,7 @@ namespace mr
 class Renderer
 {
 public:
-    virtual ~Renderer() = 0;
+    virtual ~Renderer() = 0 {};
 };
     
 } // namespace mr
