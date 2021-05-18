@@ -55,7 +55,7 @@ bool Input::IsKeyPressed(int key)
 
 bool Input::KeyJustPressed(int key)
 {
-    return false;
+    return this->currentState.keys[key].pressed && !this->prevState.keys[key].pressed;
 }
 
 bool Input::KeyJustReleased(int key)

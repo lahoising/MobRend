@@ -53,6 +53,16 @@ void Application::Update()
     {
         printf("p is pressed\n");
     }
+
+    if(this->window->input.KeyJustPressed(GLFW_KEY_K))
+    {
+        printf("just pressed k\n");
+    }
+
+    if(this->window->input.KeyJustReleased(GLFW_KEY_K))
+    {
+        printf("just released k\n");
+    }
 }
 
 void Application::Close()
