@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(MobRend)
 
-set(USE_GLFW ON CACHE BOOL "Use GLFW windows")
+set(MOBREND_USE_GLFW ON CACHE BOOL "Use GLFW windows")
 
 file(
     GLOB SRC_FILES
@@ -23,7 +23,7 @@ target_include_directories(
 )
 
 # GLFW STUFF
-if(${USE_GLFW})
+if(${MOBREND_USE_GLFW})
     add_compile_definitions(MOBREND_GLFW_WINDOW)
 
     set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)

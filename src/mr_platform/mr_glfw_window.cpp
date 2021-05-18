@@ -1,4 +1,4 @@
-#ifdef USE_GLFW
+#ifdef MOBREND_GLFW_WINDOW
 #include <unordered_map>
 
 #include "mr_platform/mr_glfw_window.h"
