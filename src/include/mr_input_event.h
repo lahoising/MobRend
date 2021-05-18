@@ -16,6 +16,7 @@ typedef struct
 {
     int key;
     int pressed;
+    int mod;
 } KeyEvent;
 
 typedef struct
@@ -26,11 +27,11 @@ typedef struct
 typedef struct
 {
     InputEventType type;
-    union event_u
+    union
     {
         KeyEvent keyEvent;
         WindowCloseEvent windowClose;
-    } event;
+    };
 } InputEvent;
 
 } // namespace mr

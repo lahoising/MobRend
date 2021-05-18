@@ -25,7 +25,11 @@ void Input::SubmitEvent(InputEvent event)
     switch (event.type)
     {
     case InputEventType::WINDOW_CLOSE:
-        this->currentState.windowClose = event.event.windowClose;
+        this->currentState.windowClose = event.windowClose;
+        break;
+
+    case InputEventType::KEY_EVENT:
+        this->currentState.keys[event.keyEvent.key] = event.keyEvent;
         break;
     
     default:
@@ -37,5 +41,21 @@ bool Input::WindowShouldClose()
 {
     return this->currentState.windowClose.window;
 }
+
+bool Input::IsKeyPressed(int key)
+{
+    return this->currentState.keys[key].pressed;
+}
+
+bool Input::KeyJustPressed(int key)
+{
+    return false;
+}
+
+bool Input::KeyJustReleased(int key)
+{
+    return !this->currentState.keys[key].pressed && this->prevState.keys[key].pressed;
+}
+
 
 } // namespace mr

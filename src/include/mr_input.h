@@ -9,6 +9,7 @@ namespace mr
 typedef struct
 {
     WindowCloseEvent windowClose;
+    KeyEvent keys[512];
 } InputState;
 
 class Input
@@ -19,6 +20,10 @@ public:
     void Clear();
 
     bool WindowShouldClose();
+    
+    bool IsKeyPressed(int key);
+    bool KeyJustPressed(int key);
+    bool KeyJustReleased(int key);
     
     void SubmitEvent(InputEvent event);
 

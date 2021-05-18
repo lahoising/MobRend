@@ -10,8 +10,6 @@ static std::unordered_map<GLFWwindow*,GlfwWindow*> windowMap;
 
 static void OnGlfwWindowClose(GLFWwindow *win)
 {
-    // auto &windowManager = WindowManager::GetInstance();
-    // GlfwWindow *window = windowManager.GetWindow(win);
     GlfwWindow *window = windowMap[win];
     
     WindowCloseEvent windowCloseEvent = {};
@@ -19,7 +17,23 @@ static void OnGlfwWindowClose(GLFWwindow *win)
 
     InputEvent event = {};
     event.type = InputEventType::WINDOW_CLOSE;
-    event.event.windowClose = windowCloseEvent;
+    event.windowClose = windowCloseEvent;
+
+    window->input.SubmitEvent(event);
+}
+
+static void OnGlfwKeyPressed(GLFWwindow *win, int key, int scancode, int action, int mod)
+{
+    GlfwWindow *window = windowMap[win];
+
+    KeyEvent keyEvent = {};
+    keyEvent.key = key;
+    keyEvent.mod = mod;
+    keyEvent.pressed = action;
+
+    InputEvent event = {};
+    event.type = InputEventType::KEY_EVENT;
+    event.keyEvent = keyEvent;
 
     window->input.SubmitEvent(event);
 }
@@ -53,6 +67,7 @@ GlfwWindow::GlfwWindow(Window::CreateParams createParams)
 
     this->input = Input();
     glfwSetWindowCloseCallback(this->window, OnGlfwWindowClose);
+    glfwSetKeyCallback(this->window, OnGlfwKeyPressed);
 }
 
 void GlfwWindow::Close()
