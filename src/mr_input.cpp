@@ -25,7 +25,7 @@ void Input::SubmitEvent(InputEvent event)
     switch (event.type)
     {
     case InputEventType::WINDOW_CLOSE:
-        // this->currentState.windowClose.window = (Window*)((Input*)(nullptr) + 1);
+        this->currentState.windowClose = event.event.windowClose;
         break;
     
     default:

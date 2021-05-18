@@ -10,13 +10,23 @@ static std::unordered_map<GLFWwindow*,GlfwWindow*> windowMap;
 
 static void OnGlfwWindowClose(GLFWwindow *win)
 {
+    // auto &windowManager = WindowManager::GetInstance();
+    // GlfwWindow *window = windowManager.GetWindow(win);
     GlfwWindow *window = windowMap[win];
-    window->Close();
+    
+    WindowCloseEvent windowCloseEvent = {};
+    windowCloseEvent.window = (Window*)window;
+
+    InputEvent event = {};
+    event.type = InputEventType::WINDOW_CLOSE;
+    event.event.windowClose = windowCloseEvent;
+
+    window->input.SubmitEvent(event);
 }
 
 GlfwWindow::GlfwWindow(Window::CreateParams createParams)
 {
-    WindowManager &windowManager = WindowManager::GetInstance();
+    auto &windowManager = WindowManager::GetInstance();
     if(windowManager.GetWindowCount() == 0)
     {
         if(!glfwInit())
@@ -24,7 +34,6 @@ GlfwWindow::GlfwWindow(Window::CreateParams createParams)
             return;
         }
     }
-    windowManager.AddWindow(this);
 
     this->window = glfwCreateWindow(
         createParams.width,
@@ -39,6 +48,7 @@ GlfwWindow::GlfwWindow(Window::CreateParams createParams)
     }
 
     windowMap[this->window] = this;
+    windowManager.AddWindow(this);
     glfwMakeContextCurrent(this->window);
 
     this->input = Input();
@@ -52,7 +62,7 @@ void GlfwWindow::Close()
 
 GlfwWindow::~GlfwWindow()
 {
-    WindowManager &windowManager = WindowManager::GetInstance();
+    auto &windowManager = WindowManager::GetInstance();
     
     windowManager.RemoveWindow(this);
     if(this->window)

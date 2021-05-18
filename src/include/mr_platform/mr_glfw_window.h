@@ -14,6 +14,7 @@ public:
     virtual ~GlfwWindow() override;
     virtual void SwapBuffers() override;
     virtual void Close() override;
+    virtual void *GetHandle() override { return this->window; }
 
     GLFWwindow *GetWindow() { return this->window; }
 
