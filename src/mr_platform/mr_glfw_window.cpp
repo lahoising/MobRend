@@ -1,3 +1,4 @@
+#ifdef USE_GLFW
 #include <unordered_map>
 
 #include "mr_platform/mr_glfw_window.h"
@@ -97,3 +98,4 @@ void GlfwWindow::SwapBuffers()
 }
 
 } // namespace mr
+#endif

@@ -21,6 +21,8 @@ void Application::Run(Application::RunParams params)
     initParams.windowCreateParams = params.windowCreateParams;
 
     this->running = this->Init(initParams);
+    if(!this->running) return;
+    
     if(params.onStart)
         params.onStart();
 
@@ -39,6 +41,7 @@ void Application::Run(Application::RunParams params)
 bool Application::Init(Application::InitParams params)
 {
     this->window = Window::Create(params.windowCreateParams);
+    if(!this->window) return false;
     return true;
 }
 
