@@ -70,11 +70,6 @@ GlfwWindow::GlfwWindow(Window::CreateParams createParams)
     glfwSetKeyCallback(this->window, OnGlfwKeyPressed);
 }
 
-void GlfwWindow::Close()
-{
-    Application::GetInstance().Close();
-}
-
 GlfwWindow::~GlfwWindow()
 {
     auto &windowManager = WindowManager::GetInstance();
