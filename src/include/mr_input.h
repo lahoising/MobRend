@@ -3,13 +3,15 @@
 
 #include "mr_input_event.h"
 
+#define INPUT_STATE_KEY_EVENT_NUM 512
+
 namespace mr
 {
 
 typedef struct
 {
     WindowCloseEvent windowClose;
-    KeyEvent keys[512];
+    KeyEvent keys[INPUT_STATE_KEY_EVENT_NUM];
 } InputState;
 
 class Input

@@ -1,3 +1,4 @@
+#include <memory>
 #include "mr_input.h"
 
 namespace mr
@@ -18,6 +19,11 @@ void Input::SwapState()
 {
     this->prevState = this->currentState;
     this->currentState = {};
+    memcpy(
+        this->currentState.keys,
+        this->prevState.keys,
+        sizeof(KeyEvent) * INPUT_STATE_KEY_EVENT_NUM
+    );
 }
 
 void Input::SubmitEvent(InputEvent event)

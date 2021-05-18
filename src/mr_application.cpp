@@ -48,6 +48,11 @@ void Application::Update()
     this->window->SwapBuffers();
     if(this->window->input.WindowShouldClose() || this->window->input.KeyJustReleased(GLFW_KEY_ESCAPE))
         this->Close();
+
+    if(this->window->input.IsKeyPressed(GLFW_KEY_P))
+    {
+        printf("p is pressed\n");
+    }
 }
 
 void Application::Close()
