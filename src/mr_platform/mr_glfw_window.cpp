@@ -4,6 +4,10 @@
 #include "mr_platform/mr_glfw_window.h"
 #include "mr_application.h"
 
+#ifdef MOBREND_GL_RENDERING
+#include "glad/glad.h"
+#endif
+
 namespace mr
 {
 

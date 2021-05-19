@@ -1,7 +1,8 @@
 #ifndef _MR_GLFW_WINDOW_H_
 #define _MR_GLFW_WINDOW_H_
-
 #ifdef MOBREND_GLFW_WINDOW
+
+#define GLFW_INCLUDE_NONE
 #include "GLFW/glfw3.h"
 #include "mr_window.h"
 

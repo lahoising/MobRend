@@ -22,7 +22,7 @@ void Application::Run(Application::RunParams params)
 
     this->running = this->Init(initParams);
     if(!this->running) return;
-    
+
     if(params.onStart)
         params.onStart();
 
@@ -42,6 +42,10 @@ bool Application::Init(Application::InitParams params)
 {
     this->window = Window::Create(params.windowCreateParams);
     if(!this->window) return false;
+
+    this->renderer = Renderer::Create();
+    if(!this->renderer) return false;
+
     return true;
 }
 
@@ -50,6 +54,10 @@ void Application::Update()
     this->window->SwapBuffers();
     if(this->window->input.WindowShouldClose() || this->window->input.KeyJustReleased(256))
         this->Close();
+
+    this->renderer->OnRenderBegin();
+
+    this->renderer->OnRenderEnd();
 }
 
 void Application::Close()

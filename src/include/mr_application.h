@@ -2,6 +2,7 @@
 #define _MR_APPLICATION_H_
 
 #include "mr_window.h"
+#include "mr_renderer.h"
 
 namespace mr
 {
@@ -39,6 +40,7 @@ private:
 private:
     bool running = false;
     Window *window = nullptr;
+    Renderer *renderer = nullptr;
 
 public:
     static Application &GetInstance()
