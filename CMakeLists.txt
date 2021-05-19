@@ -25,6 +25,14 @@ target_include_directories(
 
 set(EXTERNAL_INC "${CMAKE_CURRENT_SOURCE_DIR}/external")
 
+set(IMGUI_PATH "${EXTERNAL_INC}/imgui")
+set(IMGUI_BACKEND "${IMGUI_PATH}/backends/imgui_impl_")
+file(
+    GLOB IMGUI_SRC
+    "${IMGUI_PATH}/*.cpp"
+    "${IMGUI_PATH}/*.h"
+)
+
 #OpenGL STUFF
 if(${MOBREND_USE_OPENGL})
     add_compile_definitions(MOBREND_GL_RENDERING)
@@ -46,6 +54,8 @@ if(${MOBREND_USE_OPENGL})
         "${GLAD_GL_PATH}/include"
     )
     target_link_libraries(app glad_gl)
+
+    set(IMGUI_SRC ${IMGUI_SRC} "${IMGUI_BACKEND}opengl3.cpp" "${IMGUI_BACKEND}opengl3.h")
 endif()
 
 # GLFW STUFF
@@ -58,4 +68,22 @@ if(${MOBREND_USE_GLFW})
 
     add_subdirectory("${EXTERNAL_INC}/glfw")
     target_link_libraries(app glfw)
+
+    set(IMGUI_SRC ${IMGUI_SRC} "${IMGUI_BACKEND}glfw.h" "${IMGUI_BACKEND}glfw.cpp")
 endif()
+
+add_library(imgui ${IMGUI_SRC})
+
+target_include_directories(
+    imgui PUBLIC
+    ${IMGUI_PATH} 
+    "${IMGUI_PATH}/backends"
+)
+if(${MOBREND_USE_GLFW})
+    target_link_libraries(imgui glfw)
+endif()
+if(${MOBREND_USE_OPENGL})
+    target_link_libraries(imgui glad_gl)
+endif()
+
+target_link_libraries(app imgui)
