@@ -15,6 +15,8 @@ public:
     virtual void SetViewport(int x, int y, int width, int height) override;
     virtual void OnRenderBegin() override;
     virtual void OnRenderEnd() override;
+    virtual Renderer::gui_init_info_s *GetGuiInitInfo() override;
+    virtual void DeleteGuiInitInfo(Renderer::gui_init_info_s *info) override;
 };
 
 } // namespace mr

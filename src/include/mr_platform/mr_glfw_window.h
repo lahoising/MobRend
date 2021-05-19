@@ -15,6 +15,7 @@ public:
     GlfwWindow(Window::CreateParams createParams);
     virtual ~GlfwWindow() override;
     virtual void SwapBuffers() override;
+    virtual void *GetHandle() override { return this->window; }
 
     GLFWwindow *GetWindow() { return this->window; }
 

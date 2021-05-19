@@ -3,6 +3,7 @@
 
 #include "mr_window.h"
 #include "mr_renderer.h"
+#include "mr_gui.h"
 
 namespace mr
 {
@@ -32,6 +33,7 @@ public:
 
     Window *GetMainWindow(){ return this->window; }
     Renderer *GetRenderer(){ return this->renderer; }
+    Gui *GetGuiFramework(){ return this->gui; }
 
 private:
     Application();
@@ -44,6 +46,7 @@ private:
     bool running = false;
     Window *window = nullptr;
     Renderer *renderer = nullptr;
+    Gui *gui = nullptr;
 
 public:
     static Application &GetInstance()

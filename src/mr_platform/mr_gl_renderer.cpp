@@ -1,23 +1,22 @@
 #ifdef MOBREND_GL_RENDERING
 
 #include <glad/glad.h>
-#include <imgui.h>
-#include <imgui_impl_opengl3.h>
 
 #ifdef MOBREND_GLFW_WINDOW
 #include "mr_platform/mr_glfw_window.h"
-#include <imgui_impl_glfw.h>
 #endif
 
 #include "mr_platform/mr_gl_renderer.h"
+#include "mr_gui.h"
 #include "mr_application.h"
-
-#ifdef MOBREND_GLFW_WINDOW
-#include <GLFW/glfw3.h>
-#endif
 
 namespace mr
 {
+
+struct Renderer::gui_init_info_s
+{
+    char *version;
+};
     
 GlRenderer::GlRenderer()
 {
@@ -25,24 +24,11 @@ GlRenderer::GlRenderer()
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     #endif
     glClearColor(0.8f, 0.3f, 0.2f, 1.0f);
-
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-    ImGui::StyleColorsDark();
-
-    GlfwWindow *win = (GlfwWindow*)Application::GetInstance().GetMainWindow();
-    GLFWwindow *window = win->GetWindow();
-
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 410");
 }
 
 GlRenderer::~GlRenderer()
 {
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    
 }
 
 void GlRenderer::SetViewport(int x, int y, int width, int height) 
@@ -53,21 +39,23 @@ void GlRenderer::SetViewport(int x, int y, int width, int height)
 void GlRenderer::OnRenderBegin()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
-    static bool show = true;
-    ImGui::ShowDemoWindow(&show);
 }
 
 void GlRenderer::OnRenderEnd()
 {
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+struct Renderer::gui_init_info_s *GlRenderer::GetGuiInitInfo()
+{
+    Renderer::gui_init_info_s *guiInfo = (Renderer::gui_init_info_s*)malloc(sizeof(Renderer::gui_init_info_s));
+    guiInfo->version = "#version 410";
+    return guiInfo;
+}
+
+void GlRenderer::DeleteGuiInitInfo(Renderer::gui_init_info_s *info)
+{
+    delete(info);
+}
 
 } // namespace mr
 

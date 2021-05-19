@@ -1,6 +1,7 @@
 #include <iostream>
 #include "mr_application.h"
 #include "mr_window.h"
+#include "mr_gui.h"
 
 namespace mr
 {
@@ -10,6 +11,8 @@ Application::Application(){}
 Application::~Application()
 {
     printf("app bye!\n");
+    delete(this->gui);
+    delete(this->renderer);
     delete(this->window);
 }
 
@@ -46,6 +49,13 @@ bool Application::Init(Application::InitParams params)
     this->renderer = Renderer::Create();
     if(!this->renderer) return false;
 
+    Gui::CreateParams guiInitParams = {};
+    // guiInitParams.rendererInitInfo = this->renderer->GetGuiInitInfo();
+    guiInitParams.windowHandle = this->window->GetHandle();
+    this->renderer->DeleteGuiInitInfo(guiInitParams.rendererInitInfo);
+    this->gui = new Gui(guiInitParams);
+    if(!this->gui) return false;
+
     return true;
 }
 
@@ -56,6 +66,9 @@ void Application::Update()
         this->Close();
 
     this->renderer->OnRenderBegin();
+
+    this->gui->BeginFrame();
+    this->gui->EndFrame();
 
     this->renderer->OnRenderEnd();
 }
