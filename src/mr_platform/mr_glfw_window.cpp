@@ -43,6 +43,12 @@ static void OnGlfwKeyPressed(GLFWwindow *win, int key, int scancode, int action,
     window->input.SubmitEvent(event);
 }
 
+static void OnGlfwFramebufferSizeChange(GLFWwindow *win, int w, int h)
+{
+    glfwMakeContextCurrent(win);
+    Application::GetInstance().GetRenderer()->SetViewport(0, 0, w, h);
+}
+
 GlfwWindow::GlfwWindow(Window::CreateParams createParams)
 {
     auto &windowManager = WindowManager::GetInstance();
@@ -81,6 +87,7 @@ GlfwWindow::GlfwWindow(Window::CreateParams createParams)
     this->input = Input();
     glfwSetWindowCloseCallback(this->window, OnGlfwWindowClose);
     glfwSetKeyCallback(this->window, OnGlfwKeyPressed);
+    glfwSetFramebufferSizeCallback(this->window, OnGlfwFramebufferSizeChange);
 }
 
 GlfwWindow::~GlfwWindow()

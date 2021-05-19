@@ -23,6 +23,11 @@ GlRenderer::~GlRenderer()
 
 }
 
+void GlRenderer::SetViewport(int x, int y, int width, int height) 
+{
+    glViewport(x, y, width, height);
+}
+
 void GlRenderer::OnRenderBegin()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

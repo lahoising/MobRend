@@ -30,6 +30,9 @@ public:
     void Run(RunParams params);
     void Close();
 
+    Window *GetMainWindow(){ return this->window; }
+    Renderer *GetRenderer(){ return this->renderer; }
+
 private:
     Application();
     ~Application();
