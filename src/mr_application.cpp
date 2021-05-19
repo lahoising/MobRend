@@ -50,10 +50,10 @@ bool Application::Init(Application::InitParams params)
     if(!this->renderer) return false;
 
     Gui::CreateParams guiInitParams = {};
-    // guiInitParams.rendererInitInfo = this->renderer->GetGuiInitInfo();
     guiInitParams.windowHandle = this->window->GetHandle();
-    this->renderer->DeleteGuiInitInfo(guiInitParams.rendererInitInfo);
+    guiInitParams.rendererInitInfo = this->renderer->GetGuiInitInfo();
     this->gui = new Gui(guiInitParams);
+    this->renderer->DeleteGuiInitInfo(guiInitParams.rendererInitInfo);
     if(!this->gui) return false;
 
     return true;

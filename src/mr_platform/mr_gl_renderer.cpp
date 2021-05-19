@@ -15,7 +15,7 @@ namespace mr
 
 struct Renderer::gui_init_info_s
 {
-    char *version;
+    char glVersion[16];
 };
     
 GlRenderer::GlRenderer()
@@ -47,8 +47,8 @@ void GlRenderer::OnRenderEnd()
 
 struct Renderer::gui_init_info_s *GlRenderer::GetGuiInitInfo()
 {
-    Renderer::gui_init_info_s *guiInfo = (Renderer::gui_init_info_s*)malloc(sizeof(Renderer::gui_init_info_s));
-    guiInfo->version = "#version 410";
+    auto *guiInfo = (Renderer::gui_init_info_s*)malloc(sizeof(Renderer::gui_init_info_s));
+    strcpy(guiInfo->glVersion, "#version 410");
     return guiInfo;
 }
 
