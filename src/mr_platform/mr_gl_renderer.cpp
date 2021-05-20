@@ -10,6 +10,8 @@
 #include "mr_gui.h"
 #include "mr_application.h"
 
+#include "mr_buffer.h"
+
 namespace mr
 {
 
@@ -19,7 +21,7 @@ struct Renderer::gui_init_info_s
 };
     
 static GLuint vertexArrayId;
-static GLuint vertexBuffer;
+static Buffer *vertexBuffer = nullptr;
 
 GlRenderer::GlRenderer()
 {
@@ -37,18 +39,16 @@ GlRenderer::GlRenderer()
         0.0f,  1.0f, 0.0f,
     };
 
-    glGenBuffers(1, &vertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glBufferData(
-        GL_ARRAY_BUFFER, 
-        sizeof(g_vertex_buffer_data), 
-        g_vertex_buffer_data,
-        GL_STATIC_DRAW);
+    Buffer::CreateParams bufferCreateParams = {};
+    bufferCreateParams.type = Buffer::Type::VERTEX;
+    bufferCreateParams.size = sizeof(g_vertex_buffer_data);
+    bufferCreateParams.data = (void*)g_vertex_buffer_data;
+    vertexBuffer = Buffer::Create(bufferCreateParams);
 }
 
 GlRenderer::~GlRenderer()
 {
-    glDeleteBuffers(1, &vertexBuffer);
+    delete(vertexBuffer);
     glDeleteVertexArrays(1, &vertexArrayId);
 }
 
@@ -62,7 +62,7 @@ void GlRenderer::OnRenderBegin()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    vertexBuffer->Bind();
     glVertexAttribPointer(
         0,
         3,
