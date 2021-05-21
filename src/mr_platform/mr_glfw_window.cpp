@@ -49,6 +49,11 @@ static void OnGlfwFramebufferSizeChange(GLFWwindow *win, int w, int h)
     Application::GetInstance().GetRenderer()->SetViewport(0, 0, w, h);
 }
 
+static void OnGlfwError(int errorCode, const char *description)
+{
+    printf("Window Error %d: %s\n", errorCode, description);
+}
+
 GlfwWindow::GlfwWindow(Window::CreateParams createParams)
 {
     auto &windowManager = WindowManager::GetInstance();
@@ -58,6 +63,8 @@ GlfwWindow::GlfwWindow(Window::CreateParams createParams)
         {
             return;
         }
+
+        glfwSetErrorCallback(OnGlfwError);
     }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

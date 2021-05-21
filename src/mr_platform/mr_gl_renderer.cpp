@@ -22,6 +22,7 @@ struct Renderer::gui_init_info_s
     
 static GLuint vertexArrayId;
 static Buffer *vertexBuffer = nullptr;
+static Buffer *indexBuffer = nullptr;
 
 GlRenderer::GlRenderer()
 {
@@ -29,9 +30,6 @@ GlRenderer::GlRenderer()
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     #endif
     glClearColor(0.8f, 0.3f, 0.2f, 1.0f);
-
-    glGenVertexArrays(1, &vertexArrayId);
-    glBindVertexArray(vertexArrayId);
 
     const GLfloat g_vertex_buffer_data[] = {
         -1.0f, -1.0f, 0.0f,
@@ -44,12 +42,19 @@ GlRenderer::GlRenderer()
     bufferCreateParams.size = sizeof(g_vertex_buffer_data);
     bufferCreateParams.data = (void*)g_vertex_buffer_data;
     vertexBuffer = Buffer::Create(bufferCreateParams);
+
+    const uint32_t g_indices[] = { 0, 1, 2 };
+    bufferCreateParams = {};
+    bufferCreateParams.type = Buffer::Type::INDEX;
+    bufferCreateParams.size  = sizeof(g_indices);
+    bufferCreateParams.data = (void*)g_indices;
+    indexBuffer = Buffer::Create(bufferCreateParams);
 }
 
 GlRenderer::~GlRenderer()
 {
+    delete(indexBuffer);
     delete(vertexBuffer);
-    glDeleteVertexArrays(1, &vertexArrayId);
 }
 
 void GlRenderer::SetViewport(int x, int y, int width, int height) 
@@ -72,7 +77,7 @@ void GlRenderer::OnRenderBegin()
         nullptr
     );
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    indexBuffer->Bind();
     glDisableVertexAttribArray(0);
 }
 
