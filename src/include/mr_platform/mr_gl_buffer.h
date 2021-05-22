@@ -19,12 +19,6 @@ public:
 
 private:
     uint32_t bufferId;
-
-    union
-    {
-        uint32_t indexCount;    // Only used in index buffers
-        uint32_t vertexArrayId; // Only used in vertex buffers
-    };
 };
 
 } // namespace mr

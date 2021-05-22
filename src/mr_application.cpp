@@ -36,6 +36,7 @@ void Application::Run(Application::RunParams params)
             params.onUpdate();
     }
 
+    printf("sal de aqui\n");
     if(params.onDestroy)
         params.onDestroy();
 }
