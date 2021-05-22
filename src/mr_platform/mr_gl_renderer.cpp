@@ -51,10 +51,18 @@ GlRenderer::GlRenderer()
     bufferCreateParams.size = sizeof(g_vertex_buffer_data);
     bufferCreateParams.data = (void*)g_vertex_buffer_data;
     vertexBuffer = Buffer::Create(bufferCreateParams);
+
+    const uint32_t g_indices[] = { 0, 1, 2 };
+    bufferCreateParams = {};
+    bufferCreateParams.type = Buffer::Type::INDEX;
+    bufferCreateParams.size  = sizeof(g_indices);
+    bufferCreateParams.data = (void*)g_indices;
+    indexBuffer = Buffer::Create(bufferCreateParams);
 }
 
 GlRenderer::~GlRenderer()
 {
+    delete(indexBuffer);
     delete(vertexBuffer);
     glDeleteVertexArrays(1, &vertexArrayId);
     delete(shader);
@@ -81,7 +89,7 @@ void GlRenderer::OnRenderBegin()
         nullptr
     );
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    indexBuffer->Bind();
     glDisableVertexAttribArray(0);
 }
 
