@@ -17,6 +17,16 @@ GlBuffer::GlBuffer(Buffer::CreateParams params)
     GLenum glType = bufferTypeMap[this->type];
     glBindBuffer(glType, this->bufferId);
     glBufferData(glType, params.size, params.data, GL_STATIC_DRAW);
+
+    switch (this->type)
+    {
+    case Buffer::Type::INDEX:
+        this->elementCount = (uint32_t)(params.size / sizeof(uint32_t));
+        break;
+    
+    default:
+        break;
+    }
 }
 
 GlBuffer::~GlBuffer()

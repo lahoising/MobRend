@@ -30,9 +30,11 @@ public:
     virtual void Unbind() = 0;
 
     Type GetType(){ return this->type; }
+    uint32_t GetElementCount(){ return this->elementCount; }
 
 protected:
     Type type;
+    uint32_t elementCount;
 };
 
 } // namespace mr

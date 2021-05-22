@@ -23,8 +23,8 @@ struct Renderer::gui_init_info_s
 };
     
 static GLuint vertexArrayId;
-static GLuint indexBufferId;
 static Buffer *vertexBuffer = nullptr;
+static Buffer *indexBuffer = nullptr;
 static Shader *shader = nullptr;
 
 GlRenderer::GlRenderer()
@@ -55,18 +55,16 @@ GlRenderer::GlRenderer()
     vertexBuffer = Buffer::Create(bufferCreateParams);
 
     const uint32_t indices[] = {0, 1, 2};
-    glGenBuffers(1, &indexBufferId);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferId);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glm::vec3 vec = {1.0f, 0.0f, 0.0f};
-    printf("vec: %.2f, %.2f, %.2f\n", vec.x, vec.y, vec.z);
+    bufferCreateParams.type = Buffer::Type::INDEX;
+    bufferCreateParams.size = sizeof(indices);
+    bufferCreateParams.data = (void*)indices;
+    indexBuffer = Buffer::Create(bufferCreateParams);
 }
 
 GlRenderer::~GlRenderer()
 {
     delete(vertexBuffer);
-    glDeleteBuffers(1, &indexBufferId);
+    delete(indexBuffer);
     glDeleteVertexArrays(1, &vertexArrayId);
     delete(shader);
 }
@@ -92,8 +90,11 @@ void GlRenderer::OnRenderBegin()
         nullptr
     );
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferId);
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+    indexBuffer->Bind();
+    glDrawElements(
+        GL_TRIANGLES, 
+        indexBuffer->GetElementCount(), 
+        GL_UNSIGNED_INT, nullptr);
     glDisableVertexAttribArray(0);
 
     auto error = glGetError();
