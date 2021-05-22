@@ -32,7 +32,7 @@ GlRenderer::GlRenderer()
     #ifdef MOBREND_GLFW_WINDOW
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     #endif
-    glClearColor(0.8f, 0.3f, 0.2f, 1.0f);
+    glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
 
     Shader::CreateParams shaderCreateParams = {};
     shaderCreateParams.vertFilePath = "vert";
