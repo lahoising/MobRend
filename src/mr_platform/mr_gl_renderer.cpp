@@ -1,6 +1,7 @@
 #ifdef MOBREND_GL_RENDERING
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 
 #ifdef MOBREND_GLFW_WINDOW
 #include "mr_platform/mr_glfw_window.h"
@@ -51,6 +52,9 @@ GlRenderer::GlRenderer()
     bufferCreateParams.size = sizeof(g_vertex_buffer_data);
     bufferCreateParams.data = (void*)g_vertex_buffer_data;
     vertexBuffer = Buffer::Create(bufferCreateParams);
+
+    glm::vec3 vec = {1.0f, 0.0f, 0.0f};
+    printf("vec: %.2f, %.2f, %.2f\n", vec.x, vec.y, vec.z);
 }
 
 GlRenderer::~GlRenderer()

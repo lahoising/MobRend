@@ -72,6 +72,7 @@ if(${MOBREND_USE_GLFW})
     set(IMGUI_SRC ${IMGUI_SRC} "${IMGUI_BACKEND}glfw.h" "${IMGUI_BACKEND}glfw.cpp")
 endif()
 
+# ImGui
 add_library(imgui ${IMGUI_SRC})
 
 target_include_directories(
@@ -87,3 +88,7 @@ if(${MOBREND_USE_OPENGL})
 endif()
 
 target_link_libraries(app imgui)
+
+# glm
+add_subdirectory("${EXTERNAL_INC}/glm")
+target_link_libraries(app glm)
