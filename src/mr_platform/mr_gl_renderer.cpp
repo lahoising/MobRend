@@ -11,6 +11,7 @@
 #include "mr_application.h"
 
 #include "mr_buffer.h"
+#include "mr_shader.h"
 
 namespace mr
 {
@@ -22,6 +23,7 @@ struct Renderer::gui_init_info_s
     
 static GLuint vertexArrayId;
 static Buffer *vertexBuffer = nullptr;
+static Shader *shader = nullptr;
 
 GlRenderer::GlRenderer()
 {
@@ -29,6 +31,11 @@ GlRenderer::GlRenderer()
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     #endif
     glClearColor(0.8f, 0.3f, 0.2f, 1.0f);
+
+    Shader::CreateParams shaderCreateParams = {};
+    shaderCreateParams.vertFilePath = "vert";
+    shaderCreateParams.fragFilePath = "frag";
+    shader = Shader::Create(shaderCreateParams);
 
     glGenVertexArrays(1, &vertexArrayId);
     glBindVertexArray(vertexArrayId);
@@ -50,6 +57,7 @@ GlRenderer::~GlRenderer()
 {
     delete(vertexBuffer);
     glDeleteVertexArrays(1, &vertexArrayId);
+    delete(shader);
 }
 
 void GlRenderer::SetViewport(int x, int y, int width, int height) 
@@ -60,6 +68,7 @@ void GlRenderer::SetViewport(int x, int y, int width, int height)
 void GlRenderer::OnRenderBegin()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    shader->Bind();
 
     glEnableVertexAttribArray(0);
     vertexBuffer->Bind();
