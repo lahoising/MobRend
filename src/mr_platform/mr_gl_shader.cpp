@@ -16,7 +16,7 @@ GlShader::GlShader(Shader::CreateParams params)
 	GLuint vertShaderId = glCreateShader(GL_VERTEX_SHADER);
 	GLuint fragShaderId = glCreateShader(GL_FRAGMENT_SHADER);
 
-    std::string VertexShaderCode = R"(
+    std::string defaultVertexShaderCode = R"(
         #version 410 core
         
         layout(location = 0) in vec3 vertexPosition_modelspace;
@@ -27,7 +27,7 @@ GlShader::GlShader(Shader::CreateParams params)
         }
     )";
 
-    std::string FragmentShaderCode = R"(
+    std::string defaultFragmentShaderCode = R"(
         #version 330 core
         out vec3 color;
         void main(){
@@ -39,39 +39,15 @@ GlShader::GlShader(Shader::CreateParams params)
 	int InfoLogLength;
 
 	// Compile Vertex Shader
-	mrlog("Compiling shader : %s\n", params.vertFilePath);
-	this->CompileShader(vertShaderId, VertexShaderCode.c_str());
-	// char const * VertexSourcePointer = VertexShaderCode.c_str();
-	// glShaderSource(vertShaderId, 1, &VertexSourcePointer , NULL);
-	// glCompileShader(vertShaderId);
-
-	// Check Vertex Shader
-	glGetShaderiv(vertShaderId, GL_COMPILE_STATUS, &Result);
-	glGetShaderiv(vertShaderId, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if ( InfoLogLength > 0 ){
-		std::vector<char> VertexShaderErrorMessage(InfoLogLength+1);
-		glGetShaderInfoLog(vertShaderId, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-		printf("%s\n", &VertexShaderErrorMessage[0]);
-	}
+	mrlog("Compiling shader : %s", params.vertFilePath);
+	this->CompileShader(vertShaderId, defaultVertexShaderCode.c_str());
 
 	// Compile Fragment Shader
-	mrlog("Compiling shader : %s\n", params.fragFilePath);
-	this->CompileShader(fragShaderId, FragmentShaderCode.c_str());
-	// char const * FragmentSourcePointer = FragmentShaderCode.c_str();
-	// glShaderSource(fragShaderId, 1, &FragmentSourcePointer , NULL);
-	// glCompileShader(fragShaderId);
-
-	// Check Fragment Shader
-	glGetShaderiv(fragShaderId, GL_COMPILE_STATUS, &Result);
-	glGetShaderiv(fragShaderId, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if ( InfoLogLength > 0 ){
-		std::vector<char> FragmentShaderErrorMessage(InfoLogLength+1);
-		glGetShaderInfoLog(fragShaderId, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-		printf("%s\n", &FragmentShaderErrorMessage[0]);
-	}
+	mrlog("Compiling shader : %s", params.fragFilePath);
+	this->CompileShader(fragShaderId, defaultFragmentShaderCode.c_str());
 
 	// Link the program
-	mrlog("Linking program\n");
+	mrlog("Linking program");
     this->programId = glCreateProgram();
 	glAttachShader(this->programId, vertShaderId);
 	glAttachShader(this->programId, fragShaderId);
@@ -100,8 +76,19 @@ GlShader::~GlShader()
 
 void GlShader::CompileShader(unsigned int shaderId, const char *shaderSource)
 {
+	GLint result;
+	int infoLogLength;
+
 	glShaderSource(shaderId, 1, &shaderSource, NULL);
 	glCompileShader(shaderId);
+
+	glGetShaderiv(shaderId, GL_COMPILE_STATUS, &result);
+	glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
+	if ( infoLogLength > 0 ){
+		std::vector<char> shaderErrorMessage(infoLogLength+1);
+		glGetShaderInfoLog(shaderId, infoLogLength, NULL, &shaderErrorMessage[0]);
+		mrwarn("%s\n", &shaderErrorMessage[0]);
+	}
 }
 
 void GlShader::Bind()
