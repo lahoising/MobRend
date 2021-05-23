@@ -35,8 +35,8 @@ GlRenderer::GlRenderer()
     glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
 
     Shader::CreateParams shaderCreateParams = {};
-    shaderCreateParams.vertFilePath = "vert";
-    shaderCreateParams.fragFilePath = "frag";
+    // shaderCreateParams.vertFilePath = "";
+    // shaderCreateParams.fragFilePath = "";
     shader = Shader::Create(shaderCreateParams);
 
     glGenVertexArrays(1, &vertexArrayId);

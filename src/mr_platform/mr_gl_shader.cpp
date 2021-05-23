@@ -35,31 +35,25 @@ GlShader::GlShader(Shader::CreateParams params)
         }
     )";
 
-	GLint Result = GL_FALSE;
-	int InfoLogLength;
-
-	// Compile Vertex Shader
-	mrlog("Compiling shader : %s", params.vertFilePath);
 	this->CompileShader(vertShaderId, defaultVertexShaderCode.c_str());
-
-	// Compile Fragment Shader
-	mrlog("Compiling shader : %s", params.fragFilePath);
 	this->CompileShader(fragShaderId, defaultFragmentShaderCode.c_str());
 
 	// Link the program
-	mrlog("Linking program");
-    this->programId = glCreateProgram();
+	this->programId = glCreateProgram();
 	glAttachShader(this->programId, vertShaderId);
 	glAttachShader(this->programId, fragShaderId);
 	glLinkProgram(this->programId);
 
+	GLint result = GL_FALSE;
+	int infoLogLength;
+
 	// Check the program
-	glGetProgramiv(this->programId, GL_LINK_STATUS, &Result);
-	glGetProgramiv(this->programId, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if ( InfoLogLength > 0 ){
-		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
-		glGetProgramInfoLog(this->programId, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-		printf("%s\n", &ProgramErrorMessage[0]);
+	glGetProgramiv(this->programId, GL_LINK_STATUS, &result);
+	glGetProgramiv(this->programId, GL_INFO_LOG_LENGTH, &infoLogLength);
+	if ( infoLogLength > 0 ){
+		std::vector<char> programErrorMessage(infoLogLength+1);
+		glGetProgramInfoLog(this->programId, infoLogLength, NULL, &programErrorMessage[0]);
+		printf("%s\n", &programErrorMessage[0]);
 	}
 	
 	glDetachShader(this->programId, vertShaderId);
