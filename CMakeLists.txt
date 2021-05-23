@@ -92,3 +92,7 @@ target_link_libraries(app imgui)
 # glm
 add_subdirectory("${EXTERNAL_INC}/glm")
 target_link_libraries(app glm)
+
+# mr logger
+add_subdirectory("${EXTERNAL_INC}/mobrend_logger")
+target_link_libraries(app mr_logger)
