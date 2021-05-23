@@ -10,10 +10,10 @@ Application::Application(){}
 
 Application::~Application()
 {
-    printf("app bye!\n");
     delete(this->gui);
     delete(this->renderer);
     delete(this->window);
+    printf("app bye!\n");
 }
 
 void Application::Run(Application::RunParams params)

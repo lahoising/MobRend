@@ -15,6 +15,9 @@ public:
     virtual void Unbind() override;
 
 private:
+    void CompileShader(unsigned int shaderId, const char *shaderSource);
+
+private:
     unsigned int programId;
 };
 

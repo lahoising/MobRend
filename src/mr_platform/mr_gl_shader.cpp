@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <glad/glad.h>
+#include "mr_logger.h"
 #include "mr_platform/mr_gl_shader.h"
 
 namespace mr
@@ -12,8 +13,8 @@ namespace mr
 GlShader::GlShader(Shader::CreateParams params)
 {
     // Create the shaders
-	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+	GLuint vertShaderId = glCreateShader(GL_VERTEX_SHADER);
+	GLuint fragShaderId = glCreateShader(GL_FRAGMENT_SHADER);
 
     std::string VertexShaderCode = R"(
         #version 410 core
@@ -38,40 +39,42 @@ GlShader::GlShader(Shader::CreateParams params)
 	int InfoLogLength;
 
 	// Compile Vertex Shader
-	printf("Compiling shader : %s\n", params.vertFilePath);
-	char const * VertexSourcePointer = VertexShaderCode.c_str();
-	glShaderSource(VertexShaderID, 1, &VertexSourcePointer , NULL);
-	glCompileShader(VertexShaderID);
+	mrlog("Compiling shader : %s\n", params.vertFilePath);
+	this->CompileShader(vertShaderId, VertexShaderCode.c_str());
+	// char const * VertexSourcePointer = VertexShaderCode.c_str();
+	// glShaderSource(vertShaderId, 1, &VertexSourcePointer , NULL);
+	// glCompileShader(vertShaderId);
 
 	// Check Vertex Shader
-	glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-	glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	glGetShaderiv(vertShaderId, GL_COMPILE_STATUS, &Result);
+	glGetShaderiv(vertShaderId, GL_INFO_LOG_LENGTH, &InfoLogLength);
 	if ( InfoLogLength > 0 ){
 		std::vector<char> VertexShaderErrorMessage(InfoLogLength+1);
-		glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
+		glGetShaderInfoLog(vertShaderId, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
 		printf("%s\n", &VertexShaderErrorMessage[0]);
 	}
 
 	// Compile Fragment Shader
-	printf("Compiling shader : %s\n", params.fragFilePath);
-	char const * FragmentSourcePointer = FragmentShaderCode.c_str();
-	glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer , NULL);
-	glCompileShader(FragmentShaderID);
+	mrlog("Compiling shader : %s\n", params.fragFilePath);
+	this->CompileShader(fragShaderId, FragmentShaderCode.c_str());
+	// char const * FragmentSourcePointer = FragmentShaderCode.c_str();
+	// glShaderSource(fragShaderId, 1, &FragmentSourcePointer , NULL);
+	// glCompileShader(fragShaderId);
 
 	// Check Fragment Shader
-	glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-	glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	glGetShaderiv(fragShaderId, GL_COMPILE_STATUS, &Result);
+	glGetShaderiv(fragShaderId, GL_INFO_LOG_LENGTH, &InfoLogLength);
 	if ( InfoLogLength > 0 ){
 		std::vector<char> FragmentShaderErrorMessage(InfoLogLength+1);
-		glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
+		glGetShaderInfoLog(fragShaderId, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
 		printf("%s\n", &FragmentShaderErrorMessage[0]);
 	}
 
 	// Link the program
-	printf("Linking program\n");
+	mrlog("Linking program\n");
     this->programId = glCreateProgram();
-	glAttachShader(this->programId, VertexShaderID);
-	glAttachShader(this->programId, FragmentShaderID);
+	glAttachShader(this->programId, vertShaderId);
+	glAttachShader(this->programId, fragShaderId);
 	glLinkProgram(this->programId);
 
 	// Check the program
@@ -83,16 +86,22 @@ GlShader::GlShader(Shader::CreateParams params)
 		printf("%s\n", &ProgramErrorMessage[0]);
 	}
 	
-	glDetachShader(this->programId, VertexShaderID);
-	glDetachShader(this->programId, FragmentShaderID);
+	glDetachShader(this->programId, vertShaderId);
+	glDetachShader(this->programId, fragShaderId);
 	
-	glDeleteShader(VertexShaderID);
-	glDeleteShader(FragmentShaderID);
+	glDeleteShader(vertShaderId);
+	glDeleteShader(fragShaderId);
 }
 
 GlShader::~GlShader()
 {
     glDeleteProgram(this->programId);
+}
+
+void GlShader::CompileShader(unsigned int shaderId, const char *shaderSource)
+{
+	glShaderSource(shaderId, 1, &shaderSource, NULL);
+	glCompileShader(shaderId);
 }
 
 void GlShader::Bind()
