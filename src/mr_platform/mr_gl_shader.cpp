@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
 #include "mr_logger.h"
 #include "mr_platform/mr_gl_shader.h"
 
@@ -20,10 +21,11 @@ GlShader::GlShader(Shader::CreateParams params)
         #version 410 core
         
         layout(location = 0) in vec3 vertexPosition_modelspace;
+		
+		uniform mat4 viewProjection;
 
         void main(){
-            gl_Position.xyz = vertexPosition_modelspace;
-            gl_Position.w = 1.0;
+            gl_Position = viewProjection * vec4(vertexPosition_modelspace, 1.0);
         }
     )";
 
@@ -83,6 +85,22 @@ void GlShader::CompileShader(unsigned int shaderId, const char *shaderSource)
 		glGetShaderInfoLog(shaderId, infoLogLength, NULL, &shaderErrorMessage[0]);
 		mrwarn("%s\n", &shaderErrorMessage[0]);
 	}
+}
+
+void GlShader::UploadMat4(const char *uniformName, glm::mat4 matrix)
+{
+	if(this->uniformLocations.find(uniformName) == this->uniformLocations.end())
+	{
+		this->uniformLocations[uniformName] = glGetUniformLocation(this->programId, uniformName);
+	}
+
+	const unsigned int location = this->uniformLocations[uniformName];
+	glUniformMatrix4fv(
+		location,
+		1,
+		GL_FALSE,
+		glm::value_ptr(matrix)
+	);
 }
 
 void GlShader::Bind()

@@ -39,13 +39,26 @@ public:
 public:
     Camera(Type type, Config config);
 
+    void SetConfiguration(Type type, Config config);
+    glm::mat4 GetViewProjection(){ return this->viewProjMat; }
+
 private:
+    void SetPerspective(PerspectiveConfig config);
+    void SetOrtho(OrthographicConfig config);
+    
+    void RecalculateViewMatrix();
+    inline void RecalculateViewProjection(){ this->viewProjMat = this->projMatrix * this->viewMatrix; }
+
+private:
+    glm::mat4 viewMatrix;
+    glm::mat4 projMatrix;
+    glm::mat4 viewProjMat;
+
     Config config;
     Type type;
 
     glm::quat rotation;
     glm::vec3 position;
-    glm::vec3 scale;
 };
 
 } // namespace mr

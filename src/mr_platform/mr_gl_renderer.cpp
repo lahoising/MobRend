@@ -13,6 +13,7 @@
 
 #include "mr_buffer.h"
 #include "mr_shader.h"
+#include "mr_camera.h"
 
 namespace mr
 {
@@ -26,6 +27,7 @@ static GLuint vertexArrayId;
 static Buffer *vertexBuffer = nullptr;
 static Buffer *indexBuffer = nullptr;
 static Shader *shader = nullptr;
+static Camera *cam = nullptr;
 
 GlRenderer::GlRenderer()
 {
@@ -59,6 +61,16 @@ GlRenderer::GlRenderer()
     bufferCreateParams.size = sizeof(indices);
     bufferCreateParams.data = (void*)indices;
     indexBuffer = Buffer::Create(bufferCreateParams);
+
+    Camera::Config camConfig = {};
+    camConfig.perspective.fov = 60.0f;
+    camConfig.perspective.aspectRatio = 1280.0f / 720.0f;
+    camConfig.perspective.near = 0.01f;
+    camConfig.perspective.far = 100.0f;
+    cam = new Camera(
+        Camera::Type::PERSPECTIVE,
+        camConfig
+    );
 }
 
 GlRenderer::~GlRenderer()
@@ -67,6 +79,7 @@ GlRenderer::~GlRenderer()
     delete(indexBuffer);
     glDeleteVertexArrays(1, &vertexArrayId);
     delete(shader);
+    delete(cam);
 }
 
 void GlRenderer::SetViewport(int x, int y, int width, int height) 
@@ -78,6 +91,11 @@ void GlRenderer::OnRenderBegin()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     shader->Bind();
+
+    shader->UploadMat4(
+        "viewProjection",
+        cam->GetViewProjection()
+    );
 
     glEnableVertexAttribArray(0);
     vertexBuffer->Bind();
