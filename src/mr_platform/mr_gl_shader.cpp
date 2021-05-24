@@ -106,6 +106,21 @@ void GlShader::UploadMat4(const char *uniformName, glm::mat4 matrix)
 	);
 }
 
+void GlShader::UploadVec3(const char *uniformName, glm::vec3 vec)
+{
+	if(this->uniformLocations.find(uniformName) == this->uniformLocations.end())
+	{
+		this->uniformLocations[uniformName] = glGetUniformLocation(this->programId, uniformName);
+	}
+
+	const unsigned int location = this->uniformLocations[uniformName];
+	glUniform3fv(
+		location,
+		1,
+		glm::value_ptr(vec)
+	);
+}
+
 void GlShader::Bind()
 {
     glUseProgram(this->programId);

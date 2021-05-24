@@ -95,13 +95,18 @@ void GlRenderer::OnRenderBegin()
     shader->Bind();
 
     shader->UploadMat4(
-        "viewProjection",
+        "u_viewProjection",
         cam->GetViewProjection()
     );
 
     shader->UploadMat4(
-        "model",
+        "u_model",
         identityMat
+    );
+
+    shader->UploadVec3(
+        "u_color",
+        glm::vec3(0.8f, 0.3f, 0.2f)
     );
 
     glEnableVertexAttribArray(0);
@@ -122,8 +127,12 @@ void GlRenderer::OnRenderBegin()
         GL_UNSIGNED_INT, nullptr);
 
     shader->UploadMat4(
-        "model",
+        "u_model",
         translated
+    );
+    shader->UploadVec3(
+        "u_color",
+        glm::vec3(0.3f, 0.8f, 0.2f)
     );
     glDrawElements(
         GL_TRIANGLES, 

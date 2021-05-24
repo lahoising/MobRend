@@ -16,6 +16,7 @@ public:
     virtual void Unbind() override;
 
     virtual void UploadMat4(const char *uniformName, glm::mat4 matrix) override;
+    virtual void UploadVec3(const char *uniformName, glm::vec3 vec) override;
 
 private:
     void CompileShader(unsigned int shaderId, const char *shaderSource);
