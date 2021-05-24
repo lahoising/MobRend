@@ -42,6 +42,13 @@ void Camera::SetPerspective(PerspectiveConfig config)
     RecalculateViewProjection();
 }
 
+void Camera::SetPosition(glm::vec3 position)
+{
+    this->position = position;
+    this->RecalculateViewMatrix();
+    this->RecalculateViewProjection();
+}
+
 void Camera::SetOrtho(OrthographicConfig config)
 {
     this->type = Camera::Type::ORTHOGRAPHIC;

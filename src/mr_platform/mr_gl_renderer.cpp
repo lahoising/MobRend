@@ -64,12 +64,13 @@ GlRenderer::GlRenderer()
     indexBuffer = Buffer::Create(bufferCreateParams);
 
     Camera::Config camConfig = {};
-    camConfig.perspective.fov = glm::radians(60.0f);
-    camConfig.perspective.aspectRatio = 1280.0f / 720.0f;
-    camConfig.perspective.near = 0.1f;
-    camConfig.perspective.far = 100.0f;
+    // camConfig.perspective.fov = glm::radians(60.0f);
+    camConfig.ortho.size = 3.0f;
+    camConfig.ortho.aspectRatio = 1280.0f / 720.0f;
+    camConfig.ortho.near = 0.1f;
+    camConfig.ortho.far = 100.0f;
     cam = new Camera(
-        Camera::Type::PERSPECTIVE,
+        Camera::Type::ORTHOGRAPHIC,
         camConfig
     );
 }
@@ -92,8 +93,16 @@ void GlRenderer::OnRenderBegin()
 {
     static glm::mat4 identityMat = glm::identity<glm::mat4>();
     static glm::mat4 translated = glm::translate(identityMat, glm::vec3(0.3f, 0.3f, 1.0f));
+    static glm::vec3 position = cam->GetPosition();
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     shader->Bind();
+
+    Input &input = Application::GetInstance().GetMainWindow()->input;
+    if(input.IsKeyPressed(GLFW_KEY_D))
+    {
+        cam->SetPosition(position += glm::vec3(0.001f, 0.0f, 0.0f));
+    }
 
     shader->UploadMat4(
         "u_viewProjection",

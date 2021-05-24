@@ -41,13 +41,17 @@ public:
 
     void SetConfiguration(Type type, Config config);
     glm::mat4 GetViewProjection(){ return this->viewProjMat; }
+    glm::vec3 GetPosition(){ return this->position; }
+    void SetPosition(glm::vec3 position);
 
 private:
     void SetPerspective(PerspectiveConfig config);
     void SetOrtho(OrthographicConfig config);
+
     
     void RecalculateViewMatrix();
     inline void RecalculateViewProjection(){ this->viewProjMat = this->projMatrix * this->viewMatrix; }
+
 
 private:
     glm::mat4 viewMatrix;
