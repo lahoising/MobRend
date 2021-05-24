@@ -20,23 +20,32 @@ GlShader::GlShader(Shader::CreateParams params)
     std::string defaultVertexShaderCode = R"(
         #version 410 core
         
-        layout(location = 0) in vec3 vertexPosition_modelspace;
+        layout(location = 0) in vec3 a_pos;
+		layout(location = 1) in vec3 a_col;
+
+		out vec3 out_color;
 		
 		uniform mat4 u_viewProjection;
 		uniform mat4 u_model;
 		uniform vec3 u_color;
 
         void main(){
-            gl_Position = u_viewProjection * u_model * vec4(vertexPosition_modelspace, 1.0);
+            gl_Position = u_viewProjection * u_model * vec4(a_pos, 1.0);
+			out_color = a_col;
         }
     )";
 
     std::string defaultFragmentShaderCode = R"(
-        #version 330 core
+        #version 410 core
+		
+		out vec3 color;
+		in vec3 out_color;
+        
 		uniform vec3 u_color;
-        out vec3 color;
-        void main(){
-            color = u_color;
+        
+		void main(){
+            // color = u_color;
+            color = out_color * u_color;
         }
     )";
 

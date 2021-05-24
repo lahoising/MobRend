@@ -46,9 +46,9 @@ GlRenderer::GlRenderer()
     glBindVertexArray(vertexArrayId);
 
     const GLfloat g_vertex_buffer_data[] = {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f, 0.8f, 0.3f, 0.2f,
+         0.5f, -0.5f, 0.0f, 0.2f, 0.8f, 0.3f,
+         0.0f,  0.5f, 0.0f, 0.3f, 0.2f, 0.8f
     };
 
     Buffer::CreateParams bufferCreateParams = {};
@@ -98,33 +98,6 @@ void GlRenderer::OnRenderBegin()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     shader->Bind();
 
-    Input &input = Application::GetInstance().GetMainWindow()->input;
-    if(input.IsKeyPressed(GLFW_KEY_D))
-    {
-        cam->SetPosition(position += glm::vec3(0.005f, 0.0f, 0.0f));
-    }
-
-    if(input.IsKeyPressed(GLFW_KEY_RIGHT))
-    {
-        cam->SetRotation( 
-            glm::rotate(
-                cam->GetRotation(), 
-                glm::radians(-1.0f),
-                glm::vec3(0.0f, 1.0f, 0.0f)
-            )
-        );
-    }
-    else if(input.IsKeyPressed(GLFW_KEY_LEFT))
-    {
-        cam->SetRotation( 
-            glm::rotate(
-                cam->GetRotation(), 
-                glm::radians(1.0f),
-                glm::vec3(0.0f, 1.0f, 0.0f)
-            )
-        );
-    }
-
     shader->UploadMat4(
         "u_viewProjection",
         cam->GetViewProjection()
@@ -137,19 +110,27 @@ void GlRenderer::OnRenderBegin()
 
     shader->UploadVec3(
         "u_color",
-        glm::vec3(0.8f, 0.3f, 0.2f)
+        glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
-    glEnableVertexAttribArray(0);
     vertexBuffer->Bind();
     glVertexAttribPointer(
         0,
-        3,
-        GL_FLOAT,
+        3, GL_FLOAT,
         GL_FALSE,
-        3 * sizeof(float),
+        6 * sizeof(float),
         nullptr
     );
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(
+        1, 
+        3, GL_FLOAT,
+        GL_FALSE,
+        6 * sizeof(float),
+        (void*)( 3 * sizeof(float) )
+    );
+    glEnableVertexAttribArray(1);
 
     indexBuffer->Bind();
     glDrawElements(
@@ -163,14 +144,16 @@ void GlRenderer::OnRenderBegin()
     );
     shader->UploadVec3(
         "u_color",
-        glm::vec3(0.3f, 0.8f, 0.2f)
+        glm::vec3(0.5f, 0.5f, 0.5f)
     );
+
     glDrawElements(
         GL_TRIANGLES, 
         indexBuffer->GetElementCount(), 
         GL_UNSIGNED_INT, nullptr);
 
     glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
 
     auto error = glGetError();
     if(error)
