@@ -60,16 +60,17 @@ bool Application::Init(Application::InitParams params)
 
 void Application::Update()
 {
-    this->window->SwapBuffers();
+    this->window->PollEvents();
     if(this->window->input.WindowShouldClose() || this->window->input.KeyJustReleased(256))
         this->Close();
 
     this->renderer->OnRenderBegin();
 
-    this->gui->BeginFrame();
-    this->gui->EndFrame();
+    // this->gui->BeginFrame();
+    // this->gui->EndFrame();
 
     this->renderer->OnRenderEnd();
+    this->window->SwapBuffers();
 }
 
 void Application::Close()

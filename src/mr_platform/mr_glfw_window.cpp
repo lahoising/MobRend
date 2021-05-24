@@ -109,11 +109,15 @@ GlfwWindow::~GlfwWindow()
     }
 }
 
+void GlfwWindow::PollEvents()
+{
+    this->input.SwapState();
+    glfwPollEvents();
+}
+
 void GlfwWindow::SwapBuffers()
 {
     glfwSwapBuffers(this->window);
-    this->input.SwapState();
-    glfwPollEvents();
 }
 
 } // namespace mr

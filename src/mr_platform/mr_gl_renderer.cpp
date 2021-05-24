@@ -34,6 +34,7 @@ GlRenderer::GlRenderer()
     #ifdef MOBREND_GLFW_WINDOW
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     #endif
+    glEnable(GL_DEPTH_TEST);
     glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
 
     Shader::CreateParams shaderCreateParams = {};
@@ -63,12 +64,12 @@ GlRenderer::GlRenderer()
     indexBuffer = Buffer::Create(bufferCreateParams);
 
     Camera::Config camConfig = {};
-    camConfig.ortho.size = 3.0f;
-    camConfig.ortho.aspectRatio = 1280.0f / 720.0f;
-    camConfig.ortho.near = 0.01f;
-    camConfig.ortho.far = 100.0f;
+    camConfig.perspective.fov = glm::radians(60.0f);
+    camConfig.perspective.aspectRatio = 1280.0f / 720.0f;
+    camConfig.perspective.near = 0.1f;
+    camConfig.perspective.far = 100.0f;
     cam = new Camera(
-        Camera::Type::ORTHOGRAPHIC,
+        Camera::Type::PERSPECTIVE,
         camConfig
     );
 }
@@ -90,7 +91,7 @@ void GlRenderer::SetViewport(int x, int y, int width, int height)
 void GlRenderer::OnRenderBegin()
 {
     static glm::mat4 identityMat = glm::identity<glm::mat4>();
-    static glm::mat4 translated = glm::translate(identityMat, glm::vec3(1.0f, 1.0f, 1.0f));
+    static glm::mat4 translated = glm::translate(identityMat, glm::vec3(0.3f, 0.3f, 1.0f));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     shader->Bind();
 
