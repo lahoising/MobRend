@@ -45,6 +45,15 @@ void Camera::SetPerspective(PerspectiveConfig config)
 void Camera::SetOrtho(OrthographicConfig config)
 {
     this->type = Camera::Type::ORTHOGRAPHIC;
+
+    float w = config.size;
+    float h = config.size / config.aspectRatio;
+
+    this->projMatrix = glm::ortho(
+        -w,             w,
+        -h,             h,
+        config.near,    config.far
+    );
     RecalculateViewProjection();
 }
 

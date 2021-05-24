@@ -54,11 +54,9 @@ private:
     glm::mat4 projMatrix;
     glm::mat4 viewProjMat;
 
-    Config config;
-    Type type;
-
     glm::quat rotation;
     glm::vec3 position;
+    Type type;
 };
 
 } // namespace mr

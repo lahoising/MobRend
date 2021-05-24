@@ -45,9 +45,9 @@ GlRenderer::GlRenderer()
     glBindVertexArray(vertexArrayId);
 
     const GLfloat g_vertex_buffer_data[] = {
-        -1.0f, -1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f,
-        0.0f,  1.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f,
+         0.5f, -0.5f, 0.0f,
+         0.0f,  0.5f, 0.0f,
     };
 
     Buffer::CreateParams bufferCreateParams = {};
@@ -63,12 +63,12 @@ GlRenderer::GlRenderer()
     indexBuffer = Buffer::Create(bufferCreateParams);
 
     Camera::Config camConfig = {};
-    camConfig.perspective.fov = 60.0f;
-    camConfig.perspective.aspectRatio = 1280.0f / 720.0f;
-    camConfig.perspective.near = 0.01f;
-    camConfig.perspective.far = 100.0f;
+    camConfig.ortho.size = 1.0f;
+    camConfig.ortho.aspectRatio = 1280.0f / 720.0f;
+    camConfig.ortho.near = 0.01f;
+    camConfig.ortho.far = 100.0f;
     cam = new Camera(
-        Camera::Type::PERSPECTIVE,
+        Camera::Type::ORTHOGRAPHIC,
         camConfig
     );
 }
