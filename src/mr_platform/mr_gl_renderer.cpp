@@ -63,7 +63,7 @@ GlRenderer::GlRenderer()
     indexBuffer = Buffer::Create(bufferCreateParams);
 
     Camera::Config camConfig = {};
-    camConfig.ortho.size = 1.0f;
+    camConfig.ortho.size = 3.0f;
     camConfig.ortho.aspectRatio = 1280.0f / 720.0f;
     camConfig.ortho.near = 0.01f;
     camConfig.ortho.far = 100.0f;
@@ -89,12 +89,19 @@ void GlRenderer::SetViewport(int x, int y, int width, int height)
 
 void GlRenderer::OnRenderBegin()
 {
+    static glm::mat4 identityMat = glm::identity<glm::mat4>();
+    static glm::mat4 translated = glm::translate(identityMat, glm::vec3(1.0f, 1.0f, 1.0f));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     shader->Bind();
 
     shader->UploadMat4(
         "viewProjection",
         cam->GetViewProjection()
+    );
+
+    shader->UploadMat4(
+        "model",
+        identityMat
     );
 
     glEnableVertexAttribArray(0);
@@ -113,6 +120,16 @@ void GlRenderer::OnRenderBegin()
         GL_TRIANGLES, 
         indexBuffer->GetElementCount(), 
         GL_UNSIGNED_INT, nullptr);
+
+    shader->UploadMat4(
+        "model",
+        translated
+    );
+    glDrawElements(
+        GL_TRIANGLES, 
+        indexBuffer->GetElementCount(), 
+        GL_UNSIGNED_INT, nullptr);
+
     glDisableVertexAttribArray(0);
 
     auto error = glGetError();
