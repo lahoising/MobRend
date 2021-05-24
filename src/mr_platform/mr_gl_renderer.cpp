@@ -64,13 +64,13 @@ GlRenderer::GlRenderer()
     indexBuffer = Buffer::Create(bufferCreateParams);
 
     Camera::Config camConfig = {};
-    // camConfig.perspective.fov = glm::radians(60.0f);
-    camConfig.ortho.size = 3.0f;
-    camConfig.ortho.aspectRatio = 1280.0f / 720.0f;
-    camConfig.ortho.near = 0.1f;
-    camConfig.ortho.far = 100.0f;
+    camConfig.perspective.fov = glm::radians(60.0f);
+    // camConfig.ortho.size = 3.0f;
+    camConfig.perspective.aspectRatio = 1280.0f / 720.0f;
+    camConfig.perspective.near = 0.1f;
+    camConfig.perspective.far = 100.0f;
     cam = new Camera(
-        Camera::Type::ORTHOGRAPHIC,
+        Camera::Type::PERSPECTIVE,
         camConfig
     );
 }
@@ -101,7 +101,28 @@ void GlRenderer::OnRenderBegin()
     Input &input = Application::GetInstance().GetMainWindow()->input;
     if(input.IsKeyPressed(GLFW_KEY_D))
     {
-        cam->SetPosition(position += glm::vec3(0.001f, 0.0f, 0.0f));
+        cam->SetPosition(position += glm::vec3(0.005f, 0.0f, 0.0f));
+    }
+
+    if(input.IsKeyPressed(GLFW_KEY_RIGHT))
+    {
+        cam->SetRotation( 
+            glm::rotate(
+                cam->GetRotation(), 
+                glm::radians(-1.0f),
+                glm::vec3(0.0f, 1.0f, 0.0f)
+            )
+        );
+    }
+    else if(input.IsKeyPressed(GLFW_KEY_LEFT))
+    {
+        cam->SetRotation( 
+            glm::rotate(
+                cam->GetRotation(), 
+                glm::radians(1.0f),
+                glm::vec3(0.0f, 1.0f, 0.0f)
+            )
+        );
     }
 
     shader->UploadMat4(
@@ -126,7 +147,7 @@ void GlRenderer::OnRenderBegin()
         3,
         GL_FLOAT,
         GL_FALSE,
-        0,
+        3 * sizeof(float),
         nullptr
     );
 

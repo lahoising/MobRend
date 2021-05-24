@@ -33,7 +33,7 @@ void Camera::SetConfiguration(Type type, Config config)
 void Camera::SetPerspective(PerspectiveConfig config)
 {
     this->type = Camera::Type::PERSPECTIVE;
-    this->projMatrix = glm::perspective(
+    this->projMatrix = glm::perspectiveLH(
         config.fov,
         config.aspectRatio, 
         config.near,
@@ -45,6 +45,13 @@ void Camera::SetPerspective(PerspectiveConfig config)
 void Camera::SetPosition(glm::vec3 position)
 {
     this->position = position;
+    this->RecalculateViewMatrix();
+    this->RecalculateViewProjection();
+}
+
+void Camera::SetRotation(glm::quat rotation)
+{
+    this->rotation = rotation;
     this->RecalculateViewMatrix();
     this->RecalculateViewProjection();
 }
@@ -69,7 +76,7 @@ void Camera::RecalculateViewMatrix()
     const glm::vec3 fwd = glm::vec3(0.0f, 0.0f, 1.0f);
     glm::vec3 target = fwd * this->rotation + this->position;
     
-    this->viewMatrix = glm::lookAt(
+    this->viewMatrix = glm::lookAtLH(
         this->position,
         target,
         glm::vec3(0.0f, 1.0f, 0.0f)
