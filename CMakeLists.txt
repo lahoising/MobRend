@@ -4,13 +4,15 @@ project(MobRend)
 set(MOBREND_USE_GLFW ON CACHE BOOL "Use GLFW windows")
 set(MOBREND_USE_OPENGL ON CACHE BOOL "Use OpenGL for rendering")
 
+set(BASE_INC_PATH "${CMAKE_CURRENT_SOURCE_DIR}/src/include")
+set(EXTERNAL_INC "${CMAKE_CURRENT_SOURCE_DIR}/external")
+
 file(
     GLOB SRC_FILES
     "src/*.cpp"
     "src/mr_platform/*.cpp"
 )
 
-set(BASE_INC_PATH "${CMAKE_CURRENT_SOURCE_DIR}/src/include")
 file(
     GLOB INCLUDE_FILES
     "${BASE_INC_PATH}/*.h"
@@ -22,8 +24,6 @@ target_include_directories(
     app PUBLIC 
     "${BASE_INC_PATH}"
 )
-
-set(EXTERNAL_INC "${CMAKE_CURRENT_SOURCE_DIR}/external")
 
 set(IMGUI_PATH "${EXTERNAL_INC}/imgui")
 set(IMGUI_BACKEND "${IMGUI_PATH}/backends/imgui_impl_")
@@ -96,3 +96,10 @@ target_link_libraries(app glm)
 # mr logger
 add_subdirectory("${EXTERNAL_INC}/mobrend_logger")
 target_link_libraries(app mr_logger)
+
+# stb
+set(MR_STB_PATH "${EXTERNAL_INC}/stb_image")
+add_library(stb INTERFACE)
+target_sources(stb INTERFACE "${MR_STB_PATH}/stb_image.h")
+target_include_directories(stb INTERFACE "${MR_STB_PATH}")
+target_link_libraries(app stb)

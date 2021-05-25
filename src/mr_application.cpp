@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stb_image.h>
 #include "mr_application.h"
 #include "mr_window.h"
 #include "mr_gui.h"
