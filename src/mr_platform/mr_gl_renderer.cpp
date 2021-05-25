@@ -16,6 +16,7 @@
 #include "mr_shader.h"
 #include "mr_camera.h"
 #include "mr_vertex_layout.h"
+#include "mr_texture.h"
 
 namespace mr
 {
@@ -30,6 +31,7 @@ static Buffer *vertexBuffer = nullptr;
 static Buffer *indexBuffer = nullptr;
 static Shader *shader = nullptr;
 static Camera *cam = nullptr;
+static Texture *tex = nullptr;
 
 static GLenum GetAttribType(AttributeType type)
 {
@@ -110,10 +112,13 @@ GlRenderer::GlRenderer()
         offset += attribSize;
         i++;
     }
+
+    tex = Texture::Create("D:\\Pictures\\Screenshots\\Screenshot (44).png");
 }
 
 GlRenderer::~GlRenderer()
 {
+    delete(tex);
     delete(vertexBuffer);
     delete(indexBuffer);
     glDeleteVertexArrays(1, &vertexArrayId);

@@ -58,11 +58,6 @@ bool Application::Init(Application::InitParams params)
     this->renderer->DeleteGuiInitInfo(guiInitParams.rendererInitInfo);
     if(!this->gui) return false;
 
-    ImageData data = {};
-    unsigned char *image = ImageLoader::Load("D:\\Pictures\\Screenshots\\Screenshot (44).png", &data);
-    mrlog("Image\n\tdimensions: %d, %d\n\t# of channels: %d", data.width, data.height, data.nrChannels);
-    ImageLoader::DeleteImage(image);
-
     return true;
 }
 
