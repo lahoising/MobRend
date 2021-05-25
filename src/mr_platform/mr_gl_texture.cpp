@@ -50,7 +50,7 @@ void GlTexture::GenerateTexture(unsigned char *imageContent, ImageData imageData
             format,
             imageData.width, imageData.height,
             0, 
-            GL_RGBA, GL_UNSIGNED_BYTE,
+            format, GL_UNSIGNED_BYTE,
             imageContent
         );
         glGenerateMipmap(GL_TEXTURE_2D);

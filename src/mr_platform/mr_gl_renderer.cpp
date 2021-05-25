@@ -59,9 +59,10 @@ GlRenderer::GlRenderer()
     glBindVertexArray(vertexArrayId);
 
     const GLfloat g_vertex_buffer_data[] = {
-        -0.5f, -0.5f, 0.0f, 0.8f, 0.3f, 0.2f,   0.0f, 0.0f,
-         0.5f, -0.5f, 0.0f, 0.2f, 0.8f, 0.3f,   1.0f, 0.0f,
-         0.0f,  0.5f, 0.0f, 0.3f, 0.2f, 0.8f,   0.5f, 1.0f
+        -1.0f,  1.0f, 0.0f, 0.8f, 0.3f, 0.2f,   0.0f, 1.0f,
+        -1.0f, -1.0f, 0.0f, 0.2f, 0.8f, 0.3f,   0.0f, 0.0f,
+         1.0f, -1.0f, 0.0f, 0.3f, 0.2f, 0.8f,   1.0f, 0.0f,
+         1.0f,  1.0f, 0.0f, 0.3f, 0.2f, 0.8f,   1.0f, 1.0f
     };
 
     Buffer::CreateParams bufferCreateParams = {};
@@ -70,7 +71,7 @@ GlRenderer::GlRenderer()
     bufferCreateParams.data = (void*)g_vertex_buffer_data;
     vertexBuffer = Buffer::Create(bufferCreateParams);
 
-    const uint32_t indices[] = {0, 1, 2};
+    const uint32_t indices[] = {0, 1, 2, 2, 3, 0};
     bufferCreateParams.type = Buffer::Type::INDEX;
     bufferCreateParams.size = sizeof(indices);
     bufferCreateParams.data = (void*)indices;

@@ -50,8 +50,7 @@ GlShader::GlShader(Shader::CreateParams params)
 		uniform sampler2D u_texture;
         
 		void main(){
-            finalFragColor = texture(u_texture, a_texCoord);
-            // finalFragColor = vec4(a_col * u_color, 1.0f) * texture(u_texture, a_texCoord);
+            finalFragColor = vec4(a_col * u_color, 1.0f) * texture(u_texture, a_texCoord);
         }
     )";
 
