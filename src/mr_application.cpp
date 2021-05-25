@@ -1,8 +1,10 @@
 #include <iostream>
-#include <stb_image.h>
 #include "mr_application.h"
 #include "mr_window.h"
 #include "mr_gui.h"
+
+#include "mr_image_loader.h"
+#include "mr_logger.h"
 
 namespace mr
 {
@@ -55,6 +57,11 @@ bool Application::Init(Application::InitParams params)
     this->gui = new Gui(guiInitParams);
     this->renderer->DeleteGuiInitInfo(guiInitParams.rendererInitInfo);
     if(!this->gui) return false;
+
+    ImageData data = {};
+    unsigned char *image = ImageLoader::Load("D:\\Pictures\\Screenshots\\Screenshot (44).png", &data);
+    mrlog("Image\n\tdimensions: %d, %d\n\t# of channels: %d", data.width, data.height, data.nrChannels);
+    ImageLoader::DeleteImage(image);
 
     return true;
 }
