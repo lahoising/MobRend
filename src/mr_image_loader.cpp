@@ -6,8 +6,9 @@
 namespace mr
 {
     
-unsigned char *ImageLoader::Load(const char *filepath, ImageData *dataOutput)
+unsigned char *ImageLoader::Load(const char *filepath, ImageData *dataOutput, bool inverted)
 {
+    stbi_set_flip_vertically_on_load(inverted);
     return dataOutput?  stbi_load(filepath, &dataOutput->width, &dataOutput->height, &dataOutput->nrChannels, 0) :
                         stbi_load(filepath, nullptr, nullptr, nullptr, 0);
 }

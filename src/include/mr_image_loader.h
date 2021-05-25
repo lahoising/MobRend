@@ -13,7 +13,7 @@ typedef struct
 class ImageLoader
 {
 public:
-    static unsigned char *Load(const char *filepath, ImageData *dataOutput);
+    static unsigned char *Load(const char *filepath, ImageData *dataOutput, bool inverted = true);
     static void DeleteImage(unsigned char *imageData);
 };
 
