@@ -17,6 +17,7 @@ public:
 
     virtual void UploadMat4(const char *uniformName, glm::mat4 matrix) override;
     virtual void UploadVec3(const char *uniformName, glm::vec3 vec) override;
+    virtual void UploadInt(const char *uniformName, int i) override;
     virtual void UploadTexture2D(const char *uniformName, Texture *texture) override;
 
 private:

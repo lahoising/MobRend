@@ -48,9 +48,15 @@ GlShader::GlShader(Shader::CreateParams params)
         
 		uniform vec3 u_color;
 		uniform sampler2D u_texture;
+		uniform sampler2D u_tex2;
         
 		void main(){
-            finalFragColor = vec4(a_col * u_color, 1.0f) * texture(u_texture, a_texCoord);
+			vec4 textureMix = mix(
+				texture(u_texture, a_texCoord),
+				texture(u_tex2, a_texCoord),
+				0.5
+			);
+            finalFragColor = vec4(a_col * u_color, 1.0f) * textureMix;
         }
     )";
 
@@ -133,6 +139,17 @@ void GlShader::UploadVec3(const char *uniformName, glm::vec3 vec)
 		1,
 		glm::value_ptr(vec)
 	);
+}
+
+void GlShader::UploadInt(const char *uniformName, int i)
+{
+	if(this->uniformLocations.find(uniformName) == this->uniformLocations.end())
+	{
+		this->uniformLocations[uniformName] = glGetUniformLocation(this->programId, uniformName);
+	}
+
+	const unsigned int location = this->uniformLocations[uniformName];
+	glUniform1i(location, i);
 }
 
 void GlShader::UploadTexture2D(const char *uniformName, Texture *texture)
