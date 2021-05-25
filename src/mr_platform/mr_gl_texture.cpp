@@ -1,10 +1,24 @@
 #include <glad/glad.h>
+#include "mr_logger.h"
 #include "mr_platform/mr_gl_texture.h"
 
 namespace mr
 {
     
 GlTexture::GlTexture(unsigned char *imageContent, ImageData imageData)
+{
+    this->GenerateTexture(imageContent, imageData);
+}
+
+GlTexture::GlTexture(const char *filepath)
+{
+    ImageData data = {};
+    unsigned char *imageData = ImageLoader::Load(filepath, &data);
+    this->GenerateTexture(imageData, data);
+    mrlog("tex id: %u", this->textureId);
+}
+
+void GlTexture::GenerateTexture(unsigned char *imageContent, ImageData imageData)
 {
     if(imageContent)
     {
@@ -18,27 +32,23 @@ GlTexture::GlTexture(unsigned char *imageContent, ImageData imageData)
 
         glTexImage2D(
             GL_TEXTURE_2D, 0,
-            GL_RGB,
+            GL_RGBA,
             imageData.width, imageData.height,
             0, 
-            GL_RGB, GL_UNSIGNED_BYTE,
+            GL_RGBA, GL_UNSIGNED_BYTE,
             imageContent
         );
         glGenerateMipmap(GL_TEXTURE_2D);
 
         ImageLoader::DeleteImage(imageContent);
+        this->Unbind();
+
+        mrlog("i am here");
     }
     else
     {
 
     }
-}
-
-GlTexture::GlTexture(const char *filepath)
-{
-    ImageData data = {};
-    unsigned char *imageData = ImageLoader::Load(filepath, &data);
-    GlTexture(imageData, data);
 }
 
 GlTexture::~GlTexture()

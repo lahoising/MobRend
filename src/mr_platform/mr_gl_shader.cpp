@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "mr_logger.h"
 #include "mr_platform/mr_gl_shader.h"
+#include "mr_texture.h"
 
 namespace mr
 {
@@ -22,8 +23,10 @@ GlShader::GlShader(Shader::CreateParams params)
         
         layout(location = 0) in vec3 a_pos;
 		layout(location = 1) in vec3 a_col;
+		layout(location = 2) in vec2 a_texCoord;
 
 		layout(location = 0) out vec3 out_color;
+		layout(location = 1) out vec2 out_texCoord;
 		
 		uniform mat4 u_viewProjection;
 		uniform mat4 u_model;
@@ -32,6 +35,7 @@ GlShader::GlShader(Shader::CreateParams params)
         void main(){
             gl_Position = u_viewProjection * u_model * vec4(a_pos, 1.0);
 			out_color = a_col;
+			out_texCoord = a_texCoord;
         }
     )";
 
@@ -40,11 +44,14 @@ GlShader::GlShader(Shader::CreateParams params)
 		
 		out vec4 finalFragColor;
 		layout(location = 0) in vec3 a_col;
+		layout(location = 1) in vec2 a_texCoord;
         
 		uniform vec3 u_color;
+		uniform sampler2D u_texture;
         
 		void main(){
-            finalFragColor = vec4(a_col * u_color, 1.0f);
+            finalFragColor = texture(u_texture, a_texCoord);
+            // finalFragColor = vec4(a_col * u_color, 1.0f) * texture(u_texture, a_texCoord);
         }
     )";
 
@@ -127,6 +134,11 @@ void GlShader::UploadVec3(const char *uniformName, glm::vec3 vec)
 		1,
 		glm::value_ptr(vec)
 	);
+}
+
+void GlShader::UploadTexture2D(const char *uniformName, Texture *texture)
+{
+	
 }
 
 void GlShader::Bind()

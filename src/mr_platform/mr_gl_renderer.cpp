@@ -59,9 +59,9 @@ GlRenderer::GlRenderer()
     glBindVertexArray(vertexArrayId);
 
     const GLfloat g_vertex_buffer_data[] = {
-        -0.5f, -0.5f, 0.0f, 0.8f, 0.3f, 0.2f,
-         0.5f, -0.5f, 0.0f, 0.2f, 0.8f, 0.3f,
-         0.0f,  0.5f, 0.0f, 0.3f, 0.2f, 0.8f
+        -0.5f, -0.5f, 0.0f, 0.8f, 0.3f, 0.2f,   0.0f, 0.0f,
+         0.5f, -0.5f, 0.0f, 0.2f, 0.8f, 0.3f,   1.0f, 0.0f,
+         0.0f,  0.5f, 0.0f, 0.3f, 0.2f, 0.8f,   0.5f, 1.0f
     };
 
     Buffer::CreateParams bufferCreateParams = {};
@@ -89,9 +89,11 @@ GlRenderer::GlRenderer()
 
     VertexLayout layout = VertexLayout({
         {AttributeType::FLOAT, 3},
-        {AttributeType::FLOAT, 3}
+        {AttributeType::FLOAT, 3},
+        {AttributeType::FLOAT, 2}
     });
 
+    tex = Texture::Create("D:\\Pictures\\Screenshots\\Screenshot (44).png");
     glBindVertexArray(vertexArrayId);
     vertexBuffer->Bind();
 
@@ -113,7 +115,6 @@ GlRenderer::GlRenderer()
         i++;
     }
 
-    tex = Texture::Create("D:\\Pictures\\Screenshots\\Screenshot (44).png");
 }
 
 GlRenderer::~GlRenderer()
@@ -155,6 +156,8 @@ void GlRenderer::OnRenderBegin()
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
+    tex->Bind();
+    glBindVertexArray(vertexArrayId);
     vertexBuffer->Bind();
     indexBuffer->Bind();
     glDrawElements(

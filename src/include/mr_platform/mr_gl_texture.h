@@ -12,12 +12,14 @@ class GlTexture : public Texture
 public:
     GlTexture(const char *filepath);
     GlTexture(unsigned char *imageContent, ImageData imageData);
+    void GenerateTexture(unsigned char *imageContent, ImageData imageData);
     virtual ~GlTexture() override;
     virtual void Bind() override;
     virtual void Unbind() override;
 
 private:
     unsigned int textureId;
+    // unsigned char *imageContent;
 };
 
 } // namespace mr
