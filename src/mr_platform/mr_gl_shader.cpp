@@ -38,14 +38,13 @@ GlShader::GlShader(Shader::CreateParams params)
     std::string defaultFragmentShaderCode = R"(
         #version 410 core
 		
-		out vec3 color;
+		out vec4 finalFragColor;
 		layout(location = 0) in vec3 a_col;
         
 		uniform vec3 u_color;
         
 		void main(){
-            // color = u_color;
-            color = a_col * u_color;
+            finalFragColor = vec4(a_col * u_color, 1.0f);
         }
     )";
 
