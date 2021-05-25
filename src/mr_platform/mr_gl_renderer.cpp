@@ -94,18 +94,18 @@ GlRenderer::GlRenderer()
     vertexBuffer->Bind();
 
     int i = 0;
-    uint64_t offset = 0;
+    uint32_t offset = 0;
     for(auto attrib : layout.GetAttributes())
     {
-        uint64_t attribSize = VertexLayout::GetAttributeSize(attrib);
+        uint32_t attribSize = VertexLayout::GetAttributeSize(attrib);
         glEnableVertexAttribArray(i);
         glVertexAttribPointer(
             i, 
             attrib.count,
             GetAttribType(attrib.type),
             GL_FALSE,
-            (GLsizei)layout.GetStride(),
-            (const void *)offset
+            layout.GetStride(),
+            (const void *)((size_t)offset)
         );
         offset += attribSize;
         i++;

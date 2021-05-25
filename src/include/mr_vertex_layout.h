@@ -24,17 +24,17 @@ class VertexLayout
 public:
     VertexLayout(const std::vector<Attribute> &attributes);
     VertexLayout(const std::initializer_list<Attribute> attributes);
-    uint64_t GetStride(){ return this->stride; }
+    uint32_t GetStride(){ return this->stride; }
     const std::vector<Attribute> &GetAttributes(){ return this->attributes; }
 
 private:
     void CalculateStride();
 
 public:
-    static uint64_t GetAttributeSize(const Attribute &attrib);
+    static uint32_t GetAttributeSize(const Attribute &attrib);
 
 private:
-    uint64_t stride;
+    uint32_t stride;
     std::vector<Attribute> attributes;
 };
 
