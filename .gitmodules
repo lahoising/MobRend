@@ -11,3 +11,6 @@
 [submodule "external/mobrend_logger"]
 	path = external/mobrend_logger
 	url = git@github.com:lahoising/MobRendLogger.git
+[submodule "external/stb_image"]
+	path = external/stb_image
+	url = https://github.com/nothings/stb.git
