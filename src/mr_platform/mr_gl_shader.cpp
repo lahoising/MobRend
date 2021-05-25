@@ -23,7 +23,7 @@ GlShader::GlShader(Shader::CreateParams params)
         layout(location = 0) in vec3 a_pos;
 		layout(location = 1) in vec3 a_col;
 
-		out vec3 out_color;
+		layout(location = 0) out vec3 out_color;
 		
 		uniform mat4 u_viewProjection;
 		uniform mat4 u_model;
@@ -39,13 +39,13 @@ GlShader::GlShader(Shader::CreateParams params)
         #version 410 core
 		
 		out vec3 color;
-		in vec3 out_color;
+		layout(location = 0) in vec3 a_col;
         
 		uniform vec3 u_color;
         
 		void main(){
             // color = u_color;
-            color = out_color * u_color;
+            color = a_col * u_color;
         }
     )";
 
