@@ -7,6 +7,7 @@
 #include "mr_platform/mr_glfw_window.h"
 #endif
 
+#include "mr_logger.h"
 #include "mr_platform/mr_gl_renderer.h"
 #include "mr_gui.h"
 #include "mr_application.h"
@@ -14,6 +15,7 @@
 #include "mr_buffer.h"
 #include "mr_shader.h"
 #include "mr_camera.h"
+#include "mr_vertex_layout.h"
 
 namespace mr
 {
@@ -73,6 +75,17 @@ GlRenderer::GlRenderer()
         Camera::Type::PERSPECTIVE,
         camConfig
     );
+
+    VertexLayout layout = VertexLayout({
+        {AttributeType::FLOAT, 3},
+        {AttributeType::FLOAT, 3}
+    });
+
+    for(auto attrib : layout.GetAttributes())
+    {
+        mrlog("type: %d\tcount: %u", attrib.type, attrib.count);
+    }
+    mrlog("stride: %zu", layout.GetStride());
 }
 
 GlRenderer::~GlRenderer()
