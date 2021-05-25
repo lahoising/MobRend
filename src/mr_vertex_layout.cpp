@@ -14,7 +14,7 @@ VertexLayout::VertexLayout(const std::initializer_list<Attribute> attributes)
 
 void VertexLayout::CalculateStride()
 {
-    size_t currentSize = 0;
+    uint64_t currentSize = 0;
 
     for(auto &attrib : this->attributes)
     {
@@ -23,7 +23,7 @@ void VertexLayout::CalculateStride()
     this->stride = currentSize;
 }
 
-size_t VertexLayout::GetAttributeSize(const Attribute &attrib)
+uint64_t VertexLayout::GetAttributeSize(const Attribute &attrib)
 {
     switch (attrib.type)
     {

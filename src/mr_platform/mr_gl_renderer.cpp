@@ -31,6 +31,15 @@ static Buffer *indexBuffer = nullptr;
 static Shader *shader = nullptr;
 static Camera *cam = nullptr;
 
+static GLenum GetAttribType(AttributeType type)
+{
+    switch (type)
+    {
+    case AttributeType::FLOAT: return GL_FLOAT;
+    default: throw "Unknown attribute type";
+    }
+}
+
 GlRenderer::GlRenderer()
 {
     #ifdef MOBREND_GLFW_WINDOW
@@ -81,11 +90,26 @@ GlRenderer::GlRenderer()
         {AttributeType::FLOAT, 3}
     });
 
+    glBindVertexArray(vertexArrayId);
+    vertexBuffer->Bind();
+
+    int i = 0;
+    uint64_t offset = 0;
     for(auto attrib : layout.GetAttributes())
     {
-        mrlog("type: %d\tcount: %u", attrib.type, attrib.count);
+        uint64_t attribSize = VertexLayout::GetAttributeSize(attrib);
+        glEnableVertexAttribArray(i);
+        glVertexAttribPointer(
+            i, 
+            attrib.count,
+            GetAttribType(attrib.type),
+            GL_FALSE,
+            (GLsizei)layout.GetStride(),
+            (const void *)offset
+        );
+        offset += attribSize;
+        i++;
     }
-    mrlog("stride: %zu", layout.GetStride());
 }
 
 GlRenderer::~GlRenderer()
@@ -127,24 +151,6 @@ void GlRenderer::OnRenderBegin()
     );
 
     vertexBuffer->Bind();
-    glVertexAttribPointer(
-        0,
-        3, GL_FLOAT,
-        GL_FALSE,
-        6 * sizeof(float),
-        nullptr
-    );
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(
-        1, 
-        3, GL_FLOAT,
-        GL_FALSE,
-        6 * sizeof(float),
-        (void*)( 3 * sizeof(float) )
-    );
-    glEnableVertexAttribArray(1);
-
     indexBuffer->Bind();
     glDrawElements(
         GL_TRIANGLES, 
@@ -164,9 +170,6 @@ void GlRenderer::OnRenderBegin()
         GL_TRIANGLES, 
         indexBuffer->GetElementCount(), 
         GL_UNSIGNED_INT, nullptr);
-
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
 
     auto error = glGetError();
     if(error)
