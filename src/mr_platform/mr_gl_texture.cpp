@@ -30,9 +30,24 @@ void GlTexture::GenerateTexture(unsigned char *imageContent, ImageData imageData
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+        int format = 0;
+        switch (imageData.nrChannels)
+        {
+        case 3:
+            format = GL_RGB;
+            break;
+
+        case 4:
+            format = GL_RGBA;
+            break;
+        
+        default:
+            break;
+        }
+
         glTexImage2D(
             GL_TEXTURE_2D, 0,
-            GL_RGBA,
+            format,
             imageData.width, imageData.height,
             0, 
             GL_RGBA, GL_UNSIGNED_BYTE,
