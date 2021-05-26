@@ -25,7 +25,12 @@ void FPSCamera::Update()
     deltaMove += camFwd * (float)(input.IsKeyPressed(GLFW_KEY_W) - input.IsKeyPressed(GLFW_KEY_S));
     deltaMove *= CAM_MOVEMENT_SPEED;
 
+    const float CAM_ROTATION_SPEED = -0.001f;
+    glm::vec2 mouseDelta = input.GetMouseDelta() * CAM_ROTATION_SPEED;
+    rotation = glm::rotate(rotation, mouseDelta.x, glm::vec3(0.0f, 1.0f, 0.0f));
+
     this->camera.SetPosition(position + deltaMove);
+    this->camera.SetRotation(rotation);
 }
 
 } // namespace mr

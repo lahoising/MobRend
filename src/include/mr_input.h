@@ -1,6 +1,7 @@
 #ifndef _MR_INPUT_H_
 #define _MR_INPUT_H_
 
+#include <glm/glm.hpp>
 #include "mr_input_event.h"
 
 #define INPUT_STATE_KEY_EVENT_NUM 512
@@ -28,7 +29,7 @@ public:
     bool KeyJustPressed(int key);
     bool KeyJustReleased(int key);
 
-
+    glm::vec2 GetMouseDelta();
     
     void SubmitEvent(InputEvent event);
 

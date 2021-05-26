@@ -68,5 +68,11 @@ bool Input::KeyJustReleased(int key)
     return !this->currentState.keys[key].pressed && this->prevState.keys[key].pressed;
 }
 
+glm::vec2 Input::GetMouseDelta()
+{
+    MousePositionEvent prev = this->prevState.mousePosition;
+    MousePositionEvent curr = this->currentState.mousePosition;
+    return glm::vec2(curr.x - prev.x, curr.y - prev.y);
+}
 
 } // namespace mr
