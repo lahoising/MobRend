@@ -30,7 +30,7 @@ static GLuint vertexArrayId;
 static Buffer *vertexBuffer = nullptr;
 static Buffer *indexBuffer = nullptr;
 static Shader *shader = nullptr;
-static Camera *cam = nullptr;
+static Camera cam;
 static Texture *tex = nullptr;
 static Texture *tex2 = nullptr;
 
@@ -84,7 +84,7 @@ GlRenderer::GlRenderer()
     camConfig.perspective.aspectRatio = 1280.0f / 720.0f;
     camConfig.perspective.near = 0.1f;
     camConfig.perspective.far = 100.0f;
-    cam = new Camera(
+    cam = Camera(
         Camera::Type::PERSPECTIVE,
         camConfig
     );
@@ -99,7 +99,7 @@ GlRenderer::GlRenderer()
     tex2 = Texture::Create("D:\\Pictures\\Screenshots\\2019-05-09.png");
     glBindVertexArray(vertexArrayId);
     vertexBuffer->Bind();
-
+    
     int i = 0;
     uint32_t offset = 0;
     for(auto attrib : layout.GetAttributes())
@@ -132,7 +132,6 @@ GlRenderer::~GlRenderer()
     delete(indexBuffer);
     glDeleteVertexArrays(1, &vertexArrayId);
     delete(shader);
-    delete(cam);
 }
 
 void GlRenderer::SetViewport(int x, int y, int width, int height) 
@@ -144,14 +143,13 @@ void GlRenderer::OnRenderBegin()
 {
     static glm::mat4 identityMat = glm::identity<glm::mat4>();
     static glm::mat4 translated = glm::translate(identityMat, glm::vec3(0.3f, 0.3f, 1.0f));
-    static glm::vec3 position = cam->GetPosition();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     shader->Bind();
 
     shader->UploadMat4(
         "u_viewProjection",
-        cam->GetViewProjection()
+        cam.GetViewProjection()
     );
 
     shader->UploadMat4(

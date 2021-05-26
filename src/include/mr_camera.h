@@ -38,6 +38,9 @@ public:
 
 public:
     Camera(Type type, Config config);
+    Camera() : Camera(
+        Type::PERSPECTIVE, 
+        {{60.0f, 16.0f/9.0f, 0.1f, 100.0f}}){}
 
     void SetConfiguration(Type type, Config config);
     glm::mat4 GetViewProjection(){ return this->viewProjMat; }
