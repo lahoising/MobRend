@@ -17,6 +17,7 @@
 #include "mr_camera.h"
 #include "mr_vertex_layout.h"
 #include "mr_texture.h"
+#include "mr_fps_camera.h"
 
 namespace mr
 {
@@ -30,7 +31,7 @@ static GLuint vertexArrayId;
 static Buffer *vertexBuffer = nullptr;
 static Buffer *indexBuffer = nullptr;
 static Shader *shader = nullptr;
-static Camera cam;
+static FPSCamera cam;
 static Texture *tex = nullptr;
 static Texture *tex2 = nullptr;
 
@@ -78,13 +79,14 @@ GlRenderer::GlRenderer()
     bufferCreateParams.data = (void*)indices;
     indexBuffer = Buffer::Create(bufferCreateParams);
 
+    cam = FPSCamera();
     Camera::Config camConfig = {};
     camConfig.perspective.fov = glm::radians(60.0f);
     // camConfig.ortho.size = 3.0f;
     camConfig.perspective.aspectRatio = 1280.0f / 720.0f;
     camConfig.perspective.near = 0.1f;
     camConfig.perspective.far = 100.0f;
-    cam = Camera(
+    cam.camera = Camera(
         Camera::Type::PERSPECTIVE,
         camConfig
     );
@@ -144,12 +146,14 @@ void GlRenderer::OnRenderBegin()
     static glm::mat4 identityMat = glm::identity<glm::mat4>();
     static glm::mat4 translated = glm::translate(identityMat, glm::vec3(0.3f, 0.3f, 1.0f));
 
+    cam.Update();
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     shader->Bind();
 
     shader->UploadMat4(
         "u_viewProjection",
-        cam.GetViewProjection()
+        cam.camera.GetViewProjection()
     );
 
     shader->UploadMat4(
