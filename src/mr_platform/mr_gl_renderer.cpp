@@ -124,6 +124,8 @@ GlRenderer::GlRenderer()
     shader->UploadInt("u_texture", 0);
     shader->UploadInt("u_tex2", 1);
 
+    Application::GetInstance().GetMainWindow()->SetCursorVisible(false);
+
 }
 
 GlRenderer::~GlRenderer()

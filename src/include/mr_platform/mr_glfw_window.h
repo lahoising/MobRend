@@ -16,6 +16,7 @@ public:
     virtual ~GlfwWindow() override;
     virtual void SwapBuffers() override;
     virtual void PollEvents() override;
+    virtual void SetCursorVisible(bool visible) override;
     virtual void *GetHandle() override { return this->window; }
 
     GLFWwindow *GetWindow() { return this->window; }

@@ -23,6 +23,7 @@ public:
     virtual void SwapBuffers() = 0;
     virtual void PollEvents() = 0;
     virtual void *GetHandle() = 0;
+    virtual void SetCursorVisible(bool visible) = 0;
 
 public:
     Input input;

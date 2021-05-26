@@ -137,5 +137,10 @@ void GlfwWindow::SwapBuffers()
     glfwSwapBuffers(this->window);
 }
 
+void GlfwWindow::SetCursorVisible(bool visible)
+{
+    glfwSetInputMode(this->window, GLFW_CURSOR, visible? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+}
+
 } // namespace mr
 #endif
