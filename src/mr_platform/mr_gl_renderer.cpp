@@ -17,6 +17,7 @@
 #include "mr_camera.h"
 #include "mr_vertex_layout.h"
 #include "mr_texture.h"
+#include "mr_observer_camera.h"
 #include "mr_fps_camera.h"
 
 namespace mr
@@ -79,6 +80,7 @@ GlRenderer::GlRenderer()
     bufferCreateParams.data = (void*)indices;
     indexBuffer = Buffer::Create(bufferCreateParams);
 
+    // cam = ObserverCamera();
     cam = FPSCamera();
     Camera::Config camConfig = {};
     camConfig.perspective.fov = glm::radians(60.0f);

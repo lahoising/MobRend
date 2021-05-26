@@ -73,14 +73,12 @@ void Camera::SetOrtho(OrthographicConfig config)
 
 void Camera::RecalculateViewMatrix()
 {
-    const glm::vec3 fwd = glm::vec3(0.0f, 0.0f, 1.0f);
-    glm::vec3 target = fwd * this->rotation + this->position;
-    
-    this->viewMatrix = glm::lookAtLH(
-        this->position,
-        target,
-        glm::vec3(0.0f, 1.0f, 0.0f)
+    glm::mat4 transform = glm::translate(
+        glm::toMat4(this->rotation),
+        this->position
     );
+
+    this->viewMatrix = glm::inverse(transform);
 }
 
 } // namespace mr
