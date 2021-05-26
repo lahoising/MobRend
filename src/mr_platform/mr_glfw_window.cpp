@@ -1,6 +1,7 @@
 #ifdef MOBREND_GLFW_WINDOW
 #include <unordered_map>
 
+#include "mr_logger.h"
 #include "mr_platform/mr_glfw_window.h"
 #include "mr_application.h"
 
@@ -49,6 +50,21 @@ static void OnGlfwFramebufferSizeChange(GLFWwindow *win, int w, int h)
     Application::GetInstance().GetRenderer()->SetViewport(0, 0, w, h);
 }
 
+static void OnGlfwMousePosition(GLFWwindow *win, double x, double y)
+{
+    GlfwWindow *window = windowMap[win];
+    
+    MousePositionEvent mouseEvent = {};
+    mouseEvent.x = (float)x;
+    mouseEvent.y = (float)y;
+
+    InputEvent event = {};
+    event.type = InputEventType::MOUSE_POSITION;
+    event.mousePosition = mouseEvent;
+
+    window->input.SubmitEvent(event);
+}
+
 GlfwWindow::GlfwWindow(Window::CreateParams createParams)
 {
     auto &windowManager = WindowManager::GetInstance();
@@ -88,6 +104,7 @@ GlfwWindow::GlfwWindow(Window::CreateParams createParams)
     glfwSetWindowCloseCallback(this->window, OnGlfwWindowClose);
     glfwSetKeyCallback(this->window, OnGlfwKeyPressed);
     glfwSetFramebufferSizeCallback(this->window, OnGlfwFramebufferSizeChange);
+    glfwSetCursorPosCallback(this->window, OnGlfwMousePosition);
 }
 
 GlfwWindow::~GlfwWindow()

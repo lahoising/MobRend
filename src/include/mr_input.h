@@ -12,6 +12,7 @@ typedef struct
 {
     WindowCloseEvent windowClose;
     KeyEvent keys[INPUT_STATE_KEY_EVENT_NUM];
+    MousePositionEvent mousePosition;
 } InputState;
 
 class Input
@@ -26,6 +27,8 @@ public:
     bool IsKeyPressed(int key);
     bool KeyJustPressed(int key);
     bool KeyJustReleased(int key);
+
+
     
     void SubmitEvent(InputEvent event);
 

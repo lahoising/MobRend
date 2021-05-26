@@ -18,12 +18,13 @@ void Input::Clear()
 void Input::SwapState()
 {
     this->prevState = this->currentState;
-    this->currentState = {};
-    memcpy(
-        this->currentState.keys,
-        this->prevState.keys,
-        sizeof(KeyEvent) * INPUT_STATE_KEY_EVENT_NUM
-    );
+    this->currentState.windowClose = {};
+    // this->currentState = {};
+    // memcpy(
+    //     this->currentState.keys,
+    //     this->prevState.keys,
+    //     sizeof(KeyEvent) * INPUT_STATE_KEY_EVENT_NUM
+    // );
 }
 
 void Input::SubmitEvent(InputEvent event)
@@ -36,6 +37,10 @@ void Input::SubmitEvent(InputEvent event)
 
     case InputEventType::KEY_EVENT:
         this->currentState.keys[event.keyEvent.key] = event.keyEvent;
+        break;
+
+    case InputEventType::MOUSE_POSITION:
+        this->currentState.mousePosition = event.mousePosition;
         break;
     
     default:

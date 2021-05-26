@@ -9,7 +9,8 @@ enum InputEventType
 {
     UNKNOWN = 0,
     KEY_EVENT,
-    WINDOW_CLOSE,
+    MOUSE_POSITION,
+    WINDOW_CLOSE
 };
 
 typedef struct
@@ -18,6 +19,11 @@ typedef struct
     int pressed;
     int mod;
 } KeyEvent;
+
+typedef struct
+{
+    float x, y;
+} MousePositionEvent;
 
 typedef struct
 {
@@ -30,6 +36,7 @@ typedef struct
     union
     {
         KeyEvent keyEvent;
+        MousePositionEvent mousePosition;
         WindowCloseEvent windowClose;
     };
 } InputEvent;
