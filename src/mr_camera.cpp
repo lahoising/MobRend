@@ -1,4 +1,5 @@
 #include <glm/gtx/quaternion.hpp>
+#include "mr_logger.h"
 #include "mr_camera.h"
 
 namespace mr
@@ -73,12 +74,12 @@ void Camera::SetOrtho(OrthographicConfig config)
 
 void Camera::RecalculateViewMatrix()
 {
-    glm::mat4 transform = glm::translate(
-        glm::toMat4(this->rotation),
-        this->position
+    glm::vec3 fwd = this->rotation * glm::vec3(0.0f, 0.0f, 1.0f);
+    this->viewMatrix = glm::lookAtLH(
+        this->position, 
+        this->position + fwd,
+        glm::vec3(0.0f, 1.0f, 0.0f)
     );
-
-    this->viewMatrix = glm::inverse(transform);
 }
 
 } // namespace mr
