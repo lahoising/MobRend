@@ -25,17 +25,23 @@ void FPSCamera::Update()
     glm::vec3 deltaMove = glm::vec3(0.0f, 0.0f, 0.0f);
     deltaMove += camRight * (float)(input.IsKeyPressed(GLFW_KEY_D) - input.IsKeyPressed(GLFW_KEY_A));
     deltaMove += camFwd * (float)(input.IsKeyPressed(GLFW_KEY_W) - input.IsKeyPressed(GLFW_KEY_S));
+    deltaMove += camUp * (float)(input.IsKeyPressed(GLFW_KEY_R) - input.IsKeyPressed(GLFW_KEY_F));
     deltaMove *= CAM_MOVEMENT_SPEED;
 
     const float CAM_ROTATION_SPEED = 0.01f;
     glm::vec2 mouseDelta = input.GetMouseDelta() * CAM_ROTATION_SPEED;
-    float yaw = glm::yaw(rotation);
-    float pitch = glm::pitch(rotation);
-    yaw += glm::radians(mouseDelta.x);
+    
+    float yaw = glm::yaw(rotation) + glm::radians(mouseDelta.x);
+    yaw = glm::clamp(
+        yaw,
+        glm::radians(-180.0f),
+        glm::radians(180.0f)
+    );
+    float pitch = glm::pitch(rotation) + glm::radians(mouseDelta.y);
     pitch = glm::clamp(
-        pitch + glm::radians(mouseDelta.y),
-        glm::radians(-89.0f), 
-        glm::radians(89.0f)
+        pitch,
+        glm::radians(-89.9f),
+        glm::radians(89.9f)
     );
     rotation = glm::quat( glm::vec3(pitch, yaw, 0.0f) );
 

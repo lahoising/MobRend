@@ -76,8 +76,8 @@ void Camera::RecalculateViewMatrix()
 {
     glm::vec3 fwd = this->rotation * glm::vec3(0.0f, 0.0f, 1.0f);
     this->viewMatrix = glm::lookAtLH(
-        this->position, 
-        this->position + fwd,
+        this->position,
+        fwd + this->position,
         glm::vec3(0.0f, 1.0f, 0.0f)
     );
 }
