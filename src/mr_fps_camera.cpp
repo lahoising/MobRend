@@ -31,13 +31,11 @@ void FPSCamera::Update()
     const float CAM_ROTATION_SPEED = 0.01f;
     glm::vec2 mouseDelta = input.GetMouseDelta() * CAM_ROTATION_SPEED;
     
-    float yaw = glm::yaw(rotation) + glm::radians(mouseDelta.x);
-    yaw = glm::clamp(
-        yaw,
-        glm::radians(-180.0f),
-        glm::radians(180.0f)
-    );
-    float pitch = glm::pitch(rotation) + glm::radians(mouseDelta.y);
+    yaw += glm::radians(mouseDelta.x);
+    while(yaw > 180.0f) yaw -= 360.0f;
+    while(yaw < -180.0f) yaw += 360.0f;
+
+    pitch += glm::radians(mouseDelta.y);
     pitch = glm::clamp(
         pitch,
         glm::radians(-89.9f),

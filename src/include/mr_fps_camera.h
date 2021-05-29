@@ -9,11 +9,14 @@ namespace mr
 class FPSCamera
 {
 public:
-    FPSCamera() : camera(Camera()) {}
+    FPSCamera() : camera(Camera()), yaw(0.0f), pitch(0.0f) {}
     void Update();
 
 public:
     Camera camera;
+
+private:
+    float pitch, yaw;
 };
 
 } // namespace mr
