@@ -43,10 +43,11 @@ GlShader::GlShader(Shader::CreateParams params)
 		layout(location = 0) in vec2 a_texCoord;
         
 		uniform vec3 u_color;
+		uniform vec3 u_lightColor;
 		uniform sampler2D u_texture;
         
 		void main(){
-			finalFragColor = vec4(u_color, 1.0f) * texture(u_texture, a_texCoord);
+			finalFragColor = vec4(u_color * u_lightColor, 1.0f) * texture(u_texture, a_texCoord);
         }
     )";
 

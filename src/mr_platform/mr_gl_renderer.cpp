@@ -201,6 +201,11 @@ void GlRenderer::OnRenderBegin()
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
+    shader->UploadVec3(
+        "u_lightColor",
+        light.color
+    );
+
     glActiveTexture(GL_TEXTURE0);
     tex->Bind();
 
