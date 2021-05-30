@@ -36,6 +36,9 @@ static FPSCamera cam;
 static Texture *tex = nullptr;
 
 static Shader *lightSourceShader = nullptr;
+static GLuint lightSourceVAO;
+static Buffer *lightSourceVertexBuffer = nullptr;
+static Buffer *lightSourceIndexBuffer = nullptr;
 
 static GLenum GetAttribType(AttributeType type)
 {
@@ -62,7 +65,6 @@ GlRenderer::GlRenderer()
     shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\lightsource.vert";
     shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\lightsource.frag";
     lightSourceShader = Shader::Create(shaderCreateParams);
-    delete(lightSourceShader);
 
     glGenVertexArrays(1, &vertexArrayId);
     glBindVertexArray(vertexArrayId);
@@ -85,6 +87,34 @@ GlRenderer::GlRenderer()
     bufferCreateParams.size = sizeof(indices);
     bufferCreateParams.data = (void*)indices;
     indexBuffer = Buffer::Create(bufferCreateParams);
+
+    glGenVertexArrays(1, &lightSourceVAO);
+    glBindVertexArray(lightSourceVAO);
+
+    const GLfloat g_light_source_vertices[] = {
+         0.0f,  1.0f,  0.0f,
+        -1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f
+    };
+
+    bufferCreateParams = {};
+    bufferCreateParams.type = Buffer::Type::VERTEX;
+    bufferCreateParams.size = sizeof(g_light_source_vertices);
+    bufferCreateParams.data = (void*)g_light_source_vertices;
+    lightSourceVertexBuffer = Buffer::Create(bufferCreateParams);
+
+    const uint32_t lightSourceindices[] = {
+        0, 1, 2, 
+        0, 2, 3,
+        0, 3, 4,
+        0, 4, 1
+    };
+    bufferCreateParams.type = Buffer::Type::INDEX;
+    bufferCreateParams.size = sizeof(lightSourceindices);
+    bufferCreateParams.data = (void*)lightSourceindices;
+    lightSourceIndexBuffer = Buffer::Create(bufferCreateParams);
 
     // cam = ObserverCamera();
     cam = FPSCamera();
@@ -139,6 +169,11 @@ GlRenderer::~GlRenderer()
     delete(indexBuffer);
     glDeleteVertexArrays(1, &vertexArrayId);
     delete(shader);
+    
+    delete(lightSourceVertexBuffer);
+    delete(lightSourceIndexBuffer);
+    glDeleteVertexArrays(1, &lightSourceVAO);
+    delete(lightSourceShader);
 }
 
 void GlRenderer::SetViewport(int x, int y, int width, int height) 
