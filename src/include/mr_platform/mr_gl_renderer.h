@@ -3,6 +3,7 @@
 #ifdef MOBREND_GL_RENDERING
 
 #include "mr_renderer.h"
+#include "mr_vertex_layout.h"
 
 namespace mr
 {
@@ -17,6 +18,8 @@ public:
     virtual void OnRenderEnd() override;
     virtual Renderer::gui_init_info_s *GetGuiInitInfo() override;
     virtual void DeleteGuiInitInfo(Renderer::gui_init_info_s *info) override;
+
+    void DefineVertexLayout(const VertexLayout &layout);
 };
 
 } // namespace mr

@@ -88,6 +88,13 @@ GlRenderer::GlRenderer()
     bufferCreateParams.data = (void*)indices;
     indexBuffer = Buffer::Create(bufferCreateParams);
 
+    VertexLayout layout = VertexLayout({
+        {AttributeType::FLOAT, 3},
+        {AttributeType::FLOAT, 2}
+    });
+
+    this->DefineVertexLayout(layout);
+
     glGenVertexArrays(1, &lightSourceVAO);
     glBindVertexArray(lightSourceVAO);
 
@@ -116,6 +123,11 @@ GlRenderer::GlRenderer()
     bufferCreateParams.data = (void*)lightSourceindices;
     lightSourceIndexBuffer = Buffer::Create(bufferCreateParams);
 
+    VertexLayout lightSourceVertexLayout = VertexLayout({
+        {AttributeType::FLOAT, 3}
+    });
+    this->DefineVertexLayout(lightSourceVertexLayout);
+
     // cam = ObserverCamera();
     cam = FPSCamera();
     Camera::Config camConfig = {};
@@ -129,32 +141,12 @@ GlRenderer::GlRenderer()
         camConfig
     );
 
-    VertexLayout layout = VertexLayout({
-        {AttributeType::FLOAT, 3},
-        {AttributeType::FLOAT, 2}
-    });
 
     tex = Texture::Create("D:\\Pictures\\Screenshots\\Screenshot (44).png");
     glBindVertexArray(vertexArrayId);
     vertexBuffer->Bind();
     
-    int i = 0;
-    uint32_t offset = 0;
-    for(auto attrib : layout.GetAttributes())
-    {
-        uint32_t attribSize = VertexLayout::GetAttributeSize(attrib);
-        glEnableVertexAttribArray(i);
-        glVertexAttribPointer(
-            i, 
-            attrib.count,
-            GetAttribType(attrib.type),
-            GL_FALSE,
-            layout.GetStride(),
-            (const void *)((size_t)offset)
-        );
-        offset += attribSize;
-        i++;
-    }
+    
 
     shader->Bind();
     shader->UploadInt("u_texture", 0);
@@ -189,47 +181,69 @@ void GlRenderer::OnRenderBegin()
     cam.Update();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    shader->Bind();
+    // shader->Bind();
 
-    shader->UploadMat4(
+    // shader->UploadMat4(
+    //     "u_viewProjection",
+    //     cam.camera.GetViewProjection()
+    // );
+
+    // shader->UploadMat4(
+    //     "u_model",
+    //     identityMat
+    // );
+
+    // shader->UploadVec3(
+    //     "u_color",
+    //     glm::vec3(1.0f, 1.0f, 1.0f)
+    // );
+
+    // glActiveTexture(GL_TEXTURE0);
+    // tex->Bind();
+
+    // glBindVertexArray(vertexArrayId);
+    // vertexBuffer->Bind();
+    // indexBuffer->Bind();
+    // glDrawElements(
+    //     GL_TRIANGLES, 
+    //     indexBuffer->GetElementCount(), 
+    //     GL_UNSIGNED_INT, nullptr);
+
+    // shader->UploadMat4(
+    //     "u_model",
+    //     translated
+    // );
+    // shader->UploadVec3(
+    //     "u_color",
+    //     glm::vec3(0.5f, 0.5f, 0.5f)
+    // );
+
+    // glDrawElements(
+    //     GL_TRIANGLES, 
+    //     indexBuffer->GetElementCount(), 
+    //     GL_UNSIGNED_INT, nullptr);
+
+    lightSourceShader->Bind();
+    lightSourceShader->UploadMat4(
         "u_viewProjection",
-        cam.camera.GetViewProjection()
-    );
-
-    shader->UploadMat4(
+        cam.camera.GetViewProjection());
+    lightSourceShader->UploadMat4(
         "u_model",
-        identityMat
-    );
+        identityMat);
 
-    shader->UploadVec3(
-        "u_color",
+    lightSourceShader->UploadVec3(
+        "u_lightColor",
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
-    glActiveTexture(GL_TEXTURE0);
-    tex->Bind();
-
-    glBindVertexArray(vertexArrayId);
-    vertexBuffer->Bind();
-    indexBuffer->Bind();
+    glBindVertexArray(lightSourceVAO);
+    lightSourceVertexBuffer->Bind();
+    lightSourceIndexBuffer->Bind();
     glDrawElements(
-        GL_TRIANGLES, 
-        indexBuffer->GetElementCount(), 
-        GL_UNSIGNED_INT, nullptr);
-
-    shader->UploadMat4(
-        "u_model",
-        translated
+        GL_TRIANGLES,
+        lightSourceIndexBuffer->GetElementCount(),
+        GL_UNSIGNED_INT, nullptr
     );
-    shader->UploadVec3(
-        "u_color",
-        glm::vec3(0.5f, 0.5f, 0.5f)
-    );
-
-    glDrawElements(
-        GL_TRIANGLES, 
-        indexBuffer->GetElementCount(), 
-        GL_UNSIGNED_INT, nullptr);
 
     auto error = glGetError();
     if(error)
@@ -238,6 +252,28 @@ void GlRenderer::OnRenderBegin()
 
 void GlRenderer::OnRenderEnd()
 {
+}
+
+void GlRenderer::DefineVertexLayout(const VertexLayout &layout)
+{
+    int i = 0;
+    uint32_t offset = 0;
+    const std::vector<Attribute> &attributes = layout.GetAttributes();
+    for(auto attrib : attributes)
+    {
+        uint32_t attribSize = VertexLayout::GetAttributeSize(attrib);
+        glEnableVertexAttribArray(i);
+        glVertexAttribPointer(
+            i, 
+            attrib.count,
+            GetAttribType(attrib.type),
+            GL_FALSE,
+            layout.GetStride(),
+            (const void *)((size_t)offset)
+        );
+        offset += attribSize;
+        i++;
+    }
 }
 
 struct Renderer::gui_init_info_s *GlRenderer::GetGuiInitInfo()
