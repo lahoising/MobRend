@@ -22,19 +22,15 @@ GlShader::GlShader(Shader::CreateParams params)
         #version 410 core
         
         layout(location = 0) in vec3 a_pos;
-		layout(location = 1) in vec3 a_col;
-		layout(location = 2) in vec2 a_texCoord;
+		layout(location = 1) in vec2 a_texCoord;
 
-		layout(location = 0) out vec3 out_color;
-		layout(location = 1) out vec2 out_texCoord;
+		layout(location = 0) out vec2 out_texCoord;
 		
 		uniform mat4 u_viewProjection;
 		uniform mat4 u_model;
-		uniform vec3 u_color;
 
         void main(){
             gl_Position = u_viewProjection * u_model * vec4(a_pos, 1.0);
-			out_color = a_col;
 			out_texCoord = a_texCoord;
         }
     )";
@@ -43,20 +39,13 @@ GlShader::GlShader(Shader::CreateParams params)
         #version 410 core
 		
 		out vec4 finalFragColor;
-		layout(location = 0) in vec3 a_col;
-		layout(location = 1) in vec2 a_texCoord;
+		layout(location = 0) in vec2 a_texCoord;
         
 		uniform vec3 u_color;
 		uniform sampler2D u_texture;
-		uniform sampler2D u_tex2;
         
 		void main(){
-			vec4 textureMix = mix(
-				texture(u_texture, a_texCoord),
-				texture(u_tex2, a_texCoord),
-				0.5
-			);
-            finalFragColor = vec4(a_col * u_color, 1.0f) * textureMix;
+			finalFragColor = vec4(u_color, 1.0f) * texture(u_texture, a_texCoord);
         }
     )";
 

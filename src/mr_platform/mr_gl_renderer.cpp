@@ -34,7 +34,6 @@ static Buffer *indexBuffer = nullptr;
 static Shader *shader = nullptr;
 static FPSCamera cam;
 static Texture *tex = nullptr;
-static Texture *tex2 = nullptr;
 
 static GLenum GetAttribType(AttributeType type)
 {
@@ -62,10 +61,10 @@ GlRenderer::GlRenderer()
     glBindVertexArray(vertexArrayId);
 
     const GLfloat g_vertex_buffer_data[] = {
-        -1.0f,  1.0f, 0.0f, 0.8f, 0.3f, 0.2f,   0.0f, 1.0f,
-        -1.0f, -1.0f, 0.0f, 0.2f, 0.8f, 0.3f,   0.0f, 0.0f,
-         1.0f, -1.0f, 0.0f, 0.3f, 0.2f, 0.8f,   1.0f, 0.0f,
-         1.0f,  1.0f, 0.0f, 0.3f, 0.2f, 0.8f,   1.0f, 1.0f
+        -1.0f,  1.0f, 0.0f,     0.0f, 1.0f,
+        -1.0f, -1.0f, 0.0f,     0.0f, 0.0f,
+         1.0f, -1.0f, 0.0f,     1.0f, 0.0f,
+         1.0f,  1.0f, 0.0f,     1.0f, 1.0f
     };
 
     Buffer::CreateParams bufferCreateParams = {};
@@ -95,12 +94,10 @@ GlRenderer::GlRenderer()
 
     VertexLayout layout = VertexLayout({
         {AttributeType::FLOAT, 3},
-        {AttributeType::FLOAT, 3},
         {AttributeType::FLOAT, 2}
     });
 
     tex = Texture::Create("D:\\Pictures\\Screenshots\\Screenshot (44).png");
-    tex2 = Texture::Create("D:\\Pictures\\Screenshots\\2019-05-09.png");
     glBindVertexArray(vertexArrayId);
     vertexBuffer->Bind();
     
@@ -124,7 +121,6 @@ GlRenderer::GlRenderer()
 
     shader->Bind();
     shader->UploadInt("u_texture", 0);
-    shader->UploadInt("u_tex2", 1);
 
     Application::GetInstance().GetMainWindow()->SetCursorVisible(false);
 }
@@ -132,7 +128,6 @@ GlRenderer::GlRenderer()
 GlRenderer::~GlRenderer()
 {
     delete(tex);
-    delete(tex2);
     delete(vertexBuffer);
     delete(indexBuffer);
     glDeleteVertexArrays(1, &vertexArrayId);
@@ -171,8 +166,6 @@ void GlRenderer::OnRenderBegin()
 
     glActiveTexture(GL_TEXTURE0);
     tex->Bind();
-    glActiveTexture(GL_TEXTURE1);
-    tex2->Bind();
 
     glBindVertexArray(vertexArrayId);
     vertexBuffer->Bind();
