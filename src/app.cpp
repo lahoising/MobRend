@@ -15,11 +15,6 @@ int main(int argc, char *argv[])
     params.windowCreateParams.windowName = "MobRend";
 
     mr::Application::GetInstance().Run(params);
-
-    mrlog("hey there %d", 77);
-    mrwarn("this is a warning: %s", "just a warning");
-    mrerr("don't do that!");
-
     return 0;
 }
 
