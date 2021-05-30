@@ -2,7 +2,6 @@
 #define _MR_ASSET_MANAGER_H_
 
 #include <vector>
-#include "mr_singleton.h"
 
 namespace mr
 {

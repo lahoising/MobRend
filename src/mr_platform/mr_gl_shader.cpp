@@ -54,11 +54,13 @@ GlShader::GlShader(Shader::CreateParams params)
 	if(params.vertFilePath)
 	{
 		auto buffer = assetManager.GetFileContent(params.vertFilePath);
-		for(char c : buffer)
-		{
-			std::cout << c;
-		}
-		std::cout << std::endl;
+		vertexShaderCode.assign(buffer.begin(), buffer.end());
+	}
+
+	if(params.fragFilePath)
+	{
+		auto buffer = assetManager.GetFileContent(params.fragFilePath);
+		fragmentShaderCode.assign(buffer.begin(), buffer.end());
 	}
 
 	this->CompileShader(vertShaderId, vertexShaderCode.c_str());
