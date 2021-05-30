@@ -181,47 +181,47 @@ void GlRenderer::OnRenderBegin()
     cam.Update();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // shader->Bind();
+    shader->Bind();
 
-    // shader->UploadMat4(
-    //     "u_viewProjection",
-    //     cam.camera.GetViewProjection()
-    // );
+    shader->UploadMat4(
+        "u_viewProjection",
+        cam.camera.GetViewProjection()
+    );
 
-    // shader->UploadMat4(
-    //     "u_model",
-    //     identityMat
-    // );
+    shader->UploadMat4(
+        "u_model",
+        identityMat
+    );
 
-    // shader->UploadVec3(
-    //     "u_color",
-    //     glm::vec3(1.0f, 1.0f, 1.0f)
-    // );
+    shader->UploadVec3(
+        "u_color",
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    );
 
-    // glActiveTexture(GL_TEXTURE0);
-    // tex->Bind();
+    glActiveTexture(GL_TEXTURE0);
+    tex->Bind();
 
-    // glBindVertexArray(vertexArrayId);
-    // vertexBuffer->Bind();
-    // indexBuffer->Bind();
-    // glDrawElements(
-    //     GL_TRIANGLES, 
-    //     indexBuffer->GetElementCount(), 
-    //     GL_UNSIGNED_INT, nullptr);
+    glBindVertexArray(vertexArrayId);
+    vertexBuffer->Bind();
+    indexBuffer->Bind();
+    glDrawElements(
+        GL_TRIANGLES, 
+        indexBuffer->GetElementCount(), 
+        GL_UNSIGNED_INT, nullptr);
 
-    // shader->UploadMat4(
-    //     "u_model",
-    //     translated
-    // );
-    // shader->UploadVec3(
-    //     "u_color",
-    //     glm::vec3(0.5f, 0.5f, 0.5f)
-    // );
+    shader->UploadMat4(
+        "u_model",
+        translated
+    );
+    shader->UploadVec3(
+        "u_color",
+        glm::vec3(0.5f, 0.5f, 0.5f)
+    );
 
-    // glDrawElements(
-    //     GL_TRIANGLES, 
-    //     indexBuffer->GetElementCount(), 
-    //     GL_UNSIGNED_INT, nullptr);
+    glDrawElements(
+        GL_TRIANGLES, 
+        indexBuffer->GetElementCount(), 
+        GL_UNSIGNED_INT, nullptr);
 
     lightSourceShader->Bind();
     lightSourceShader->UploadMat4(
