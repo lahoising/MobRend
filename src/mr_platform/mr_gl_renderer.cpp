@@ -19,6 +19,7 @@
 #include "mr_texture.h"
 #include "mr_observer_camera.h"
 #include "mr_fps_camera.h"
+#include "mr_light.h"
 
 namespace mr
 {
@@ -39,6 +40,10 @@ static Shader *lightSourceShader = nullptr;
 static GLuint lightSourceVAO;
 static Buffer *lightSourceVertexBuffer = nullptr;
 static Buffer *lightSourceIndexBuffer = nullptr;
+static Light light = Light(
+    Light::Type::POINT, 
+    glm::vec3(1.0f, 1.0f, 1.0f), 
+    1.0f);
 
 static GLenum GetAttribType(AttributeType type)
 {
@@ -144,9 +149,7 @@ GlRenderer::GlRenderer()
 
     tex = Texture::Create("D:\\Pictures\\Screenshots\\Screenshot (44).png");
     glBindVertexArray(vertexArrayId);
-    vertexBuffer->Bind();
-    
-    
+    vertexBuffer->Bind();    
 
     shader->Bind();
     shader->UploadInt("u_texture", 0);
@@ -229,11 +232,11 @@ void GlRenderer::OnRenderBegin()
         cam.camera.GetViewProjection());
     lightSourceShader->UploadMat4(
         "u_model",
-        identityMat);
+        glm::translate(identityMat, light.position));
 
     lightSourceShader->UploadVec3(
         "u_lightColor",
-        glm::vec3(1.0f, 1.0f, 1.0f)
+        light.color
     );
 
     glBindVertexArray(lightSourceVAO);
