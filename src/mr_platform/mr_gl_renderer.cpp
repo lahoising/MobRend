@@ -35,6 +35,8 @@ static Shader *shader = nullptr;
 static FPSCamera cam;
 static Texture *tex = nullptr;
 
+static Shader *lightSourceShader = nullptr;
+
 static GLenum GetAttribType(AttributeType type)
 {
     switch (type)
@@ -56,6 +58,11 @@ GlRenderer::GlRenderer()
     // shaderCreateParams.vertFilePath = "";
     // shaderCreateParams.fragFilePath = "";
     shader = Shader::Create(shaderCreateParams);
+
+    shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\lightsource.vert";
+    shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\lightsource.frag";
+    lightSourceShader = Shader::Create(shaderCreateParams);
+    delete(lightSourceShader);
 
     glGenVertexArrays(1, &vertexArrayId);
     glBindVertexArray(vertexArrayId);

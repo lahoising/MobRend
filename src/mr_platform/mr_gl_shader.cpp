@@ -8,6 +8,7 @@
 #include "mr_logger.h"
 #include "mr_platform/mr_gl_shader.h"
 #include "mr_texture.h"
+#include "mr_asset_manager.h"
 
 namespace mr
 {
@@ -18,7 +19,7 @@ GlShader::GlShader(Shader::CreateParams params)
 	GLuint vertShaderId = glCreateShader(GL_VERTEX_SHADER);
 	GLuint fragShaderId = glCreateShader(GL_FRAGMENT_SHADER);
 
-    std::string defaultVertexShaderCode = R"(
+    std::string vertexShaderCode = R"(
         #version 410 core
         
         layout(location = 0) in vec3 a_pos;
@@ -35,7 +36,7 @@ GlShader::GlShader(Shader::CreateParams params)
         }
     )";
 
-    std::string defaultFragmentShaderCode = R"(
+    std::string fragmentShaderCode = R"(
         #version 410 core
 		
 		out vec4 finalFragColor;
@@ -49,8 +50,19 @@ GlShader::GlShader(Shader::CreateParams params)
         }
     )";
 
-	this->CompileShader(vertShaderId, defaultVertexShaderCode.c_str());
-	this->CompileShader(fragShaderId, defaultFragmentShaderCode.c_str());
+	AssetManager &assetManager = AssetManager::GetInstance();
+	if(params.vertFilePath)
+	{
+		auto buffer = assetManager.GetFileContent(params.vertFilePath);
+		for(char c : buffer)
+		{
+			std::cout << c;
+		}
+		std::cout << std::endl;
+	}
+
+	this->CompileShader(vertShaderId, vertexShaderCode.c_str());
+	this->CompileShader(fragShaderId, fragmentShaderCode.c_str());
 
 	// Link the program
 	this->programId = glCreateProgram();
