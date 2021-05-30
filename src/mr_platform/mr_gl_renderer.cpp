@@ -62,6 +62,8 @@ GlRenderer::GlRenderer()
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
 
+    light.position = glm::vec3(-1.0f, 1.0f, -1.0f) * 5.0f;
+
     Shader::CreateParams shaderCreateParams = {};
     // shaderCreateParams.vertFilePath = "";
     // shaderCreateParams.fragFilePath = "";
@@ -75,10 +77,19 @@ GlRenderer::GlRenderer()
     glBindVertexArray(vertexArrayId);
 
     const GLfloat g_vertex_buffer_data[] = {
-        -1.0f,  1.0f, 0.0f,     0.0f, 1.0f,
-        -1.0f, -1.0f, 0.0f,     0.0f, 0.0f,
-         1.0f, -1.0f, 0.0f,     1.0f, 0.0f,
-         1.0f,  1.0f, 0.0f,     1.0f, 1.0f
+         0.0f,  1.0f,  0.0f,    0.5, 1.0,
+        
+        -1.0f, -1.0f, -1.0f,    0.0, 0.0,
+         1.0f, -1.0f, -1.0f,    1.0, 0.0,
+
+         1.0f, -1.0f, -1.0f,    0.0, 0.0,
+         1.0f, -1.0f,  1.0f,    1.0, 0.0,
+         
+         1.0f, -1.0f,  1.0f,    0.0, 0.0,
+        -1.0f, -1.0f,  1.0f,    1.0, 0.0,
+        
+        -1.0f, -1.0f,  1.0f,    0.0, 0.0,
+        -1.0f, -1.0f, -1.0f,    1.0, 0.0,
     };
 
     Buffer::CreateParams bufferCreateParams = {};
@@ -87,7 +98,12 @@ GlRenderer::GlRenderer()
     bufferCreateParams.data = (void*)g_vertex_buffer_data;
     vertexBuffer = Buffer::Create(bufferCreateParams);
 
-    const uint32_t indices[] = {0, 1, 2, 2, 3, 0};
+    const uint32_t indices[] = {
+        0, 1, 2,
+        0, 3, 4,
+        0, 5, 6,
+        0, 7, 8
+    };
     bufferCreateParams.type = Buffer::Type::INDEX;
     bufferCreateParams.size = sizeof(indices);
     bufferCreateParams.data = (void*)indices;
@@ -223,7 +239,7 @@ void GlRenderer::OnRenderBegin()
     );
     shader->UploadVec3(
         "u_color",
-        glm::vec3(0.5f, 0.5f, 0.5f)
+        glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
     glDrawElements(
@@ -231,13 +247,14 @@ void GlRenderer::OnRenderBegin()
         indexBuffer->GetElementCount(), 
         GL_UNSIGNED_INT, nullptr);
 
+    const glm::mat4 lightSourceScaleMat = glm::scale(identityMat, glm::vec3(0.2f, 0.2f, 0.2f));
     lightSourceShader->Bind();
     lightSourceShader->UploadMat4(
         "u_viewProjection",
         cam.camera.GetViewProjection());
     lightSourceShader->UploadMat4(
         "u_model",
-        glm::translate(identityMat, light.position));
+        glm::translate(lightSourceScaleMat, light.position));
 
     lightSourceShader->UploadVec3(
         "u_lightColor",

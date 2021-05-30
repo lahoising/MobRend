@@ -47,7 +47,10 @@ GlShader::GlShader(Shader::CreateParams params)
 		uniform sampler2D u_texture;
         
 		void main(){
-			finalFragColor = vec4(u_color * u_lightColor, 1.0f) * texture(u_texture, a_texCoord);
+			float ambientStrength = 0.1;
+			vec3 ambient = ambientStrength * u_lightColor;
+
+			finalFragColor = vec4(u_color * ambient, 1.0f) * texture(u_texture, a_texCoord);
         }
     )";
 
