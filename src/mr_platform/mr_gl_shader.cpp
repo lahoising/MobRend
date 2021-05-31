@@ -55,6 +55,7 @@ GlShader::GlShader(Shader::CreateParams params)
 		uniform vec3 u_lightColor;
 		uniform vec3 u_lightPos;
 		uniform sampler2D u_texture;
+		uniform float u_textureStrength;
         
 		void main(){
 			vec3 norm = normalize(a_normal);
@@ -67,7 +68,11 @@ GlShader::GlShader(Shader::CreateParams params)
 			vec3 ambient = ambientStrength * u_lightColor;
 
 			vec3 result = (ambient + diffuse) * u_color;
-			finalFragColor = vec4(result, 1.0f) * texture(u_texture, a_texCoord);
+			vec4 textureColor = mix(
+				vec4(1.0, 1.0, 1.0, 1.0),
+				texture(u_texture, a_texCoord),
+				u_textureStrength);
+			finalFragColor = vec4(result, 1.0) * textureColor;
         }
     )";
 
@@ -150,6 +155,17 @@ void GlShader::UploadMat4(const char *uniformName, glm::mat4 matrix)
 	);
 }
 
+void GlShader::UploadFloat(const char *uniformName, float val)
+{
+	if(this->uniformLocations.find(uniformName) == this->uniformLocations.end())
+	{
+		this->uniformLocations[uniformName] = glGetUniformLocation(this->programId, uniformName);
+	}
+
+	const unsigned int location = this->uniformLocations[uniformName];
+	glUniform1f(location, val);
+}
+
 void GlShader::UploadVec3(const char *uniformName, glm::vec3 vec)
 {
 	if(this->uniformLocations.find(uniformName) == this->uniformLocations.end())
@@ -174,6 +190,17 @@ void GlShader::UploadInt(const char *uniformName, int i)
 
 	const unsigned int location = this->uniformLocations[uniformName];
 	glUniform1i(location, i);
+}
+
+void GlShader::UploadBool(const char *uniformName, bool val)
+{
+	if(this->uniformLocations.find(uniformName) == this->uniformLocations.end())
+	{
+		this->uniformLocations[uniformName] = glGetUniformLocation(this->programId, uniformName);
+	}
+
+	const unsigned int location = this->uniformLocations[uniformName];
+	glUniform1i(location, val? 1 : 0);
 }
 
 void GlShader::UploadTexture2D(const char *uniformName, Texture *texture)

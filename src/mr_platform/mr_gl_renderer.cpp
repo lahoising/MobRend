@@ -246,6 +246,11 @@ void GlRenderer::OnRenderBegin()
         light.position
     );
 
+    shader->UploadFloat(
+        "u_textureStrength",
+        0.0f
+    );
+
     glActiveTexture(GL_TEXTURE0);
     tex->Bind();
 
