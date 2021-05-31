@@ -23,15 +23,22 @@ GlShader::GlShader(Shader::CreateParams params)
         #version 410 core
         
         layout(location = 0) in vec3 a_pos;
-		layout(location = 1) in vec2 a_texCoord;
+        layout(location = 1) in vec3 a_normal;
+		layout(location = 2) in vec2 a_texCoord;
 
-		layout(location = 0) out vec2 out_texCoord;
+		layout(location = 0) out vec3 out_fragPos;
+		layout(location = 1) out vec3 out_normal;
+		layout(location = 2) out vec2 out_texCoord;
 		
 		uniform mat4 u_viewProjection;
 		uniform mat4 u_model;
 
         void main(){
-            gl_Position = u_viewProjection * u_model * vec4(a_pos, 1.0);
+			vec4 pos = u_model * vec4(a_pos, 1.0);
+            gl_Position = u_viewProjection * pos;
+
+			out_fragPos = vec3(pos);
+			out_normal = a_normal;
 			out_texCoord = a_texCoord;
         }
     )";
@@ -40,17 +47,27 @@ GlShader::GlShader(Shader::CreateParams params)
         #version 410 core
 		
 		out vec4 finalFragColor;
-		layout(location = 0) in vec2 a_texCoord;
+		layout(location = 0) in vec3 a_fragPos;
+		layout(location = 1) in vec3 a_normal;
+		layout(location = 2) in vec2 a_texCoord;
         
 		uniform vec3 u_color;
 		uniform vec3 u_lightColor;
+		uniform vec3 u_lightPos;
 		uniform sampler2D u_texture;
         
 		void main(){
+			vec3 norm = normalize(a_normal);
+			vec3 lightDir = normalize(u_lightPos - a_fragPos);
+
+			float diff = max(dot(norm, lightDir), 0.0);
+			vec3 diffuse = diff * u_lightColor;
+
 			float ambientStrength = 0.1;
 			vec3 ambient = ambientStrength * u_lightColor;
 
-			finalFragColor = vec4(u_color * ambient, 1.0f) * texture(u_texture, a_texCoord);
+			vec3 result = (ambient + diffuse) * u_color;
+			finalFragColor = vec4(result, 1.0f) * texture(u_texture, a_texCoord);
         }
     )";
 
