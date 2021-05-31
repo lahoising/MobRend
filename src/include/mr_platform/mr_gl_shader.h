@@ -15,6 +15,7 @@ public:
     virtual void Bind() override;
     virtual void Unbind() override;
 
+    virtual void UploadMat3(const char *uniformName, glm::mat3 matrix) override;
     virtual void UploadMat4(const char *uniformName, glm::mat4 matrix) override;
     virtual void UploadFloat(const char *uniformName, float val) override;
     virtual void UploadVec3(const char *uniformName, glm::vec3 vec) override;

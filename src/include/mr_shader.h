@@ -23,6 +23,7 @@ public:
     virtual void Unbind() = 0;
 
     /// Remember to bind the shader before uploading any uniform
+    virtual void UploadMat3(const char *uniformName, glm::mat3 matrix) = 0;
     virtual void UploadMat4(const char *uniformName, glm::mat4 matrix) = 0;
     virtual void UploadFloat(const char *uniformName, float val) = 0;
     virtual void UploadVec3(const char *uniformName, glm::vec3 vec) = 0;

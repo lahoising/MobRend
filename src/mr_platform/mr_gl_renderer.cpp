@@ -231,6 +231,12 @@ void GlRenderer::OnRenderBegin()
         identityMat
     );
 
+    glm::mat3 normalMat = glm::transpose(glm::inverse(identityMat));
+    shader->UploadMat3(
+        "u_normalMat",
+        normalMat
+    );
+
     shader->UploadVec3(
         "u_color",
         glm::vec3(1.0f, 1.0f, 1.0f)

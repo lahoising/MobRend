@@ -32,13 +32,14 @@ GlShader::GlShader(Shader::CreateParams params)
 		
 		uniform mat4 u_viewProjection;
 		uniform mat4 u_model;
+		uniform mat3 u_normalMat;
 
         void main(){
 			vec4 pos = u_model * vec4(a_pos, 1.0);
             gl_Position = u_viewProjection * pos;
 
 			out_fragPos = vec3(pos);
-			out_normal = a_normal;
+			out_normal = u_normalMat * a_normal;
 			out_texCoord = a_texCoord;
         }
     )";
@@ -148,6 +149,22 @@ void GlShader::UploadMat4(const char *uniformName, glm::mat4 matrix)
 
 	const unsigned int location = this->uniformLocations[uniformName];
 	glUniformMatrix4fv(
+		location,
+		1,
+		GL_FALSE,
+		glm::value_ptr(matrix)
+	);
+}
+
+void GlShader::UploadMat3(const char *uniformName, glm::mat3 matrix)
+{
+	if(this->uniformLocations.find(uniformName) == this->uniformLocations.end())
+	{
+		this->uniformLocations[uniformName] = glGetUniformLocation(this->programId, uniformName);
+	}
+
+	const unsigned int location = this->uniformLocations[uniformName];
+	glUniformMatrix3fv(
 		location,
 		1,
 		GL_FALSE,
