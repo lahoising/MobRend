@@ -77,19 +77,15 @@ GlRenderer::GlRenderer()
     glBindVertexArray(vertexArrayId);
 
     const GLfloat g_vertex_buffer_data[] = {
-         0.0f,  1.0f,  0.0f,    0.5, 1.0,
-        
-        -1.0f, -1.0f, -1.0f,    0.0, 0.0,
-         1.0f, -1.0f, -1.0f,    1.0, 0.0,
+        -0.5f,  0.5f, -0.5f,    0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,    1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,    1.0f, 1.0f,
 
-         1.0f, -1.0f, -1.0f,    0.0, 0.0,
-         1.0f, -1.0f,  1.0f,    1.0, 0.0,
-         
-         1.0f, -1.0f,  1.0f,    0.0, 0.0,
-        -1.0f, -1.0f,  1.0f,    1.0, 0.0,
-        
-        -1.0f, -1.0f,  1.0f,    0.0, 0.0,
-        -1.0f, -1.0f, -1.0f,    1.0, 0.0,
+         0.5f,  0.5f, -0.5f,    0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,    0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,    1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,    1.0f, 1.0f,
     };
 
     Buffer::CreateParams bufferCreateParams = {};
@@ -99,10 +95,8 @@ GlRenderer::GlRenderer()
     vertexBuffer = Buffer::Create(bufferCreateParams);
 
     const uint32_t indices[] = {
-        0, 1, 2,
-        0, 3, 4,
-        0, 5, 6,
-        0, 7, 8
+        0, 1, 2, 2, 3, 0,
+        4, 5, 6, 6, 7, 4,
     };
     bufferCreateParams.type = Buffer::Type::INDEX;
     bufferCreateParams.size = sizeof(indices);
@@ -111,10 +105,11 @@ GlRenderer::GlRenderer()
 
     VertexLayout layout = VertexLayout({
         {AttributeType::FLOAT, 3},
+        // {AttributeType::FLOAT, 3},
         {AttributeType::FLOAT, 2}
     });
-
     this->DefineVertexLayout(layout);
+
 
     glGenVertexArrays(1, &lightSourceVAO);
     glBindVertexArray(lightSourceVAO);
