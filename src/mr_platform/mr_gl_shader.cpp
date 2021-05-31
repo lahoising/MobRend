@@ -19,6 +19,7 @@ GlShader::GlShader(Shader::CreateParams params)
 	GLuint vertShaderId = glCreateShader(GL_VERTEX_SHADER);
 	GLuint fragShaderId = glCreateShader(GL_FRAGMENT_SHADER);
 
+	/// TODO: calculate diffuse in view space, not normal space
     std::string vertexShaderCode = R"(
         #version 410 core
         
@@ -55,6 +56,7 @@ GlShader::GlShader(Shader::CreateParams params)
 		uniform vec3 u_color;
 		uniform vec3 u_lightColor;
 		uniform vec3 u_lightPos;
+		uniform vec3 u_viewPos;
 		uniform sampler2D u_texture;
 		uniform float u_textureStrength;
         
@@ -68,7 +70,13 @@ GlShader::GlShader(Shader::CreateParams params)
 			float ambientStrength = 0.1;
 			vec3 ambient = ambientStrength * u_lightColor;
 
-			vec3 result = (ambient + diffuse) * u_color;
+			float specularStrength = 0.5;
+			vec3 viewDir = normalize(u_viewPos - a_fragPos);
+			vec3 reflectDir = reflect(-lightDir, norm);
+			float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+			vec3 specular = specularStrength * spec * u_lightColor;
+
+			vec3 result = (ambient + diffuse + specular) * u_color;
 			vec4 textureColor = mix(
 				vec4(1.0, 1.0, 1.0, 1.0),
 				texture(u_texture, a_texCoord),

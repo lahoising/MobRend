@@ -62,7 +62,7 @@ GlRenderer::GlRenderer()
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
 
-    light.position = glm::vec3(-1.0f, 1.0f, -1.0f) * 5.0f;
+    light.position = glm::vec3(1.2f, 1.0f, 2.0f);
 
     Shader::CreateParams shaderCreateParams = {};
     // shaderCreateParams.vertFilePath = "";
@@ -214,7 +214,7 @@ void GlRenderer::SetViewport(int x, int y, int width, int height)
 void GlRenderer::OnRenderBegin()
 {
     static glm::mat4 identityMat = glm::identity<glm::mat4>();
-    static glm::mat4 translated = glm::translate(identityMat, glm::vec3(0.3f, 0.3f, 1.0f));
+    static glm::mat4 translated = glm::translate(identityMat, glm::vec3(1.0f, 0.5f, 0.31f));
 
     cam.Update();
 
@@ -255,6 +255,11 @@ void GlRenderer::OnRenderBegin()
     shader->UploadFloat(
         "u_textureStrength",
         0.0f
+    );
+
+    shader->UploadVec3(
+        "u_viewPos",
+        cam.camera.GetPosition()
     );
 
     glActiveTexture(GL_TEXTURE0);
