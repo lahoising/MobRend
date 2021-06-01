@@ -35,6 +35,7 @@ static Buffer *indexBuffer = nullptr;
 static Shader *shader = nullptr;
 static FPSCamera cam;
 static Texture *tex = nullptr;
+static Texture *specMap = nullptr;
 
 static Shader *lightSourceShader = nullptr;
 static GLuint lightSourceVAO;
@@ -192,18 +193,22 @@ GlRenderer::GlRenderer()
 
 
     tex = Texture::Create("D:\\Pictures\\Screenshots\\Screenshot (44).png");
+    specMap = Texture::Create("D:\\Documents\\progs\\krita_resources\\MobRend\\IU_Spec.png");
     glBindVertexArray(vertexArrayId);
     vertexBuffer->Bind();    
 
     shader->Bind();
-    shader->UploadInt("u_texture", 0);
+    shader->UploadInt("u_phongMaterial.diffuseMap", 0);
+    shader->UploadInt("u_phongMaterial.specularMap", 1);
 
     Application::GetInstance().GetMainWindow()->SetCursorVisible(false);
 }
 
 GlRenderer::~GlRenderer()
 {
+    delete(specMap);
     delete(tex);
+
     delete(vertexBuffer);
     delete(indexBuffer);
     glDeleteVertexArrays(1, &vertexArrayId);
@@ -261,11 +266,16 @@ void GlRenderer::OnRenderBegin()
 
     shader->UploadVec3("u_phongMaterial.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
     shader->UploadFloat("u_phongMaterial.diffuseMapStrength", 1.0f);
+    
     shader->UploadVec3("u_phongMaterial.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+    shader->UploadFloat("u_phongMaterial.specularMapStrength", 1.0f);
     shader->UploadFloat("u_phongMaterial.shininess", 32.f);
 
     glActiveTexture(GL_TEXTURE0);
     tex->Bind();
+
+    glActiveTexture(GL_TEXTURE0 + 1);
+    specMap->Bind();
 
     glBindVertexArray(vertexArrayId);
     vertexBuffer->Bind();

@@ -61,6 +61,9 @@ GlShader::GlShader(Shader::CreateParams params)
 			float diffuseMapStrength;
 
 			vec3 specular;
+			sampler2D specularMap;
+			float specularMapStrength;
+
 			float shininess;
 		};
 
@@ -105,6 +108,11 @@ GlShader::GlShader(Shader::CreateParams params)
 				vec3(texture(u_phongMaterial.diffuseMap, a_texCoord)),
 				u_phongMaterial.diffuseMapStrength);
 
+			vec3 specularColor = mix(
+				u_phongMaterial.specular,
+				vec3(texture(u_phongMaterial.specularMap, a_texCoord)),
+				u_phongMaterial.specularMapStrength);
+
 			vec3 ambientLight = AmbientLight(u_ambientLight) + AmbientLight(u_pointLight);
 			vec3 ambient = diffuseColor * ambientLight;
 
@@ -115,7 +123,7 @@ GlShader::GlShader(Shader::CreateParams params)
 			vec3 viewDir = normalize(u_viewPos - a_fragPos);
 			vec3 specLight = 	SpecularLight(u_ambientLight, viewDir, a_fragPos, norm, u_phongMaterial.shininess) +
 								SpecularLight(u_pointLight, viewDir, a_fragPos, norm, u_phongMaterial.shininess);
-			vec3 specular = u_phongMaterial.specular * specLight;
+			vec3 specular = specularColor * specLight;
 
 			vec3 result = (ambient + diffuse + specular) * u_color;
 			finalFragColor = vec4(result, 1.0);
