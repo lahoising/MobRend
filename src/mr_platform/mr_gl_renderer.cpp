@@ -68,7 +68,8 @@ GlRenderer::GlRenderer()
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
 
-    ambient.intensity = 0.2f;
+    ambient.intensity = 0.0f;
+    // ambient.intensity = 0.2f;
     point.position = glm::vec3(1.2f, 1.0f, 2.0f);
     point.intensity = 0.5f;
 
@@ -253,18 +254,13 @@ void GlRenderer::OnRenderBegin()
     ambient.Bind(shader, "u_ambientLight");
     point.Bind(shader, "u_pointLight");
 
-    shader->UploadFloat(
-        "u_textureStrength",
-        0.0f
-    );
-
     shader->UploadVec3(
         "u_viewPos",
         cam.camera.GetPosition()
     );
 
-    shader->UploadVec3("u_phongMaterial.ambient", glm::vec3(1.0f, 0.5f, 0.31f));
     shader->UploadVec3("u_phongMaterial.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
+    shader->UploadFloat("u_phongMaterial.diffuseMapStrength", 1.0f);
     shader->UploadVec3("u_phongMaterial.specular", glm::vec3(0.5f, 0.5f, 0.5f));
     shader->UploadFloat("u_phongMaterial.shininess", 32.f);
 

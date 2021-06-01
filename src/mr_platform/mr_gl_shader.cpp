@@ -56,8 +56,10 @@ GlShader::GlShader(Shader::CreateParams params)
 
 		struct PhongMaterial
 		{
-			vec3 ambient;
 			vec3 diffuse;
+			sampler2D diffuseMap;
+			float diffuseMapStrength;
+
 			vec3 specular;
 			float shininess;
 		};
@@ -72,8 +74,6 @@ GlShader::GlShader(Shader::CreateParams params)
         
 		uniform vec3 u_color;
 		uniform vec3 u_viewPos;
-		uniform sampler2D u_texture;
-		uniform float u_textureStrength;
 		uniform PhongMaterial u_phongMaterial;
 		
 		uniform Light u_pointLight;
@@ -100,12 +100,17 @@ GlShader::GlShader(Shader::CreateParams params)
 		}
 
 		void main(){
+			vec3 diffuseColor = mix(
+				u_phongMaterial.diffuse,
+				vec3(texture(u_phongMaterial.diffuseMap, a_texCoord)),
+				u_phongMaterial.diffuseMapStrength);
+
 			vec3 ambientLight = AmbientLight(u_ambientLight) + AmbientLight(u_pointLight);
-			vec3 ambient = u_phongMaterial.ambient * ambientLight;
+			vec3 ambient = diffuseColor * ambientLight;
 
 			vec3 norm = normalize(a_normal);
 			vec3 diffuseLight = DiffuseLight(u_ambientLight, norm, a_fragPos) + DiffuseLight(u_pointLight, norm, a_fragPos);
-			vec3 diffuse = u_phongMaterial.diffuse * diffuseLight;
+			vec3 diffuse = diffuseColor * diffuseLight;
 
 			vec3 viewDir = normalize(u_viewPos - a_fragPos);
 			vec3 specLight = 	SpecularLight(u_ambientLight, viewDir, a_fragPos, norm, u_phongMaterial.shininess) +
@@ -113,11 +118,7 @@ GlShader::GlShader(Shader::CreateParams params)
 			vec3 specular = u_phongMaterial.specular * specLight;
 
 			vec3 result = (ambient + diffuse + specular) * u_color;
-			vec4 textureColor = mix(
-				vec4(1.0, 1.0, 1.0, 1.0),
-				texture(u_texture, a_texCoord),
-				u_textureStrength);
-			finalFragColor = vec4(result, 1.0) * textureColor;
+			finalFragColor = vec4(result, 1.0);
         }
     )";
 
