@@ -61,27 +61,56 @@ GlShader::GlShader(Shader::CreateParams params)
 			vec3 specular;
 			float shininess;
 		};
+
+		struct Light
+		{
+			vec3 position;
+			vec3 color;
+			float intensity;
+			int type;
+		};
         
 		uniform vec3 u_color;
-		uniform vec3 u_lightColor;
-		uniform vec3 u_lightPos;
 		uniform vec3 u_viewPos;
 		uniform sampler2D u_texture;
 		uniform float u_textureStrength;
 		uniform PhongMaterial u_phongMaterial;
+		
+		uniform Light u_pointLight;
+		uniform Light u_ambientLight;
         
+		vec3 AmbientLight(Light light)
+		{
+			return light.color * light.intensity * float(light.type == 0);
+		}
+
+		vec3 DiffuseLight(Light light, vec3 normal, vec3 fragmentPosition)
+		{
+			vec3 lightDir = normalize(light.position - fragmentPosition);
+			float diff = max(dot(normal, lightDir), 0.0);
+			return light.color * light.intensity * float(light.type == 1) * diff;
+		}
+
+		vec3 SpecularLight(Light light, vec3 viewDir, vec3 fragPosition, vec3 normal, float shininess)
+		{
+			vec3 lightDir = normalize(light.position - fragPosition);
+			vec3 reflectDir = reflect(-lightDir, normal);
+			float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
+			return vec3(1.0f, 1.0f, 1.0f) * light.intensity * float(light.type == 1) * spec;
+		}
+
 		void main(){
-			vec3 ambient = u_phongMaterial.ambient * u_lightColor;
+			vec3 ambientLight = AmbientLight(u_ambientLight) + AmbientLight(u_pointLight);
+			vec3 ambient = u_phongMaterial.ambient * ambientLight;
 
 			vec3 norm = normalize(a_normal);
-			vec3 lightDir = normalize(u_lightPos - a_fragPos);
-			float diff = max(dot(norm, lightDir), 0.0);
-			vec3 diffuse = (diff * u_phongMaterial.diffuse) * u_lightColor;
+			vec3 diffuseLight = DiffuseLight(u_ambientLight, norm, a_fragPos) + DiffuseLight(u_pointLight, norm, a_fragPos);
+			vec3 diffuse = u_phongMaterial.diffuse * diffuseLight;
 
 			vec3 viewDir = normalize(u_viewPos - a_fragPos);
-			vec3 reflectDir = reflect(-lightDir, norm);
-			float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_phongMaterial.shininess);
-			vec3 specular = u_phongMaterial.specular * spec * u_lightColor;
+			vec3 specLight = 	SpecularLight(u_ambientLight, viewDir, a_fragPos, norm, u_phongMaterial.shininess) +
+								SpecularLight(u_pointLight, viewDir, a_fragPos, norm, u_phongMaterial.shininess);
+			vec3 specular = u_phongMaterial.specular * specLight;
 
 			vec3 result = (ambient + diffuse + specular) * u_color;
 			vec4 textureColor = mix(

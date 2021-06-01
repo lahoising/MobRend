@@ -40,10 +40,16 @@ static Shader *lightSourceShader = nullptr;
 static GLuint lightSourceVAO;
 static Buffer *lightSourceVertexBuffer = nullptr;
 static Buffer *lightSourceIndexBuffer = nullptr;
-static Light light = Light(
-    Light::Type::POINT, 
+static Light ambient = Light(
+    Light::Type::AMBIENT, 
     glm::vec3(1.0f, 1.0f, 1.0f), 
     1.0f);
+
+static Light point = Light(
+    Light::Type::POINT,
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    1.0f
+);
 
 static GLenum GetAttribType(AttributeType type)
 {
@@ -62,7 +68,9 @@ GlRenderer::GlRenderer()
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
 
-    light.position = glm::vec3(1.2f, 1.0f, 2.0f);
+    ambient.intensity = 0.2f;
+    point.position = glm::vec3(1.2f, 1.0f, 2.0f);
+    point.intensity = 0.5f;
 
     Shader::CreateParams shaderCreateParams = {};
     // shaderCreateParams.vertFilePath = "";
@@ -242,15 +250,8 @@ void GlRenderer::OnRenderBegin()
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
-    shader->UploadVec3(
-        "u_lightColor",
-        light.color
-    );
-
-    shader->UploadVec3(
-        "u_lightPos",
-        light.position
-    );
+    ambient.Bind(shader, "u_ambientLight");
+    point.Bind(shader, "u_pointLight");
 
     shader->UploadFloat(
         "u_textureStrength",
@@ -299,11 +300,11 @@ void GlRenderer::OnRenderBegin()
         cam.camera.GetViewProjection());
     lightSourceShader->UploadMat4(
         "u_model",
-        glm::translate(lightSourceScaleMat, light.position));
+        glm::translate(lightSourceScaleMat, point.position));
 
     lightSourceShader->UploadVec3(
         "u_lightColor",
-        light.color
+        point.color
     );
 
     glBindVertexArray(lightSourceVAO);
