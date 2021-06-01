@@ -262,6 +262,11 @@ void GlRenderer::OnRenderBegin()
         cam.camera.GetPosition()
     );
 
+    shader->UploadVec3("u_phongMaterial.ambient", glm::vec3(1.0f, 0.5f, 0.31f));
+    shader->UploadVec3("u_phongMaterial.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
+    shader->UploadVec3("u_phongMaterial.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+    shader->UploadFloat("u_phongMaterial.shininess", 32.f);
+
     glActiveTexture(GL_TEXTURE0);
     tex->Bind();
 

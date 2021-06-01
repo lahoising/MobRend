@@ -19,6 +19,7 @@ GlShader::GlShader(Shader::CreateParams params)
 	GLuint vertShaderId = glCreateShader(GL_VERTEX_SHADER);
 	GLuint fragShaderId = glCreateShader(GL_FRAGMENT_SHADER);
 
+	/// TODO: change std string for a data structure that doesn't allocate in heap
 	/// TODO: calculate diffuse in view space, not normal space
     std::string vertexShaderCode = R"(
         #version 410 core
@@ -52,6 +53,14 @@ GlShader::GlShader(Shader::CreateParams params)
 		layout(location = 0) in vec3 a_fragPos;
 		layout(location = 1) in vec3 a_normal;
 		layout(location = 2) in vec2 a_texCoord;
+
+		struct PhongMaterial
+		{
+			vec3 ambient;
+			vec3 diffuse;
+			vec3 specular;
+			float shininess;
+		};
         
 		uniform vec3 u_color;
 		uniform vec3 u_lightColor;
@@ -59,22 +68,20 @@ GlShader::GlShader(Shader::CreateParams params)
 		uniform vec3 u_viewPos;
 		uniform sampler2D u_texture;
 		uniform float u_textureStrength;
+		uniform PhongMaterial u_phongMaterial;
         
 		void main(){
+			vec3 ambient = u_phongMaterial.ambient * u_lightColor;
+
 			vec3 norm = normalize(a_normal);
 			vec3 lightDir = normalize(u_lightPos - a_fragPos);
-
 			float diff = max(dot(norm, lightDir), 0.0);
-			vec3 diffuse = diff * u_lightColor;
+			vec3 diffuse = (diff * u_phongMaterial.diffuse) * u_lightColor;
 
-			float ambientStrength = 0.1;
-			vec3 ambient = ambientStrength * u_lightColor;
-
-			float specularStrength = 0.5;
 			vec3 viewDir = normalize(u_viewPos - a_fragPos);
 			vec3 reflectDir = reflect(-lightDir, norm);
-			float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-			vec3 specular = specularStrength * spec * u_lightColor;
+			float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_phongMaterial.shininess);
+			vec3 specular = u_phongMaterial.specular * spec * u_lightColor;
 
 			vec3 result = (ambient + diffuse + specular) * u_color;
 			vec4 textureColor = mix(

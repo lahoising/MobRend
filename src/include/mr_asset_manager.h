@@ -11,7 +11,7 @@ class AssetManager
 public:
     ~AssetManager(){}
 
-    /// TODO: replace std::vector<char> to an array object we define
+    /// TODO: replace std::vector<char> to a data type that doesn't allocate in heap
     std::vector<char> GetFileContent(const char *filepath);
 
 private:
