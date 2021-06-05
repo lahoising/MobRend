@@ -13,7 +13,7 @@ void AmbientLight::Bind(Shader *shader, const char *name)
     char attributeNameBuffer[256] = {};
 
     snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.position", name);
-    shader->UploadVec3(attributeNameBuffer, this->position);    // since position and direction occupy the same space, no need to bind direction specifically
+    shader->UploadVec3(attributeNameBuffer, this->position);
     
     snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.color", name);
     shader->UploadVec3(attributeNameBuffer, this->color);
@@ -27,14 +27,14 @@ void AmbientLight::Bind(Shader *shader, const char *name)
 
 /// =================== POINT LIGHT ==============
 PointLight::PointLight(glm::vec3 color, float intensity)
-    : Light(Light::Type::POINT, color, intensity), attenuation(glm::vec3(1.0f, 0.09f, 0.032f)){}
+    : Light(Light::Type::POINT, color, intensity), attenuation(glm::vec3(1.0f, 0.22f, 0.20f)){}
 
 void PointLight::Bind(Shader *shader, const char *name)
 {
     char attributeNameBuffer[256] = {};
 
     snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.position", name);
-    shader->UploadVec3(attributeNameBuffer, this->position);    // since position and direction occupy the same space, no need to bind direction specifically
+    shader->UploadVec3(attributeNameBuffer, this->position);
     
     snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.color", name);
     shader->UploadVec3(attributeNameBuffer, this->color);
@@ -58,7 +58,7 @@ void DirectionalLight::Bind(Shader *shader, const char *name)
     char attributeNameBuffer[256] = {};
 
     snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.position", name);
-    shader->UploadVec3(attributeNameBuffer, this->direction);    // since position and direction occupy the same space, no need to bind direction specifically
+    shader->UploadVec3(attributeNameBuffer, this->direction);
     
     snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.color", name);
     shader->UploadVec3(attributeNameBuffer, this->color);

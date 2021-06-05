@@ -75,8 +75,7 @@ GlRenderer::GlRenderer()
 
     ambient->intensity = 0.3f;
     
-    point->position = glm::vec3(1.2f, 1.0f, 4.0f);
-    point->intensity = 0.5f;
+    point->position = glm::vec3(0.0f, 0.0f, 2.0f);
 
     DirectionalLight *dirLight = (DirectionalLight*)directionalLight;
     dirLight->direction = glm::vec3(0.0f, -0.5f, 0.5f);
@@ -268,12 +267,12 @@ void GlRenderer::OnRenderBegin()
     );
 
     // ambient->Bind(shader, "u_ambientLight");
-    // point->Bind(shader, "u_pointLight");
+    point->Bind(shader, "u_pointLight");
     
-    DirectionalLight *dirLight = (DirectionalLight*)directionalLight;
-    dirLight->direction =   glm::quat(glm::vec3(0.0f, glm::radians(0.5f), 0.0f)) * 
-                            dirLight->direction;
-    directionalLight->Bind(shader, "u_ambientLight");
+    // DirectionalLight *dirLight = (DirectionalLight*)directionalLight;
+    // dirLight->direction =   glm::quat(glm::vec3(0.0f, glm::radians(0.5f), 0.0f)) * 
+    //                         dirLight->direction;
+    // directionalLight->Bind(shader, "u_ambientLight");
 
     shader->UploadVec3(
         "u_viewPos",

@@ -109,11 +109,10 @@ GlShader::GlShader(Shader::CreateParams params)
 		float Attenuation(Light light, vec3 fragPosition)
 		{
 			float distance = length(light.position - fragPosition);
-			float kc = light.attenuation.x;
-			float kl = light.attenuation.y;
-			float kq = light.attenuation.z;
-			float denominator = kc + kl * distance + kq * distance * distance;
-			return mix(1.0 / denominator, 1.0, float(light.type == 1)); // dont use attenuation when light is not point
+			float denominator = light.attenuation.x + 
+								(light.attenuation.y * distance) + 
+								(light.attenuation.z * distance * distance);
+			return mix(1.0, 1.0 / denominator, 1.0); // dont use attenuation when light is not point
 		}
 
 		void main(){
@@ -139,9 +138,9 @@ GlShader::GlShader(Shader::CreateParams params)
 								SpecularLight(u_pointLight, viewDir, a_fragPos, norm, u_phongMaterial.shininess);
 			vec3 specular = specularColor * specLight;
 
-			// float attenuation = Attenuation(u_ambientLight, a_fragPos) +
-			// 					Attenuation(u_pointLight, a_fragPos);
-			vec3 result = (ambient + diffuse + specular) * u_color;// * attenuation;
+			float attenuation = Attenuation(u_pointLight, a_fragPos);
+			// vec3 result  = vec3(1.0, 1.0, 1.0) * attenuation;
+			vec3 result = (ambient + diffuse + specular) * u_color * attenuation;
 			finalFragColor = vec4(result, 1.0);
         }
     )";
