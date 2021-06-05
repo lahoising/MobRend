@@ -52,6 +52,12 @@ static Light point = Light(
     1.0f
 );
 
+static Light directionalLight = Light(
+    Light::Type::DIRECTIONAL,
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    1.0f
+);
+
 static GLenum GetAttribType(AttributeType type)
 {
     switch (type)
@@ -73,6 +79,8 @@ GlRenderer::GlRenderer()
     // ambient.intensity = 0.2f;
     point.position = glm::vec3(1.2f, 1.0f, 2.0f);
     point.intensity = 0.5f;
+
+    directionalLight.direction = glm::vec3(0.0f, -0.5f, 0.5f);
 
     Shader::CreateParams shaderCreateParams = {};
     // shaderCreateParams.vertFilePath = "";
@@ -256,8 +264,12 @@ void GlRenderer::OnRenderBegin()
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
-    ambient.Bind(shader, "u_ambientLight");
-    point.Bind(shader, "u_pointLight");
+    // ambient.Bind(shader, "u_ambientLight");
+    // point.Bind(shader, "u_pointLight");
+    
+    directionalLight.direction =    glm::quat(glm::vec3(0.0f, glm::radians(0.5f), 0.0f)) * 
+                                    directionalLight.direction;
+    directionalLight.Bind(shader, "u_ambientLight");
 
     shader->UploadVec3(
         "u_viewPos",
