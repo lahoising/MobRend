@@ -4,13 +4,11 @@
 namespace mr
 {
 
-Light::Light(Type type, glm::vec3 color, float intensity)
-    : color(color), position(glm::vec3()), intensity(intensity), type(type)
-{
-    
-}
+/// ======== AMBIENT LIGHT ===========
+AmbientLight::AmbientLight(glm::vec3 color, float intensity)
+    : Light(Light::Type::AMBIENT, color, intensity) {}
 
-void Light::Bind(Shader *shader, const char *name)
+void AmbientLight::Bind(Shader *shader, const char *name)
 {
     char attributeNameBuffer[256] = {};
 
@@ -24,7 +22,52 @@ void Light::Bind(Shader *shader, const char *name)
     shader->UploadFloat(attributeNameBuffer, this->intensity);
 
     snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.type", name);
-    shader->UploadInt(attributeNameBuffer, (int)this->type);
+    shader->UploadInt(attributeNameBuffer, (int)this->GetType());
+}
+
+/// =================== POINT LIGHT ==============
+PointLight::PointLight(glm::vec3 color, float intensity)
+    : Light(Light::Type::POINT, color, intensity), attenuation(glm::vec3(1.0f, 0.09f, 0.032f)){}
+
+void PointLight::Bind(Shader *shader, const char *name)
+{
+    char attributeNameBuffer[256] = {};
+
+    snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.position", name);
+    shader->UploadVec3(attributeNameBuffer, this->position);    // since position and direction occupy the same space, no need to bind direction specifically
+    
+    snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.color", name);
+    shader->UploadVec3(attributeNameBuffer, this->color);
+
+    snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.intensity", name);
+    shader->UploadFloat(attributeNameBuffer, this->intensity);
+
+    snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.type", name);
+    shader->UploadInt(attributeNameBuffer, (int)this->GetType());
+    
+    snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.attenuation", name);
+    shader->UploadVec3(attributeNameBuffer, this->attenuation);
+}
+
+/// ================ DIRECTIONAL LIGHT ================
+DirectionalLight::DirectionalLight(glm::vec3 color, float intensity)
+    : Light(Light::Type::DIRECTIONAL, color, intensity), direction(0.0f, 0.0f, 1.0f) {}
+
+void DirectionalLight::Bind(Shader *shader, const char *name)
+{
+    char attributeNameBuffer[256] = {};
+
+    snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.position", name);
+    shader->UploadVec3(attributeNameBuffer, this->direction);    // since position and direction occupy the same space, no need to bind direction specifically
+    
+    snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.color", name);
+    shader->UploadVec3(attributeNameBuffer, this->color);
+
+    snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.intensity", name);
+    shader->UploadFloat(attributeNameBuffer, this->intensity);
+
+    snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.type", name);
+    shader->UploadInt(attributeNameBuffer, (int)this->GetType());
 }
 
 } // namespace mr

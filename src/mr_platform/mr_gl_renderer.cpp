@@ -41,19 +41,17 @@ static Shader *lightSourceShader = nullptr;
 static GLuint lightSourceVAO;
 static Buffer *lightSourceVertexBuffer = nullptr;
 static Buffer *lightSourceIndexBuffer = nullptr;
-static Light ambient = Light(
-    Light::Type::AMBIENT, 
+
+static Light *ambient = new AmbientLight(
     glm::vec3(1.0f, 1.0f, 1.0f), 
     1.0f);
 
-static Light point = Light(
-    Light::Type::POINT,
+static Light *point = new PointLight(
     glm::vec3(1.0f, 1.0f, 1.0f),
     1.0f
 );
 
-static Light directionalLight = Light(
-    Light::Type::DIRECTIONAL,
+static Light *directionalLight = new DirectionalLight(
     glm::vec3(1.0f, 1.0f, 1.0f),
     1.0f
 );
@@ -75,12 +73,13 @@ GlRenderer::GlRenderer()
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
 
-    ambient.intensity = 0.0f;
-    // ambient.intensity = 0.2f;
-    point.position = glm::vec3(1.2f, 1.0f, 2.0f);
-    point.intensity = 0.5f;
+    ambient->intensity = 0.3f;
+    
+    point->position = glm::vec3(1.2f, 1.0f, 4.0f);
+    point->intensity = 0.5f;
 
-    directionalLight.direction = glm::vec3(0.0f, -0.5f, 0.5f);
+    DirectionalLight *dirLight = (DirectionalLight*)directionalLight;
+    dirLight->direction = glm::vec3(0.0f, -0.5f, 0.5f);
 
     Shader::CreateParams shaderCreateParams = {};
     // shaderCreateParams.vertFilePath = "";
@@ -214,6 +213,10 @@ GlRenderer::GlRenderer()
 
 GlRenderer::~GlRenderer()
 {
+    delete(ambient);
+    delete(point);
+    delete(directionalLight);
+
     delete(specMap);
     delete(tex);
 
@@ -236,7 +239,7 @@ void GlRenderer::SetViewport(int x, int y, int width, int height)
 void GlRenderer::OnRenderBegin()
 {
     static glm::mat4 identityMat = glm::identity<glm::mat4>();
-    static glm::mat4 translated = glm::translate(identityMat, glm::vec3(1.0f, 0.5f, 0.31f));
+    static glm::mat4 translated = glm::translate(identityMat, glm::vec3(1.0f, 0.5f, 10.0f));
 
     cam.Update();
 
@@ -264,12 +267,13 @@ void GlRenderer::OnRenderBegin()
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
-    // ambient.Bind(shader, "u_ambientLight");
-    // point.Bind(shader, "u_pointLight");
+    // ambient->Bind(shader, "u_ambientLight");
+    // point->Bind(shader, "u_pointLight");
     
-    directionalLight.direction =    glm::quat(glm::vec3(0.0f, glm::radians(0.5f), 0.0f)) * 
-                                    directionalLight.direction;
-    directionalLight.Bind(shader, "u_ambientLight");
+    DirectionalLight *dirLight = (DirectionalLight*)directionalLight;
+    dirLight->direction =   glm::quat(glm::vec3(0.0f, glm::radians(0.5f), 0.0f)) * 
+                            dirLight->direction;
+    directionalLight->Bind(shader, "u_ambientLight");
 
     shader->UploadVec3(
         "u_viewPos",
@@ -318,11 +322,11 @@ void GlRenderer::OnRenderBegin()
         cam.camera.GetViewProjection());
     lightSourceShader->UploadMat4(
         "u_model",
-        glm::translate(lightSourceScaleMat, point.position));
+        glm::translate(lightSourceScaleMat, point->position));
 
     lightSourceShader->UploadVec3(
         "u_lightColor",
-        point.color
+        point->color
     );
 
     glBindVertexArray(lightSourceVAO);
