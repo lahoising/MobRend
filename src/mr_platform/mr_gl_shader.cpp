@@ -89,17 +89,19 @@ GlShader::GlShader(Shader::CreateParams params)
 
 		vec3 DiffuseLight(Light light, vec3 normal, vec3 fragmentPosition)
 		{
-			vec3 lightDir = normalize(light.position - fragmentPosition);
+			vec3 lightDir = normalize(light.position - fragmentPosition) * float(light.type == 1);
+			lightDir += light.position * float(light.type == 2); // position is direction if light is directional
 			float diff = max(dot(normal, lightDir), 0.0);
-			return light.color * light.intensity * float(light.type == 1) * diff;
+			return light.color * light.intensity * diff;
 		}
 
 		vec3 SpecularLight(Light light, vec3 viewDir, vec3 fragPosition, vec3 normal, float shininess)
 		{
-			vec3 lightDir = normalize(light.position - fragPosition);
+			vec3 lightDir = normalize(light.position - fragPosition) * float(light.type == 1);
+			lightDir += light.position * float(light.type == 2);
 			vec3 reflectDir = reflect(-lightDir, normal);
 			float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
-			return vec3(1.0f, 1.0f, 1.0f) * light.intensity * float(light.type == 1) * spec;
+			return vec3(1.0f, 1.0f, 1.0f) * light.intensity * spec;
 		}
 
 		void main(){

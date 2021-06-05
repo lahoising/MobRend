@@ -14,7 +14,8 @@ public:
     enum Type
     {
         AMBIENT = 0,
-        POINT
+        POINT,
+        DIRECTIONAL,
     };
 
 public:
@@ -22,7 +23,11 @@ public:
     void Bind(Shader *shader, const char *name);
 
     glm::vec3 color;
-    glm::vec3 position;
+    union
+    {
+        glm::vec3 position;
+        glm::vec3 direction;
+    };
     float intensity;
     Type type;
 };
