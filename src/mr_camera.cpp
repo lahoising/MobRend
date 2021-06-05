@@ -43,14 +43,14 @@ void Camera::SetPerspective(PerspectiveConfig config)
     RecalculateViewProjection();
 }
 
-void Camera::SetPosition(glm::vec3 position)
+void Camera::SetPosition(const glm::vec3 &position)
 {
     this->position = position;
     this->RecalculateViewMatrix();
     this->RecalculateViewProjection();
 }
 
-void Camera::SetRotation(glm::quat rotation)
+void Camera::SetRotation(const glm::quat &rotation)
 {
     this->rotation = rotation;
     this->RecalculateViewMatrix();

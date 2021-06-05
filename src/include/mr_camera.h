@@ -43,12 +43,12 @@ public:
         {{60.0f, 16.0f/9.0f, 0.1f, 100.0f}}){}
 
     void SetConfiguration(Type type, Config config);
-    glm::mat4 GetViewProjection(){ return this->viewProjMat; }
+    const glm::mat4 &GetViewProjection() const { return this->viewProjMat; }
     
-    glm::vec3 GetPosition(){ return this->position; }
-    void      SetPosition(glm::vec3 position);
-    glm::quat GetRotation(){ return this->rotation; }
-    void      SetRotation(glm::quat rotation);
+    const glm::vec3 &GetPosition() const { return this->position; }
+    void      SetPosition(const glm::vec3 &position);
+    const glm::quat &GetRotation() const { return this->rotation; }
+    void      SetRotation(const glm::quat &rotation);
 
 private:
     void SetPerspective(PerspectiveConfig config);

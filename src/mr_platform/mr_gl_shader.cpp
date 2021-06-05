@@ -193,7 +193,7 @@ void GlShader::CompileShader(unsigned int shaderId, const char *shaderSource)
 	}
 }
 
-void GlShader::UploadMat4(const char *uniformName, glm::mat4 matrix)
+void GlShader::UploadMat4(const char *uniformName,const glm::mat4 &matrix)
 {
 	if(this->uniformLocations.find(uniformName) == this->uniformLocations.end())
 	{
@@ -209,7 +209,7 @@ void GlShader::UploadMat4(const char *uniformName, glm::mat4 matrix)
 	);
 }
 
-void GlShader::UploadMat3(const char *uniformName, glm::mat3 matrix)
+void GlShader::UploadMat3(const char *uniformName,const glm::mat3 &matrix)
 {
 	if(this->uniformLocations.find(uniformName) == this->uniformLocations.end())
 	{
@@ -236,7 +236,7 @@ void GlShader::UploadFloat(const char *uniformName, float val)
 	glUniform1f(location, val);
 }
 
-void GlShader::UploadVec3(const char *uniformName, glm::vec3 vec)
+void GlShader::UploadVec3(const char *uniformName,const glm::vec3 &vec)
 {
 	if(this->uniformLocations.find(uniformName) == this->uniformLocations.end())
 	{
