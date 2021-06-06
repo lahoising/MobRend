@@ -75,7 +75,8 @@ GlShader::GlShader(Shader::CreateParams params)
 			int type;
 
 			vec3 attenuation;
-			float cutoffAngle;
+			float innerCutoff;
+			float outerCutoff;
 		};
         
 		uniform vec3 u_color;
@@ -120,7 +121,9 @@ GlShader::GlShader(Shader::CreateParams params)
 		{
 			vec3 lightDir = normalize(light.position - fragPosition);
 			float theta = dot(lightDir, normalize(-light.attenuation));
-			return mix(1.0, float(theta > light.cutoffAngle), light.type == 3);
+			float epsilon = light.innerCutoff - light.outerCutoff;
+			float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
+			return mix(1.0, intensity, light.type == 3);
 		}
 
 		void main(){

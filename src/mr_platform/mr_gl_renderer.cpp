@@ -281,6 +281,9 @@ void GlRenderer::OnRenderBegin()
     //                         dirLight->direction;
     // directionalLight->Bind(shader, "u_ambientLight");
 
+    Spotlight *spot = (Spotlight*)spotlight;
+    spot->position = cam.camera.GetPosition();
+    spot->rotation = cam.camera.GetRotation();
     spotlight->Bind(shader, "u_ambientLight");
 
     shader->UploadVec3(

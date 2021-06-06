@@ -78,7 +78,8 @@ public:
     
 public:
     glm::quat rotation;
-    float cutoffAngle;
+    float innerCutoff;
+    float outerCutoff;
 };
 
 } // namespace mr

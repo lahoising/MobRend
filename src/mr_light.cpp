@@ -73,7 +73,8 @@ void DirectionalLight::Bind(Shader *shader, const char *name)
 
 Spotlight::Spotlight(glm::vec3 color, float intensity)
     : Light(Light::Type::SPOTLIGHT, color, intensity),
-    rotation(glm::identity<glm::quat>()), cutoffAngle(glm::radians(9.0f))
+    rotation(glm::identity<glm::quat>()), 
+    innerCutoff(glm::radians(12.5f)), outerCutoff(glm::radians(17.5f))
 {}
 
 void Spotlight::Bind(Shader *shader, const char *name)
@@ -96,8 +97,11 @@ void Spotlight::Bind(Shader *shader, const char *name)
     snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.attenuation", name);
     shader->UploadVec3(attributeNameBuffer, this->rotation * glm::vec3(0.0f, 0.0f, 1.0f));
 
-    snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.cutoffAngle", name);
-    shader->UploadFloat(attributeNameBuffer, glm::cos(this->cutoffAngle));
+    snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.innerCutoff", name);
+    shader->UploadFloat(attributeNameBuffer, glm::cos(this->innerCutoff));
+
+    snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.outerCutoff", name);
+    shader->UploadFloat(attributeNameBuffer, glm::cos(this->outerCutoff));
 }
 
 
