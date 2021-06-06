@@ -13,6 +13,7 @@
 #include "mr_application.h"
 
 #include "mr_vertex_buffer.h"
+#include "mr_index_buffer.h"
 #include "mr_shader.h"
 #include "mr_camera.h"
 #include "mr_vertex_layout.h"
@@ -33,9 +34,9 @@ struct Renderer::gui_init_info_s
     
 static Shader *shader = nullptr;
 static VertexBuffer *vertexBuffer = nullptr;
-static unsigned int indexBufferId = 0;
-static unsigned int indexCount = 0;
-// static Buffer *indexBuffer = nullptr;
+static IndexBuffer *indexBuffer = nullptr;
+// static unsigned int indexBufferId = 0;
+// static unsigned int indexCount = 0;
 
 static FPSCamera cam;
 static Texture *tex = nullptr;
@@ -43,9 +44,9 @@ static Texture *specMap = nullptr;
 
 static Shader *lightSourceShader = nullptr;
 static VertexBuffer *lightSourceVertexBuffer = nullptr;
-static unsigned int lightSourceIndexBufferId = 0;
-static unsigned int lightSourceIndexCount = 0;
-// static Buffer *lightSourceIndexBuffer = nullptr;
+// static unsigned int lightSourceIndexBufferId = 0;
+// static unsigned int lightSourceIndexCount = 0;
+static IndexBuffer *lightSourceIndexBuffer = nullptr;
 
 static Light *ambient = new AmbientLight(
     glm::vec3(1.0f, 1.0f, 1.0f), 
@@ -141,12 +142,12 @@ GlRenderer::GlRenderer()
         16, 17, 18, 18, 19, 16,
         20, 21, 22, 22, 23, 20,
     };
-    // indexBuffer = Buffer::Create(vertexBuffCreateParams);
-    glGenBuffers(1, &indexBufferId);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferId);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-    indexCount = sizeof(indices) / sizeof(uint32_t);
-
+    
+    IndexBuffer::CreateParams indexBufferCreateParams = {};
+    indexBufferCreateParams.data = indices;
+    indexBufferCreateParams.elementCount = sizeof(indices) / sizeof(uint32_t);
+    indexBuffer = IndexBuffer::Create(indexBufferCreateParams);
+    
     const GLfloat g_light_source_vertices[] = {
          0.0f,  1.0f,  0.0f,
         -1.0f, -1.0f, -1.0f,
@@ -171,11 +172,9 @@ GlRenderer::GlRenderer()
         0, 3, 4,
         0, 4, 1
     };
-    glGenBuffers(1, &lightSourceIndexBufferId);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lightSourceIndexBufferId);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(lightSourceindices), lightSourceindices, GL_STATIC_DRAW);
-    lightSourceIndexCount = sizeof(lightSourceindices) / sizeof(uint32_t);
-    // lightSourceIndexBuffer = Buffer::Create(vertexBuffCreateParams);
+    indexBufferCreateParams.data = lightSourceindices;
+    indexBufferCreateParams.elementCount = sizeof(lightSourceindices) / sizeof(uint32_t);
+    lightSourceIndexBuffer = IndexBuffer::Create(indexBufferCreateParams);
 
     // cam = ObserverCamera();
     cam = FPSCamera();
@@ -212,13 +211,11 @@ GlRenderer::~GlRenderer()
     delete(specMap);
     delete(tex);
 
-    glDeleteBuffers(1, &indexBufferId);
-    // delete(indexBuffer);
+    delete(indexBuffer);
     delete(vertexBuffer);
     delete(shader);
     
-    glDeleteBuffers(1, &lightSourceIndexBufferId);
-    // delete(lightSourceIndexBuffer);
+    delete(lightSourceIndexBuffer);
     delete(lightSourceVertexBuffer);
     delete(lightSourceShader);
 }
@@ -291,11 +288,10 @@ void GlRenderer::OnRenderBegin()
     specMap->Bind();
 
     vertexBuffer->Bind();
-    // indexBuffer->Bind();
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferId);
+    indexBuffer->Bind();
     glDrawElements(
         GL_TRIANGLES, 
-        indexCount, 
+        indexBuffer->GetElementCount(), 
         GL_UNSIGNED_INT, nullptr);
 
     shader->UploadMat4(
@@ -309,7 +305,7 @@ void GlRenderer::OnRenderBegin()
 
     glDrawElements(
         GL_TRIANGLES, 
-        indexCount, 
+        indexBuffer->GetElementCount(), 
         GL_UNSIGNED_INT, nullptr);
 
     const glm::mat4 lightSourceScaleMat = glm::scale(identityMat, glm::vec3(0.2f, 0.2f, 0.2f));
@@ -327,11 +323,10 @@ void GlRenderer::OnRenderBegin()
     );
 
     lightSourceVertexBuffer->Bind();
-    // lightSourceIndexBuffer->Bind();
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lightSourceIndexBufferId);
+    lightSourceIndexBuffer->Bind();
     glDrawElements(
         GL_TRIANGLES,
-        lightSourceIndexCount,
+        lightSourceIndexBuffer->GetElementCount(),
         GL_UNSIGNED_INT, nullptr
     );
 
