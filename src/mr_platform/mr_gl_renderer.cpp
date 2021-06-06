@@ -278,10 +278,10 @@ void GlRenderer::OnRenderBegin()
     );
 
     shader->UploadVec3("u_phongMaterial.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
-    shader->UploadFloat("u_phongMaterial.diffuseMapStrength", 0.0f);
+    shader->UploadFloat("u_phongMaterial.diffuseMapStrength", 1.0f);
     
     shader->UploadVec3("u_phongMaterial.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-    shader->UploadFloat("u_phongMaterial.specularMapStrength", 0.0f);
+    shader->UploadFloat("u_phongMaterial.specularMapStrength", 1.0f);
     shader->UploadFloat("u_phongMaterial.shininess", 32.f);
 
     glActiveTexture(GL_TEXTURE0);
