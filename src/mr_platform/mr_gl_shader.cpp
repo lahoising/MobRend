@@ -14,6 +14,7 @@ namespace mr
 {
     
 GlShader::GlShader(Shader::CreateParams params)
+	: textureSlotsCount(GL_TEXTURE0)
 {
     // Create the shaders
 	GLuint vertShaderId = glCreateShader(GL_VERTEX_SHADER);
@@ -307,7 +308,17 @@ void GlShader::UploadBool(const char *uniformName, bool val)
 
 void GlShader::UploadTexture2D(const char *uniformName, Texture *texture)
 {
-	
+	if(this->uniformLocations.find(uniformName) == this->uniformLocations.end())
+	{
+		this->UploadInt(uniformName, this->textureLocationToTextureSlot.size());
+		const unsigned int location = this->uniformLocations[uniformName];
+		this->textureLocationToTextureSlot[location] = textureSlotsCount++;
+	}
+
+	const unsigned int location = this->uniformLocations[uniformName];
+	const unsigned int textureSlot = this->textureLocationToTextureSlot[location];
+	glActiveTexture(textureSlot);
+	texture->Bind();
 }
 
 void GlShader::Bind()

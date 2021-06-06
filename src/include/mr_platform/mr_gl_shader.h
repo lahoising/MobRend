@@ -28,6 +28,8 @@ private:
 
 private:
     unsigned int programId;
+    unsigned int textureSlotsCount;
+    std::unordered_map<unsigned int, unsigned int> textureLocationToTextureSlot;
     std::unordered_map<std::string,unsigned int> uniformLocations;
 };
 

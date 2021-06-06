@@ -193,10 +193,10 @@ GlRenderer::GlRenderer()
     tex = Texture::Create("D:\\Pictures\\Screenshots\\Screenshot (44).png");
     specMap = Texture::Create("D:\\Documents\\progs\\krita_resources\\MobRend\\IU_Spec.png");
 
-    vertexBuffer->Bind();    
-    shader->Bind();
-    shader->UploadInt("u_phongMaterial.diffuseMap", 0);
-    shader->UploadInt("u_phongMaterial.specularMap", 1);
+    // vertexBuffer->Bind();    
+    // shader->Bind();
+    // shader->UploadInt("u_phongMaterial.diffuseMap", 0);
+    // shader->UploadInt("u_phongMaterial.specularMap", 1);
 
     Application::GetInstance().GetMainWindow()->SetCursorVisible(false);
 }
@@ -281,11 +281,14 @@ void GlRenderer::OnRenderBegin()
     shader->UploadFloat("u_phongMaterial.specularMapStrength", 1.0f);
     shader->UploadFloat("u_phongMaterial.shininess", 32.f);
 
-    glActiveTexture(GL_TEXTURE0);
-    tex->Bind();
+    shader->UploadTexture2D("u_phongMaterial.diffuseMap", tex);
+    shader->UploadTexture2D("u_phongMaterial.specularMap", specMap);
 
-    glActiveTexture(GL_TEXTURE0 + 1);
-    specMap->Bind();
+    // glActiveTexture(GL_TEXTURE0);
+    // tex->Bind();
+
+    // glActiveTexture(GL_TEXTURE0 + 1);
+    // specMap->Bind();
 
     vertexBuffer->Bind();
     indexBuffer->Bind();
