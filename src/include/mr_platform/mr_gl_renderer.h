@@ -18,8 +18,6 @@ public:
     virtual void OnRenderEnd() override;
     virtual Renderer::gui_init_info_s *GetGuiInitInfo() override;
     virtual void DeleteGuiInitInfo(Renderer::gui_init_info_s *info) override;
-
-    void DefineVertexLayout(const VertexLayout &layout);
 };
 
 } // namespace mr
