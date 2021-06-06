@@ -112,7 +112,7 @@ GlShader::GlShader(Shader::CreateParams params)
 			float denominator = light.attenuation.x + 
 								(light.attenuation.y * distance) + 
 								(light.attenuation.z * distance * distance);
-			return mix(1.0, 1.0 / denominator, 1.0); // dont use attenuation when light is not point
+			return mix(1.0, 1.0 / denominator, light.type == 1); // dont use attenuation when light is not point
 		}
 
 		void main(){
@@ -126,21 +126,25 @@ GlShader::GlShader(Shader::CreateParams params)
 				vec3(texture(u_phongMaterial.specularMap, a_texCoord)),
 				u_phongMaterial.specularMapStrength);
 
-			vec3 ambientLight = AmbientLight(u_ambientLight) + AmbientLight(u_pointLight);
+			float pointLightAttenuation = Attenuation(u_pointLight, a_fragPos);
+			float ambientAttenuation = Attenuation(u_ambientLight, a_fragPos);
+
+			vec3 ambientLight = AmbientLight(u_ambientLight) * ambientAttenuation + 
+								AmbientLight(u_pointLight) * pointLightAttenuation;
 			vec3 ambient = diffuseColor * ambientLight;
 
 			vec3 norm = normalize(a_normal);
-			vec3 diffuseLight = DiffuseLight(u_ambientLight, norm, a_fragPos) + DiffuseLight(u_pointLight, norm, a_fragPos);
+			vec3 diffuseLight = DiffuseLight(u_ambientLight, norm, a_fragPos) * ambientAttenuation + 
+								DiffuseLight(u_pointLight, norm, a_fragPos) * pointLightAttenuation;
 			vec3 diffuse = diffuseColor * diffuseLight;
 
 			vec3 viewDir = normalize(u_viewPos - a_fragPos);
-			vec3 specLight = 	SpecularLight(u_ambientLight, viewDir, a_fragPos, norm, u_phongMaterial.shininess) +
-								SpecularLight(u_pointLight, viewDir, a_fragPos, norm, u_phongMaterial.shininess);
+			vec3 specLight = 	SpecularLight(u_ambientLight, viewDir, a_fragPos, norm, u_phongMaterial.shininess) * ambientAttenuation +
+								SpecularLight(u_pointLight, viewDir, a_fragPos, norm, u_phongMaterial.shininess) * pointLightAttenuation;
 			vec3 specular = specularColor * specLight;
 
-			float attenuation = Attenuation(u_pointLight, a_fragPos);
-			// vec3 result  = vec3(1.0, 1.0, 1.0) * attenuation;
-			vec3 result = (ambient + diffuse + specular) * u_color * attenuation;
+
+			vec3 result = (ambient + diffuse + specular) * u_color;
 			finalFragColor = vec4(result, 1.0);
         }
     )";
