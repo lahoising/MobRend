@@ -278,14 +278,9 @@ void GlRenderer::OnRenderBegin()
     shader->UploadTexture2D("u_phongMaterial.diffuseMap", tex);
     shader->UploadTexture2D("u_phongMaterial.specularMap", specMap);
 
-    const VertexBuffer *vertexBuffer = cube->GetVertexBuffer();
-    const IndexBuffer *indexBuffer = cube->GetIndexBuffer();
-    vertexBuffer->Bind();
-    indexBuffer->Bind();
-    glDrawElements(
-        GL_TRIANGLES, 
-        indexBuffer->GetElementCount(), 
-        GL_UNSIGNED_INT, nullptr);
+    Renderer::Command cmd = {};
+    cmd.mesh = cube;
+    this->Render(cmd);
 
     shader->UploadMat4(
         "u_model",
@@ -296,10 +291,8 @@ void GlRenderer::OnRenderBegin()
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
-    glDrawElements(
-        GL_TRIANGLES, 
-        indexBuffer->GetElementCount(), 
-        GL_UNSIGNED_INT, nullptr);
+    cmd.topologyType = TopologyType::WIREFRAME;
+    this->Render(cmd);
 
     const glm::mat4 lightSourceScaleMat = glm::scale(identityMat, glm::vec3(0.2f, 0.2f, 0.2f));
     lightSourceShader->Bind();
@@ -315,15 +308,9 @@ void GlRenderer::OnRenderBegin()
         point->color
     );
 
-    const VertexBuffer *lightSourceVertexBuffer = pyramid->GetVertexBuffer();
-    const IndexBuffer *lightSourceIndexBuffer = pyramid->GetIndexBuffer();
-    lightSourceVertexBuffer->Bind();
-    lightSourceIndexBuffer->Bind();
-    glDrawElements(
-        GL_TRIANGLES,
-        lightSourceIndexBuffer->GetElementCount(),
-        GL_UNSIGNED_INT, nullptr
-    );
+    cmd = {};
+    cmd.mesh = pyramid;
+    this->Render(cmd);
 
     auto error = glGetError();
     if(error)
@@ -332,6 +319,18 @@ void GlRenderer::OnRenderBegin()
 
 void GlRenderer::OnRenderEnd()
 {
+}
+
+void GlRenderer::Render(Renderer::Command &cmd)
+{
+    const IndexBuffer *indexBuffer = cmd.mesh->GetIndexBuffer();
+    cmd.mesh->GetVertexBuffer()->Bind();
+    indexBuffer->Bind();
+    glDrawElements(
+        GlRenderer::GetTopology(cmd.topologyType),
+        indexBuffer->GetElementCount(),
+        GL_UNSIGNED_INT, nullptr
+    );
 }
 
 struct Renderer::gui_init_info_s *GlRenderer::GetGuiInitInfo()
@@ -344,6 +343,16 @@ struct Renderer::gui_init_info_s *GlRenderer::GetGuiInitInfo()
 void GlRenderer::DeleteGuiInitInfo(Renderer::gui_init_info_s *info)
 {
     delete(info);
+}
+
+GLenum GlRenderer::GetTopology(TopologyType type)
+{
+    switch (type)
+    {
+    case TopologyType::TRIANGLES: return GL_TRIANGLES;
+    case TopologyType::WIREFRAME: return GL_LINE_STRIP;
+    default: throw "Unsupported topology type";
+    }
 }
 
 } // namespace mr

@@ -4,10 +4,23 @@
 namespace mr
 {
 
+class Mesh;
+enum TopologyType
+{
+    TRIANGLES = 0,
+    WIREFRAME,
+};
+
 class Renderer
 {
 public:
+
     struct gui_init_info_s;
+    typedef struct
+    {
+        Mesh *mesh;
+        TopologyType topologyType = TopologyType::TRIANGLES;
+    } Command;
 
 public:
     static Renderer *Create();
@@ -17,6 +30,7 @@ public:
     virtual void OnRenderEnd() = 0;
     virtual gui_init_info_s *GetGuiInitInfo() = 0;
     virtual void DeleteGuiInitInfo(gui_init_info_s *info) = 0;
+    virtual void Render(Command &cmd) = 0;
 };
     
 } // namespace mr

@@ -2,6 +2,7 @@
 #define _MR_GL_RENDERER_H_
 #ifdef MOBREND_GL_RENDERING
 
+#include <glad/glad.h>
 #include "mr_renderer.h"
 #include "mr_vertex_layout.h"
 
@@ -18,6 +19,10 @@ public:
     virtual void OnRenderEnd() override;
     virtual Renderer::gui_init_info_s *GetGuiInitInfo() override;
     virtual void DeleteGuiInitInfo(Renderer::gui_init_info_s *info) override;
+    virtual void Render(Renderer::Command &cmd) override;
+
+private:
+    static GLenum GetTopology(TopologyType type);
 };
 
 } // namespace mr
