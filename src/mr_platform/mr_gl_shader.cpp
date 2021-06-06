@@ -140,21 +140,23 @@ GlShader::GlShader(Shader::CreateParams params)
 			float pointLightAttenuation = Attenuation(u_pointLight, a_fragPos);
 			float ambientAttenuation = Attenuation(u_ambientLight, a_fragPos);
 
-			vec3 ambientLight = AmbientLight(u_ambientLight) * ambientAttenuation + 
+			float ambientSpotlight = WithinSpotlight(u_ambientLight, a_fragPos);
+
+			vec3 ambientLight = AmbientLight(u_ambientLight) * ambientAttenuation * ambientSpotlight+ 
 								AmbientLight(u_pointLight) * pointLightAttenuation;
 			vec3 ambient = diffuseColor * ambientLight;
 
 			vec3 norm = normalize(a_normal);
-			vec3 diffuseLight = DiffuseLight(u_ambientLight, norm, a_fragPos) * ambientAttenuation + 
+			vec3 diffuseLight = DiffuseLight(u_ambientLight, norm, a_fragPos) * ambientAttenuation * ambientSpotlight + 
 								DiffuseLight(u_pointLight, norm, a_fragPos) * pointLightAttenuation;
 			vec3 diffuse = diffuseColor * diffuseLight;
 
 			vec3 viewDir = normalize(u_viewPos - a_fragPos);
-			vec3 specLight = 	SpecularLight(u_ambientLight, viewDir, a_fragPos, norm, u_phongMaterial.shininess) * ambientAttenuation +
+			vec3 specLight = 	SpecularLight(u_ambientLight, viewDir, a_fragPos, norm, u_phongMaterial.shininess) * ambientAttenuation * ambientSpotlight +
 								SpecularLight(u_pointLight, viewDir, a_fragPos, norm, u_phongMaterial.shininess) * pointLightAttenuation;
 			vec3 specular = specularColor * specLight;
 
-			vec3 result = (ambient + diffuse + specular) * u_color * WithinSpotlight(u_ambientLight, a_fragPos);
+			vec3 result = (ambient + diffuse + specular) * u_color;
 			finalFragColor = vec4(result, 1.0);
         }
     )";
