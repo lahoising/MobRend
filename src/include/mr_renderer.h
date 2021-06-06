@@ -16,10 +16,13 @@ class Renderer
 public:
 
     struct gui_init_info_s;
-    typedef struct
+    typedef struct command_s
     {
         Mesh *mesh;
-        TopologyType topologyType = TopologyType::TRIANGLES;
+        TopologyType topologyType;
+
+        struct command_s()
+            : mesh(nullptr), topologyType(TopologyType::TRIANGLES) {}
     } Command;
 
 public:
