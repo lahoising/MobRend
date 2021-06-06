@@ -8,10 +8,13 @@ class Buffer
 {
 public:
     virtual ~Buffer() = 0 {};
-    virtual void Bind() = 0;
-    virtual void Unbind() = 0;
+    virtual void Bind() const = 0;
+    virtual void Unbind() const = 0;
 };
 
 } // namespace mr
+
+#include "mr_vertex_buffer.h"
+#include "mr_index_buffer.h"
 
 #endif

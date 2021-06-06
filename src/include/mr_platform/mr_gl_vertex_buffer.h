@@ -12,8 +12,8 @@ class GlVertexBuffer : public VertexBuffer
 public:
     GlVertexBuffer(VertexBuffer::CreateParams &params);
     virtual ~GlVertexBuffer() override;
-    virtual void Bind() override;
-    virtual void Unbind() override;
+    virtual void Bind() const override;
+    virtual void Unbind() const override;
 
 private:
     static unsigned int GetAttribType(AttributeType attributeType);

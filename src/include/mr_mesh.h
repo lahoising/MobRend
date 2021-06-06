@@ -14,19 +14,21 @@ class Mesh
 public:
     typedef struct
     {
-        Buffer *vertexBuffer;
-        Buffer *indexBuffer;
-        std::unordered_map<std::string,Texture*> &textures;
+        VertexBuffer *vertexBuffer;
+        IndexBuffer *indexBuffer;
     } CreateParams;
 
 public:
-    static Mesh *Create(CreateParams &params);
-    virtual ~Mesh() = 0 {};
+    // static Mesh *Create(CreateParams &params);
+    Mesh(CreateParams &params);
+    ~Mesh();
+
+    const VertexBuffer *GetVertexBuffer() const;
+    const IndexBuffer *GetIndexBuffer() const;
 
 protected:
-    Buffer *vertexBuffer;
-    Buffer *indexBuffer;
-    std::unordered_map<std::string,Texture*> textures;
+    VertexBuffer *vertexBuffer;
+    IndexBuffer *indexBuffer;
 };
 
 }

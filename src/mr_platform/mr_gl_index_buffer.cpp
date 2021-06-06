@@ -23,12 +23,12 @@ GlIndexBuffer::~GlIndexBuffer()
     this->bufferId = 0;
 }
 
-void GlIndexBuffer::Bind()
+void GlIndexBuffer::Bind() const
 {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->bufferId);
 }
 
-void GlIndexBuffer::Unbind()
+void GlIndexBuffer::Unbind() const
 {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

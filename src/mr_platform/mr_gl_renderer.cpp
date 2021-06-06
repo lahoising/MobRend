@@ -12,8 +12,7 @@
 #include "mr_gui.h"
 #include "mr_application.h"
 
-#include "mr_vertex_buffer.h"
-#include "mr_index_buffer.h"
+#include "mr_mesh.h"
 #include "mr_shader.h"
 #include "mr_camera.h"
 #include "mr_vertex_layout.h"
@@ -33,20 +32,14 @@ struct Renderer::gui_init_info_s
 };
     
 static Shader *shader = nullptr;
-static VertexBuffer *vertexBuffer = nullptr;
-static IndexBuffer *indexBuffer = nullptr;
-// static unsigned int indexBufferId = 0;
-// static unsigned int indexCount = 0;
+static Mesh *cube = nullptr;
 
 static FPSCamera cam;
 static Texture *tex = nullptr;
 static Texture *specMap = nullptr;
 
 static Shader *lightSourceShader = nullptr;
-static VertexBuffer *lightSourceVertexBuffer = nullptr;
-// static unsigned int lightSourceIndexBufferId = 0;
-// static unsigned int lightSourceIndexCount = 0;
-static IndexBuffer *lightSourceIndexBuffer = nullptr;
+static Mesh *pyramid = nullptr;
 
 static Light *ambient = new AmbientLight(
     glm::vec3(1.0f, 1.0f, 1.0f), 
@@ -132,7 +125,6 @@ GlRenderer::GlRenderer()
     vertexBuffCreateParams.bufferSize = sizeof(g_vertex_buffer_data);
     vertexBuffCreateParams.data = (void*)g_vertex_buffer_data;
     vertexBuffCreateParams.vertexLayout = &layout;
-    vertexBuffer = VertexBuffer::Create(vertexBuffCreateParams);
 
     const uint32_t indices[] = {
          0,  1,  2,  2,  3,  0,
@@ -146,7 +138,12 @@ GlRenderer::GlRenderer()
     IndexBuffer::CreateParams indexBufferCreateParams = {};
     indexBufferCreateParams.data = indices;
     indexBufferCreateParams.elementCount = sizeof(indices) / sizeof(uint32_t);
-    indexBuffer = IndexBuffer::Create(indexBufferCreateParams);
+
+    Mesh::CreateParams meshCreateParams = {};
+    meshCreateParams.vertexBuffer = VertexBuffer::Create(vertexBuffCreateParams);
+    meshCreateParams.indexBuffer = IndexBuffer::Create(indexBufferCreateParams);
+
+    cube = new Mesh(meshCreateParams);
     
     const GLfloat g_light_source_vertices[] = {
          0.0f,  1.0f,  0.0f,
@@ -164,7 +161,6 @@ GlRenderer::GlRenderer()
     vertexBuffCreateParams.bufferSize = sizeof(g_light_source_vertices);
     vertexBuffCreateParams.data = (void*)g_light_source_vertices;
     vertexBuffCreateParams.vertexLayout = &lightSourceVertexLayout;
-    lightSourceVertexBuffer = VertexBuffer::Create(vertexBuffCreateParams);
 
     const uint32_t lightSourceindices[] = {
         0, 1, 2, 
@@ -172,9 +168,14 @@ GlRenderer::GlRenderer()
         0, 3, 4,
         0, 4, 1
     };
+
+    indexBufferCreateParams = {};
     indexBufferCreateParams.data = lightSourceindices;
     indexBufferCreateParams.elementCount = sizeof(lightSourceindices) / sizeof(uint32_t);
-    lightSourceIndexBuffer = IndexBuffer::Create(indexBufferCreateParams);
+
+    meshCreateParams.vertexBuffer = VertexBuffer::Create(vertexBuffCreateParams);
+    meshCreateParams.indexBuffer = IndexBuffer::Create(indexBufferCreateParams);
+    pyramid = new Mesh(meshCreateParams);
 
     // cam = ObserverCamera();
     cam = FPSCamera();
@@ -193,11 +194,6 @@ GlRenderer::GlRenderer()
     tex = Texture::Create("D:\\Pictures\\Screenshots\\Screenshot (44).png");
     specMap = Texture::Create("D:\\Documents\\progs\\krita_resources\\MobRend\\IU_Spec.png");
 
-    // vertexBuffer->Bind();    
-    // shader->Bind();
-    // shader->UploadInt("u_phongMaterial.diffuseMap", 0);
-    // shader->UploadInt("u_phongMaterial.specularMap", 1);
-
     Application::GetInstance().GetMainWindow()->SetCursorVisible(false);
 }
 
@@ -211,12 +207,10 @@ GlRenderer::~GlRenderer()
     delete(specMap);
     delete(tex);
 
-    delete(indexBuffer);
-    delete(vertexBuffer);
+    delete(cube);
     delete(shader);
     
-    delete(lightSourceIndexBuffer);
-    delete(lightSourceVertexBuffer);
+    delete(pyramid);
     delete(lightSourceShader);
 }
 
@@ -284,12 +278,8 @@ void GlRenderer::OnRenderBegin()
     shader->UploadTexture2D("u_phongMaterial.diffuseMap", tex);
     shader->UploadTexture2D("u_phongMaterial.specularMap", specMap);
 
-    // glActiveTexture(GL_TEXTURE0);
-    // tex->Bind();
-
-    // glActiveTexture(GL_TEXTURE0 + 1);
-    // specMap->Bind();
-
+    const VertexBuffer *vertexBuffer = cube->GetVertexBuffer();
+    const IndexBuffer *indexBuffer = cube->GetIndexBuffer();
     vertexBuffer->Bind();
     indexBuffer->Bind();
     glDrawElements(
@@ -325,6 +315,8 @@ void GlRenderer::OnRenderBegin()
         point->color
     );
 
+    const VertexBuffer *lightSourceVertexBuffer = pyramid->GetVertexBuffer();
+    const IndexBuffer *lightSourceIndexBuffer = pyramid->GetIndexBuffer();
     lightSourceVertexBuffer->Bind();
     lightSourceIndexBuffer->Bind();
     glDrawElements(

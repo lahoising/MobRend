@@ -38,13 +38,13 @@ GlVertexBuffer::~GlVertexBuffer()
     glDeleteVertexArrays(1, &this->vao);
 }
 
-void GlVertexBuffer::Bind()
+void GlVertexBuffer::Bind() const
 {
     glBindVertexArray(this->vao);
     glBindBuffer(GL_ARRAY_BUFFER, this->bufferId);
 }
 
-void GlVertexBuffer::Unbind()
+void GlVertexBuffer::Unbind() const
 {
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);

@@ -21,8 +21,8 @@ public:
     static VertexBuffer *Create(CreateParams &params);
 
     virtual ~VertexBuffer() = 0 {};
-    virtual void Bind() = 0;
-    virtual void Unbind() = 0;
+    virtual void Bind() const = 0;
+    virtual void Unbind() const = 0;
 };
 
 } // namespace mr

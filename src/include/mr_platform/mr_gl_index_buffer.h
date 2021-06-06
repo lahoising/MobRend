@@ -11,8 +11,8 @@ class GlIndexBuffer : public IndexBuffer
 public:
     GlIndexBuffer(IndexBuffer::CreateParams &params);
     virtual ~GlIndexBuffer() override;
-    virtual void Bind() override;
-    virtual void Unbind() override;
+    virtual void Bind() const override;
+    virtual void Unbind() const override;
 
 private:
     unsigned int bufferId;
