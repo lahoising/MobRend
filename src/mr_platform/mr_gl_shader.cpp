@@ -157,6 +157,7 @@ GlShader::GlShader(Shader::CreateParams params)
 			vec3 specular = specularColor * specLight;
 
 			vec3 result = (ambient + diffuse + specular) * u_color;
+			// vec3 result = norm;
 			finalFragColor = vec4(result, 1.0);
         }
     )";

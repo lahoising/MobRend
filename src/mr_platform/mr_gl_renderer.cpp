@@ -49,7 +49,7 @@ static unsigned int lightSourceIndexCount = 0;
 
 static Light *ambient = new AmbientLight(
     glm::vec3(1.0f, 1.0f, 1.0f), 
-    1.0f);
+    0.5f);
 
 static Light *point = new PointLight(
     glm::vec3(1.0f, 1.0f, 1.0f),
@@ -58,7 +58,7 @@ static Light *point = new PointLight(
 
 static Light *directionalLight = new DirectionalLight(
     glm::vec3(1.0f, 1.0f, 1.0f),
-    1.0f
+    0.8f
 );
 
 static Light *spotlight = new Spotlight(
@@ -73,8 +73,6 @@ GlRenderer::GlRenderer()
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
 
-    ambient->intensity = 0.3f;
-    
     point->position = glm::vec3(0.0f, 0.0f, 2.0f);
 
     DirectionalLight *dirLight = (DirectionalLight*)directionalLight;
@@ -280,10 +278,10 @@ void GlRenderer::OnRenderBegin()
     );
 
     shader->UploadVec3("u_phongMaterial.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
-    shader->UploadFloat("u_phongMaterial.diffuseMapStrength", 1.0f);
+    shader->UploadFloat("u_phongMaterial.diffuseMapStrength", 0.0f);
     
     shader->UploadVec3("u_phongMaterial.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-    shader->UploadFloat("u_phongMaterial.specularMapStrength", 1.0f);
+    shader->UploadFloat("u_phongMaterial.specularMapStrength", 0.0f);
     shader->UploadFloat("u_phongMaterial.shininess", 32.f);
 
     glActiveTexture(GL_TEXTURE0);

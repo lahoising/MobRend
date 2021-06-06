@@ -29,7 +29,6 @@ GlVertexBuffer::GlVertexBuffer(VertexBuffer::CreateParams &params)
             (const void *)((size_t)offset)
         );
         offset += attribSize;
-        i++;
     }
 }
 
