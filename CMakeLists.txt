@@ -103,3 +103,8 @@ add_library(stb INTERFACE)
 target_sources(stb INTERFACE "${MR_STB_PATH}/stb_image.h")
 target_include_directories(stb INTERFACE "${MR_STB_PATH}")
 target_link_libraries(app stb)
+
+# assimp
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+add_subdirectory("${EXTERNAL_INC}/assimp")
+target_link_libraries(app assimp)

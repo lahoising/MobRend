@@ -21,6 +21,8 @@
 #include "mr_fps_camera.h"
 #include "mr_light.h"
 
+#include <assimp/Importer.hpp>
+
 namespace mr
 {
 
@@ -274,7 +276,7 @@ void GlRenderer::OnRenderBegin()
     );
 
     // ambient->Bind(shader, "u_ambientLight");
-    // point->Bind(shader, "u_pointLight");
+    point->Bind(shader, "u_pointLight");
     
     // DirectionalLight *dirLight = (DirectionalLight*)directionalLight;
     // dirLight->direction =   glm::quat(glm::vec3(0.0f, glm::radians(0.5f), 0.0f)) * 

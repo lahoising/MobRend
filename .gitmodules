@@ -14,3 +14,6 @@
 [submodule "external/stb_image"]
 	path = external/stb_image
 	url = https://github.com/nothings/stb.git
+[submodule "external/assimp"]
+	path = external/assimp
+	url = https://github.com/assimp/assimp.git
