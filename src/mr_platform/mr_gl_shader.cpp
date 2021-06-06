@@ -75,6 +75,7 @@ GlShader::GlShader(Shader::CreateParams params)
 			int type;
 
 			vec3 attenuation;
+			float cutoffAngle;
 		};
         
 		uniform vec3 u_color;
@@ -91,7 +92,7 @@ GlShader::GlShader(Shader::CreateParams params)
 
 		vec3 DiffuseLight(Light light, vec3 normal, vec3 fragmentPosition)
 		{
-			vec3 lightDir = normalize(light.position - fragmentPosition) * float(light.type == 1);
+			vec3 lightDir = normalize(light.position - fragmentPosition) * float(light.type == 1 || light.type == 3);
 			lightDir += normalize(-light.position) * float(light.type == 2); // position is direction if light is directional
 			float diff = max(dot(normal, lightDir), 0.0);
 			return light.color * light.intensity * diff;
@@ -99,7 +100,7 @@ GlShader::GlShader(Shader::CreateParams params)
 
 		vec3 SpecularLight(Light light, vec3 viewDir, vec3 fragPosition, vec3 normal, float shininess)
 		{
-			vec3 lightDir = normalize(light.position - fragPosition) * float(light.type == 1);
+			vec3 lightDir = normalize(light.position - fragPosition) * float(light.type == 1 || light.type == 3);
 			lightDir += normalize(-light.position) * float(light.type == 2);
 			vec3 reflectDir = reflect(-lightDir, normal);
 			float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
@@ -113,6 +114,13 @@ GlShader::GlShader(Shader::CreateParams params)
 								(light.attenuation.y * distance) + 
 								(light.attenuation.z * distance * distance);
 			return mix(1.0, 1.0 / denominator, light.type == 1); // dont use attenuation when light is not point
+		}
+
+		float WithinSpotlight(Light light, vec3 fragPosition)
+		{
+			vec3 lightDir = normalize(light.position - fragPosition);
+			float theta = dot(lightDir, normalize(-light.attenuation));
+			return mix(1.0, float(theta > light.cutoffAngle), light.type == 3);
 		}
 
 		void main(){
@@ -143,8 +151,7 @@ GlShader::GlShader(Shader::CreateParams params)
 								SpecularLight(u_pointLight, viewDir, a_fragPos, norm, u_phongMaterial.shininess) * pointLightAttenuation;
 			vec3 specular = specularColor * specLight;
 
-
-			vec3 result = (ambient + diffuse + specular) * u_color;
+			vec3 result = (ambient + diffuse + specular) * u_color * WithinSpotlight(u_ambientLight, a_fragPos);
 			finalFragColor = vec4(result, 1.0);
         }
     )";

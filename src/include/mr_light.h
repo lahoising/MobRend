@@ -17,6 +17,7 @@ public:
         AMBIENT = 0,
         POINT,
         DIRECTIONAL,
+        SPOTLIGHT,
     };
 
 public:
@@ -66,6 +67,18 @@ public:
 
 public:
     glm::vec3 direction;
+};
+
+/// =========== SPOTLIGHT =============
+class Spotlight : public Light
+{
+public:
+    Spotlight(glm::vec3 color, float intensity);
+    virtual void Bind(Shader *shader, const char *name) override;
+    
+public:
+    glm::quat rotation;
+    float cutoffAngle;
 };
 
 } // namespace mr

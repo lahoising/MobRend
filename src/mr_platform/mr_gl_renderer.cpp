@@ -56,6 +56,10 @@ static Light *directionalLight = new DirectionalLight(
     1.0f
 );
 
+static Light *spotlight = new Spotlight(
+    glm::vec3(1.0f, 1.0f, 1.0f), 1.0f
+);
+
 static GLenum GetAttribType(AttributeType type)
 {
     switch (type)
@@ -79,6 +83,8 @@ GlRenderer::GlRenderer()
 
     DirectionalLight *dirLight = (DirectionalLight*)directionalLight;
     dirLight->direction = glm::vec3(0.0f, -0.5f, 0.5f);
+
+    spotlight->position = glm::vec3(0.0f, 0.0f, -3.0f);
 
     Shader::CreateParams shaderCreateParams = {};
     // shaderCreateParams.vertFilePath = "";
@@ -215,6 +221,7 @@ GlRenderer::~GlRenderer()
     delete(ambient);
     delete(point);
     delete(directionalLight);
+    delete(spotlight);
 
     delete(specMap);
     delete(tex);
@@ -267,12 +274,14 @@ void GlRenderer::OnRenderBegin()
     );
 
     // ambient->Bind(shader, "u_ambientLight");
-    point->Bind(shader, "u_pointLight");
+    // point->Bind(shader, "u_pointLight");
     
-    DirectionalLight *dirLight = (DirectionalLight*)directionalLight;
-    dirLight->direction =   glm::quat(glm::vec3(0.0f, glm::radians(0.5f), 0.0f)) * 
-                            dirLight->direction;
-    directionalLight->Bind(shader, "u_ambientLight");
+    // DirectionalLight *dirLight = (DirectionalLight*)directionalLight;
+    // dirLight->direction =   glm::quat(glm::vec3(0.0f, glm::radians(0.5f), 0.0f)) * 
+    //                         dirLight->direction;
+    // directionalLight->Bind(shader, "u_ambientLight");
+
+    spotlight->Bind(shader, "u_ambientLight");
 
     shader->UploadVec3(
         "u_viewPos",
