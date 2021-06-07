@@ -9,6 +9,7 @@
 #include "mr_platform/mr_gl_shader.h"
 #include "mr_texture.h"
 #include "mr_asset_manager.h"
+#include "mr_uniform_layout.h"
 
 namespace mr
 {
@@ -176,6 +177,9 @@ GlShader::GlShader(Shader::CreateParams params)
 		fragmentShaderCode.assign(buffer.begin(), buffer.end());
 	}
 
+	GetUniformLayout(vertexShaderCode.c_str());
+	GetUniformLayout(fragmentShaderCode.c_str());
+
 	this->CompileShader(vertShaderId, vertexShaderCode.c_str());
 	this->CompileShader(fragShaderId, fragmentShaderCode.c_str());
 
@@ -284,7 +288,7 @@ void GlShader::UploadVec3(const char *uniformName,const glm::vec3 &vec)
 	);
 }
 
-void GlShader::UploadInt(const char *uniformName, int i)
+void GlShader::UploadInt(const char *uniformName, int32_t i)
 {
 	if(this->uniformLocations.find(uniformName) == this->uniformLocations.end())
 	{
