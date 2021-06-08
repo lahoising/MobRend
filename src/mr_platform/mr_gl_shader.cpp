@@ -177,8 +177,11 @@ GlShader::GlShader(Shader::CreateParams params)
 
 	if(params.fragFilePath)
 	{
-		auto buffer = assetManager.GetFileContent(params.fragFilePath);
-		fragmentShaderCode.assign(buffer.begin(), buffer.end());
+		auto buffer = assetManager.GetFileContentInBinary(params.fragFilePath);
+		fragmentShaderCode.assign(
+			this->CompileFromSpirV(buffer)
+		);
+		mrlog("%s", fragmentShaderCode.c_str());
 	}
 
 	GetUniformLayout(vertexShaderCode.c_str());

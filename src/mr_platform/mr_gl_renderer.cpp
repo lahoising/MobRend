@@ -39,7 +39,7 @@ static Texture *tex = nullptr;
 static Texture *specMap = nullptr;
 
 static Shader *lightSourceShader = nullptr;
-// static Mesh *pyramid = nullptr;
+static Mesh *pyramid = nullptr;
 
 static Light *ambient = new AmbientLight(
     glm::vec3(1.0f, 1.0f, 1.0f), 
@@ -145,37 +145,37 @@ GlRenderer::GlRenderer()
 
     cube = new Mesh(meshCreateParams);
     
-    // const GLfloat g_light_source_vertices[] = {
-    //      0.0f,  1.0f,  0.0f,
-    //     -1.0f, -1.0f, -1.0f,
-    //      1.0f, -1.0f, -1.0f,
-    //      1.0f, -1.0f,  1.0f,
-    //     -1.0f, -1.0f,  1.0f
-    // };
+    const GLfloat g_light_source_vertices[] = {
+         0.0f,  1.0f,  0.0f,
+        -1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f
+    };
 
-    // VertexLayout lightSourceVertexLayout = VertexLayout({
-    //     {AttributeType::FLOAT, 3}
-    // });
+    VertexLayout lightSourceVertexLayout = VertexLayout({
+        {AttributeType::FLOAT, 3}
+    });
 
-    // vertexBuffCreateParams = {};
-    // vertexBuffCreateParams.bufferSize = sizeof(g_light_source_vertices);
-    // vertexBuffCreateParams.data = (void*)g_light_source_vertices;
-    // vertexBuffCreateParams.vertexLayout = &lightSourceVertexLayout;
+    vertexBuffCreateParams = {};
+    vertexBuffCreateParams.bufferSize = sizeof(g_light_source_vertices);
+    vertexBuffCreateParams.data = (void*)g_light_source_vertices;
+    vertexBuffCreateParams.vertexLayout = &lightSourceVertexLayout;
 
-    // const uint32_t lightSourceindices[] = {
-    //     0, 1, 2, 
-    //     0, 2, 3,
-    //     0, 3, 4,
-    //     0, 4, 1
-    // };
+    const uint32_t lightSourceindices[] = {
+        0, 1, 2, 
+        0, 2, 3,
+        0, 3, 4,
+        0, 4, 1
+    };
 
-    // indexBufferCreateParams = {};
-    // indexBufferCreateParams.data = lightSourceindices;
-    // indexBufferCreateParams.elementCount = sizeof(lightSourceindices) / sizeof(uint32_t);
+    indexBufferCreateParams = {};
+    indexBufferCreateParams.data = lightSourceindices;
+    indexBufferCreateParams.elementCount = sizeof(lightSourceindices) / sizeof(uint32_t);
 
-    // meshCreateParams.vertexBuffer = VertexBuffer::Create(vertexBuffCreateParams);
-    // meshCreateParams.indexBuffer = IndexBuffer::Create(indexBufferCreateParams);
-    // pyramid = new Mesh(meshCreateParams);
+    meshCreateParams.vertexBuffer = VertexBuffer::Create(vertexBuffCreateParams);
+    meshCreateParams.indexBuffer = IndexBuffer::Create(indexBufferCreateParams);
+    pyramid = new Mesh(meshCreateParams);
 
     // cam = ObserverCamera();
     cam = FPSCamera();
@@ -210,7 +210,7 @@ GlRenderer::~GlRenderer()
     delete(cube);
     delete(shader);
     
-    // delete(pyramid);
+    delete(pyramid);
     delete(lightSourceShader);
 }
 
@@ -294,23 +294,23 @@ void GlRenderer::OnRenderBegin()
     cmd.topologyType = TopologyType::WIREFRAME;
     this->Render(cmd);
 
-    // const glm::mat4 lightSourceScaleMat = glm::scale(identityMat, glm::vec3(0.2f, 0.2f, 0.2f));
-    // lightSourceShader->Bind();
-    // lightSourceShader->UploadMat4(
-    //     "u_viewProjection",
-    //     cam.camera.GetViewProjection());
-    // lightSourceShader->UploadMat4(
-    //     "u_model",
-    //     glm::translate(lightSourceScaleMat, point->position));
+    const glm::mat4 lightSourceScaleMat = glm::scale(identityMat, glm::vec3(0.2f, 0.2f, 0.2f));
+    lightSourceShader->Bind();
+    lightSourceShader->UploadMat4(
+        "cameraConstants.u_viewProjection",
+        cam.camera.GetViewProjection());
+    lightSourceShader->UploadMat4(
+        "cameraConstants.u_model",
+        glm::translate(lightSourceScaleMat, point->position));
 
-    // lightSourceShader->UploadVec3(
-    //     "u_lightColor",
-    //     point->color
-    // );
+    lightSourceShader->UploadVec3(
+        "lightConstants.u_lightColor",
+        point->color
+    );
 
-    // cmd = {};
-    // cmd.mesh = pyramid;
-    // this->Render(cmd);
+    cmd = {};
+    cmd.mesh = pyramid;
+    this->Render(cmd);
 
     auto error = glGetError();
     if(error)
