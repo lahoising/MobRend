@@ -2,10 +2,6 @@ import sys
 import subprocess
 import os
 
-def rreplace(string, oldSubstring, newSubstring, occurence):
-    li = string.rsplit(oldSubstring)
-    return newSubstring.join(li)
-
 def main():
     
     resources_dir = sys.argv[1]
@@ -18,13 +14,12 @@ def main():
     for source in shaders:
         out_spirv_file = source
         
-        for file_extension in supported_shaders:
-            if out_spirv_file.endswith(file_extension):
-                out_spirv_file = rreplace(out_spirv_file, file_extension, '.spv', 1)
-                break
+        lastPeriod = out_spirv_file.find('.')
+        out_spirv_file = out_spirv_file[:lastPeriod] + '_' + out_spirv_file[lastPeriod+1:] + '.spv'
 
+        print(out_spirv_file)
         completed = subprocess.run(
-            [glslangValidator, source, '-o', out_spirv_file],
+            [glslangValidator, '-V', source, '-o', out_spirv_file],
             stdout=subprocess.PIPE,)
 
         print(completed.stdout.decode('utf-8'))
