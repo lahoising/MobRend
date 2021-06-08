@@ -108,3 +108,19 @@ target_link_libraries(app stb)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 add_subdirectory("${EXTERNAL_INC}/assimp")
 target_link_libraries(app assimp)
+
+# glslang
+set(MOBREND_BUILD_GLSLANG ON CACHE BOOL "Build glslang, used to convert glsl shaders to SPIR-V")
+if(${MOBREND_BUILD_GLSLANG})
+add_subdirectory("${EXTERNAL_INC}/glslang")
+endif()
+
+set(MOBREND_RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources" CACHE PATH "The directories holding resources such as shaders")
+set(MOBREND_PY_SCRIPTS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/scripts")
+foreach(RESOURCE_DIR ${MOBREND_RESOURCES_DIR})
+    message("${RESOURCE_DIR}")
+    add_custom_command(
+        TARGET app
+        POST_BUILD
+        COMMAND ${PYTHON_EXECUTABLE} "${MOBREND_PY_SCRIPTS_DIR}/compile_shaders.py" ${RESOURCE_DIR} $<TARGET_FILE:glslangValidator>)
+endforeach()
