@@ -65,24 +65,29 @@ UniformLayout GetUniformLayout(const char *source)
 
         while(isspace(*scanner) || *scanner == '{') scanner++;
 
-        UniformValue value = {};
-
-        // at this point we are at a line and the next two words will be:
-        // 1. the uniform type
-        // 2. the name of the variable
-        GetNextWord(&scanner, buffer);
-        value.type = IdentifyUniformType(buffer);
-
-        while(isspace(*scanner)) scanner++;
-        GetNextWord(&scanner, variableName);
-
-        while(isspace(*scanner)) scanner++;
-        if(*scanner == '[')
+        while(*scanner != '}')
         {
+            UniformValue value = {};
+
+            // at this point we are at a line and the next two words will be:
+            // 1. the uniform type
+            // 2. the name of the variable
+            GetNextWord(&scanner, buffer);
+            value.type = IdentifyUniformType(buffer);
+
+            while(isspace(*scanner)) scanner++;
+            GetNextWord(&scanner, variableName);
+
+            while(isspace(*scanner)) scanner++;
+            if(*scanner == '[')
+            {
+                
+            }
             
+            structLayout[variableName] = value;
+            scanner++; // skip semicolon
+            while(isspace(*scanner)) scanner++;
         }
-        
-        structLayout[variableName] = value;
     }
 
     scanner = source;
