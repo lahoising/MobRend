@@ -4,3 +4,6 @@ build/
 # Visual Studio Files
 .vscode/
 .vs/
+
+# shader binaries
+resources/**.spv

@@ -124,3 +124,7 @@ foreach(RESOURCE_DIR ${MOBREND_RESOURCES_DIR})
         POST_BUILD
         COMMAND ${PYTHON_EXECUTABLE} "${MOBREND_PY_SCRIPTS_DIR}/compile_shaders.py" ${RESOURCE_DIR} $<TARGET_FILE:glslangValidator>)
 endforeach()
+
+# spirv-cross
+add_subdirectory("${EXTERNAL_INC}/spirv-cross")
+target_link_libraries(app spirv-cross-glsl)
