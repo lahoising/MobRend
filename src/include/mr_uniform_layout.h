@@ -50,6 +50,7 @@ enum UniformType
     TEX1D,
     TEX2D,
     TEX3D,
+    UDSTRUCT, // user defined struct
 };
 
 } // namespace mr

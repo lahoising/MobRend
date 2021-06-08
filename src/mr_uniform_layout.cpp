@@ -15,6 +15,29 @@ static void GetNextWord(const char **source, std::string &outWord)
     *source = nextSpace;
 }
 
+static UniformType IdentifyUniformType(const std::string &word)
+{
+    const char *scanner = word.data();
+
+    switch (*scanner)
+    {
+    case 'v': // vec of some kind
+        if(strstr(scanner, "vec"))
+        {
+            switch (*(scanner + 3))
+            {
+            case '2': return UniformType::VEC2;
+            case '3': return UniformType::VEC3;
+            case '4': return UniformType::VEC4;
+            default: return UniformType::UDSTRUCT;
+            }
+        }
+    break;
+    
+    default: return UniformType::UDSTRUCT;
+    }
+}
+
 UniformLayout GetUniformLayout(const char *source)
 {
     UniformLayout uniforms;
@@ -37,7 +60,18 @@ UniformLayout GetUniformLayout(const char *source)
         GetNextWord(&scanner, structName);
 
         while(isspace(*scanner) || *scanner == '{') scanner++;
-        // GetNextWord(&scanner, )
+
+        // at this point we are at a line and the next two words will be:
+        // 1. the uniform type
+        // 2. the name of the variable
+        GetNextWord(&scanner, buffer);
+        UniformType uniformType = IdentifyUniformType(buffer);
+
+        while(isspace(*scanner)) scanner++;
+        GetNextWord(&scanner, buffer);
+        
+        // at this point we have the name of the variable.
+        // However, it might be appended with brackets and/or semicolons
     }
 
     scanner = source;
