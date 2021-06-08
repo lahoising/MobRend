@@ -24,6 +24,7 @@ public:
     virtual void UploadTexture2D(const char *uniformName, Texture *texture) override;
 
 private:
+    std::string CompileFromSpirV(const std::vector<uint32_t> &source);
     void CompileShader(unsigned int shaderId, const char *shaderSource);
 
 private:

@@ -12,10 +12,7 @@ def main():
                 if f.is_file() and f.path.endswith(supported_shaders) ]
 
     for source in shaders:
-        out_spirv_file = source
-        
-        lastPeriod = out_spirv_file.find('.')
-        out_spirv_file = out_spirv_file[:lastPeriod] + '_' + out_spirv_file[lastPeriod+1:] + '.spv'
+        out_spirv_file = source + '.spv'
 
         print(out_spirv_file)
         completed = subprocess.run(

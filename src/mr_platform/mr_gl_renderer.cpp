@@ -38,7 +38,7 @@ static FPSCamera cam;
 static Texture *tex = nullptr;
 static Texture *specMap = nullptr;
 
-// static Shader *lightSourceShader = nullptr;
+static Shader *lightSourceShader = nullptr;
 // static Mesh *pyramid = nullptr;
 
 static Light *ambient = new AmbientLight(
@@ -79,9 +79,9 @@ GlRenderer::GlRenderer()
     // shaderCreateParams.fragFilePath = "";
     shader = Shader::Create(shaderCreateParams);
 
-    shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\lightsource.vert";
-    shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\lightsource.frag";
-    // lightSourceShader = Shader::Create(shaderCreateParams);
+    shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\lightsource.vert.spv";
+    shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\lightsource.frag.spv";
+    lightSourceShader = Shader::Create(shaderCreateParams);
 
     const GLfloat g_vertex_buffer_data[] = {
         -0.5f,  0.5f, -0.5f,     0.0f,  0.0f, -1.0f,    0.0f, 1.0f,
@@ -211,7 +211,7 @@ GlRenderer::~GlRenderer()
     delete(shader);
     
     // delete(pyramid);
-    // delete(lightSourceShader);
+    delete(lightSourceShader);
 }
 
 void GlRenderer::SetViewport(int x, int y, int width, int height) 

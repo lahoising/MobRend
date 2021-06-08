@@ -5,6 +5,8 @@
 
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <spirv_glsl.hpp>
+
 #include "mr_logger.h"
 #include "mr_platform/mr_gl_shader.h"
 #include "mr_texture.h"
@@ -167,8 +169,10 @@ GlShader::GlShader(Shader::CreateParams params)
 	AssetManager &assetManager = AssetManager::GetInstance();
 	if(params.vertFilePath)
 	{
-		auto buffer = assetManager.GetFileContent(params.vertFilePath);
-		vertexShaderCode.assign(buffer.begin(), buffer.end());
+		auto buffer = assetManager.GetFileContentInBinary(params.vertFilePath);
+		std::string source = this->CompileFromSpirV(buffer);
+		vertexShaderCode.assign(source);
+		mrlog("%s", vertexShaderCode.c_str());
 	}
 
 	if(params.fragFilePath)
@@ -211,6 +215,34 @@ GlShader::GlShader(Shader::CreateParams params)
 GlShader::~GlShader()
 {
     glDeleteProgram(this->programId);
+}
+
+std::string GlShader::CompileFromSpirV(const std::vector<uint32_t> &source)
+{
+	spirv_cross::CompilerGLSL glsl(std::move(source));
+	spirv_cross::ShaderResources resources = glsl.get_shader_resources();
+
+	for (auto &resource : resources.sampled_images)
+	{
+		unsigned set = glsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
+		unsigned binding = glsl.get_decoration(resource.id, spv::DecorationBinding);
+		printf("Image %s at set = %u, binding = %u\n", resource.name.c_str(), set, binding);
+
+		// Modify the decoration to prepare it for GLSL.
+		glsl.unset_decoration(resource.id, spv::DecorationDescriptorSet);
+
+		// Some arbitrary remapping if we want.
+		glsl.set_decoration(resource.id, spv::DecorationBinding, set * 16 + binding);
+	}
+
+	// Set some options.
+	spirv_cross::CompilerGLSL::Options options;
+	options.version = 410;
+	options.es = false;
+	glsl.set_common_options(options);
+
+	// Compile to GLSL, ready to give to GL driver.
+	return glsl.compile();
 }
 
 void GlShader::CompileShader(unsigned int shaderId, const char *shaderSource)
