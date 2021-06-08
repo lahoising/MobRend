@@ -15,6 +15,7 @@ static void GetNextWord(const char **source, std::string &outWord)
     *source = nextSpace;
 }
 
+/// @note this function is potentially unreadable. sorry
 static UniformType IdentifyUniformType(const std::string &word)
 {
     const char *scanner = word.data();
@@ -32,6 +33,24 @@ static UniformType IdentifyUniformType(const std::string &word)
             default: return UniformType::UDSTRUCT;
             }
         }
+        return UniformType::UDSTRUCT;
+    break;
+
+    case 's': // sampler of some kind
+        if(strstr(scanner, "sampler"))
+        {
+            if(*(scanner += 8) == 'D')
+            {
+                switch (*(scanner -= 1))
+                {
+                case '1': return UniformType::TEX1D;
+                case '2': return UniformType::TEX2D;
+                case '3': return UniformType::TEX3D;
+                default: return UniformType::UDSTRUCT;
+                }
+            }
+        }
+        return UniformType::UDSTRUCT;
     break;
     
     default: return UniformType::UDSTRUCT;
