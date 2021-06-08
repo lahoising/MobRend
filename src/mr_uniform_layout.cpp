@@ -22,6 +22,14 @@ static UniformType IdentifyUniformType(const std::string &word)
 
     switch (*scanner)
     {
+    case 'f':
+        if(strstr(scanner, "float"))
+        {
+            return UniformType::FLOAT;
+        }
+        return UniformType::UDSTRUCT;
+    break;
+
     case 'v': // vec of some kind
         if(strstr(scanner, "vec"))
         {
@@ -73,6 +81,7 @@ UniformLayout GetUniformLayout(const char *source)
     std::unordered_map<std::string,UniformLayout> shaderStructs;
     std::string structName = "";
     structName.reserve(128);
+
     while(scanner = strstr(scanner, "struct"))
     {
         UniformLayout structLayout;
@@ -107,6 +116,8 @@ UniformLayout GetUniformLayout(const char *source)
             scanner++; // skip semicolon
             while(isspace(*scanner)) scanner++;
         }
+
+        shaderStructs[structName] = structLayout;
     }
 
     scanner = source;
