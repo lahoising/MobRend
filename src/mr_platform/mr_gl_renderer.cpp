@@ -246,12 +246,12 @@ void GlRenderer::OnRenderBegin()
     );
 
     shader->UploadVec3(
-        "u_color",
+        "u_scene.color",
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
     // ambient->Bind(shader, "u_ambientLight");
-    point->Bind(shader, "u_pointLight");
+    point->Bind(shader, "u_scene.pointLight");
     
     // DirectionalLight *dirLight = (DirectionalLight*)directionalLight;
     // dirLight->direction =   glm::quat(glm::vec3(0.0f, glm::radians(0.5f), 0.0f)) * 
@@ -261,19 +261,19 @@ void GlRenderer::OnRenderBegin()
     Spotlight *spot = (Spotlight*)spotlight;
     spot->position = cam.camera.GetPosition();
     spot->rotation = cam.camera.GetRotation();
-    spotlight->Bind(shader, "u_ambientLight");
+    spotlight->Bind(shader, "u_scene.ambientLight");
 
     shader->UploadVec3(
-        "u_viewPos",
+        "u_scene.viewPos",
         cam.camera.GetPosition()
     );
 
-    shader->UploadVec3("u_phongMaterial.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
-    shader->UploadFloat("u_phongMaterial.diffuseMapStrength", 1.0f);
+    shader->UploadVec3("u_scene.phongMaterial.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
+    shader->UploadFloat("u_scene.phongMaterial.diffuseMapStrength", 1.0f);
     
-    shader->UploadVec3("u_phongMaterial.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-    shader->UploadFloat("u_phongMaterial.specularMapStrength", 1.0f);
-    shader->UploadFloat("u_phongMaterial.shininess", 32.f);
+    shader->UploadVec3("u_scene.phongMaterial.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+    shader->UploadFloat("u_scene.phongMaterial.specularMapStrength", 1.0f);
+    shader->UploadFloat("u_scene.phongMaterial.shininess", 32.f);
 
     shader->UploadTexture2D("u_diffuseMap", tex);
     shader->UploadTexture2D("u_specularMap", specMap);

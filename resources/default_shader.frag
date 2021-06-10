@@ -35,12 +35,12 @@ layout(binding = 1) uniform sampler2D u_specularMap;
 
 layout(push_constant,std430) uniform Misc
 {
-    PhongMaterial u_phongMaterial;
-    vec3 u_color;
-    vec3 u_viewPos;
-    Light u_pointLight;
-    Light u_ambientLight;
-};
+    PhongMaterial phongMaterial;
+    vec3 color;
+    vec3 viewPos;
+    Light pointLight;
+    Light ambientLight;
+} u_scene;
 
 vec3 AmbientLight(Light light)
 {
@@ -84,35 +84,35 @@ float WithinSpotlight(Light light, vec3 fragPosition)
 
 void main(){
     vec3 diffuseColor = mix(
-        u_phongMaterial.diffuse,
+        u_scene.phongMaterial.diffuse,
         vec3(texture(u_diffuseMap, a_texCoord)),
-        u_phongMaterial.diffuseMapStrength);
+        u_scene.phongMaterial.diffuseMapStrength);
 
     vec3 specularColor = mix(
-        u_phongMaterial.specular,
+        u_scene.phongMaterial.specular,
         vec3(texture(u_specularMap, a_texCoord)),
-        u_phongMaterial.specularMapStrength);
+        u_scene.phongMaterial.specularMapStrength);
 
-    float pointLightAttenuation = Attenuation(u_pointLight, a_fragPos);
-    float ambientAttenuation = Attenuation(u_ambientLight, a_fragPos);
+    float pointLightAttenuation = Attenuation(u_scene.pointLight, a_fragPos);
+    float ambientAttenuation = Attenuation(u_scene.ambientLight, a_fragPos);
 
-    float ambientSpotlight = WithinSpotlight(u_ambientLight, a_fragPos);
+    float ambientSpotlight = WithinSpotlight(u_scene.ambientLight, a_fragPos);
 
-    vec3 ambientLight = AmbientLight(u_ambientLight) * ambientAttenuation * ambientSpotlight+ 
-                        AmbientLight(u_pointLight) * pointLightAttenuation;
+    vec3 ambientLight = AmbientLight(u_scene.ambientLight) * ambientAttenuation * ambientSpotlight+ 
+                        AmbientLight(u_scene.pointLight) * pointLightAttenuation;
     vec3 ambient = diffuseColor * ambientLight;
 
     vec3 norm = normalize(a_normal);
-    vec3 diffuseLight = DiffuseLight(u_ambientLight, norm, a_fragPos) * ambientAttenuation * ambientSpotlight + 
-                        DiffuseLight(u_pointLight, norm, a_fragPos) * pointLightAttenuation;
+    vec3 diffuseLight = DiffuseLight(u_scene.ambientLight, norm, a_fragPos) * ambientAttenuation * ambientSpotlight + 
+                        DiffuseLight(u_scene.pointLight, norm, a_fragPos) * pointLightAttenuation;
     vec3 diffuse = diffuseColor * diffuseLight;
 
-    vec3 viewDir = normalize(u_viewPos - a_fragPos);
-    vec3 specLight = 	SpecularLight(u_ambientLight, viewDir, a_fragPos, norm, u_phongMaterial.shininess) * ambientAttenuation * ambientSpotlight +
-                        SpecularLight(u_pointLight, viewDir, a_fragPos, norm, u_phongMaterial.shininess) * pointLightAttenuation;
+    vec3 viewDir = normalize(u_scene.viewPos - a_fragPos);
+    vec3 specLight = 	SpecularLight(u_scene.ambientLight, viewDir, a_fragPos, norm, u_scene.phongMaterial.shininess) * ambientAttenuation * ambientSpotlight +
+                        SpecularLight(u_scene.pointLight, viewDir, a_fragPos, norm, u_scene.phongMaterial.shininess) * pointLightAttenuation;
     vec3 specular = specularColor * specLight;
 
-    vec3 result = (ambient + diffuse + specular) * u_color;
+    vec3 result = (ambient + diffuse + specular) * u_scene.color;
     // vec3 result = norm;
     finalFragColor = vec4(result, 1.0);
 }
