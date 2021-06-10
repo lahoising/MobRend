@@ -19,7 +19,7 @@ def main():
             [glslangValidator, '-V', source, '-o', out_spirv_file],
             stdout=subprocess.PIPE,)
 
-        print(completed.stdout.decode('utf-8'))
+        print(completed.stdout.decode('utf-8'), end='')
 
 if __name__ == "__main__":
     main()

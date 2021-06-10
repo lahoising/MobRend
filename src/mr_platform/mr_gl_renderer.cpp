@@ -75,8 +75,8 @@ GlRenderer::GlRenderer()
     spotlight->position = glm::vec3(0.0f, 0.0f, -3.0f);
 
     Shader::CreateParams shaderCreateParams = {};
-    // shaderCreateParams.vertFilePath = "";
-    // shaderCreateParams.fragFilePath = "";
+    shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\default_shader.vert.spv";
+    shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\default_shader.frag.spv";
     shader = Shader::Create(shaderCreateParams);
 
     shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\lightsource.vert.spv";
@@ -230,18 +230,18 @@ void GlRenderer::OnRenderBegin()
     shader->Bind();
 
     shader->UploadMat4(
-        "u_viewProjection",
+        "u_cam.viewProjection",
         cam.camera.GetViewProjection()
     );
 
     shader->UploadMat4(
-        "u_model",
+        "u_cam.model",
         identityMat
     );
 
     glm::mat3 normalMat = glm::transpose(glm::inverse(identityMat));
     shader->UploadMat3(
-        "u_normalMat",
+        "u_cam.normalMat",
         normalMat
     );
 
@@ -275,19 +275,19 @@ void GlRenderer::OnRenderBegin()
     shader->UploadFloat("u_phongMaterial.specularMapStrength", 1.0f);
     shader->UploadFloat("u_phongMaterial.shininess", 32.f);
 
-    shader->UploadTexture2D("u_phongMaterial.diffuseMap", tex);
-    shader->UploadTexture2D("u_phongMaterial.specularMap", specMap);
+    shader->UploadTexture2D("u_diffuseMap", tex);
+    shader->UploadTexture2D("u_specularMap", specMap);
 
     Renderer::Command cmd = {};
     cmd.mesh = cube;
     this->Render(cmd);
 
     shader->UploadMat4(
-        "u_model",
+        "u_cam.model",
         translated
     );
     shader->UploadVec3(
-        "u_color",
+        "u_cam.color",
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
