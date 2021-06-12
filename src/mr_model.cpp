@@ -77,9 +77,6 @@ Mesh *ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene)
         TEXCOORD
     };
 
-    VertexBuffer::CreateParams vertCreateParams = {};
-    VertexBuffer *vertBuffer = nullptr;
-
     std::vector<VertexAttributeType> vertAttributes;
     VertexLayout layout = {};
     if(mesh->HasPositions())
@@ -139,13 +136,36 @@ Mesh *ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene)
         }
     }
 
+    VertexBuffer::CreateParams vertCreateParams = {};
     vertCreateParams.data = buffer.data();
     vertCreateParams.bufferSize = buffer.size();
     vertCreateParams.vertexLayout = &layout;
-    vertBuffer = VertexBuffer::Create(vertCreateParams);
+    VertexBuffer *vertBuffer = VertexBuffer::Create(vertCreateParams);
+
+    std::vector<uint32_t> indices;
+    for(unsigned int i = 0; i < mesh->mNumFaces; i++)
+    {
+        aiFace &face = mesh->mFaces[i];
+        for(unsigned int j = 0; j < face.mNumIndices; j++)
+        {
+            indices.push_back(face.mIndices[j]);
+        }
+    }
+
+    IndexBuffer::CreateParams indexCreateParams = {};
+    indexCreateParams.data = indices.data();
+    indexCreateParams.elementCount = indices.size();
+    IndexBuffer *indexBuffer = IndexBuffer::Create(indexCreateParams);
+
+    Mesh::CreateParams params = {};
+    params.vertexBuffer = vertBuffer;
+    params.indexBuffer = indexBuffer;
+    Mesh *loadedMesh = new Mesh(params);
 
     delete(vertBuffer);
-    return nullptr;
+    delete(indexBuffer);
+    
+    return loadedMesh;
 }
 
 
