@@ -1,5 +1,4 @@
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include <stb_image.h>
 
 #include "mr_image_loader.h"
 
