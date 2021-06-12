@@ -12,6 +12,7 @@
 #include "mr_gui.h"
 #include "mr_application.h"
 
+#include "mr_model.h"
 #include "mr_mesh.h"
 #include "mr_shader.h"
 #include "mr_camera.h"
@@ -58,6 +59,8 @@ static Light *directionalLight = new DirectionalLight(
 static Light *spotlight = new Spotlight(
     glm::vec3(1.0f, 1.0f, 1.0f), 1.0f
 );
+
+static Model *model = nullptr;
 
 GlRenderer::GlRenderer()
 {
@@ -195,6 +198,9 @@ GlRenderer::GlRenderer()
     specMap = Texture::Create("D:\\Documents\\progs\\krita_resources\\MobRend\\IU_Spec.png");
 
     Application::GetInstance().GetMainWindow()->SetCursorVisible(false);
+
+    model = Model::Load("D:\\Documents\\Clases\\4th Year\\sem-2\\it386\\sprints\\3rd\\Lodge_Modular_Pieces_Exploded.fbx");
+    delete(model);
 }
 
 GlRenderer::~GlRenderer()

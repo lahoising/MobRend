@@ -24,6 +24,8 @@ class VertexLayout
 public:
     VertexLayout(const std::vector<Attribute> &attributes);
     VertexLayout(const std::initializer_list<Attribute> attributes);
+    void PushAttribute(const Attribute &attribute);
+    
     uint32_t GetStride() const { return this->stride; }
     const std::vector<Attribute> &GetAttributes() const { return this->attributes; }
 

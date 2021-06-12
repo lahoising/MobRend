@@ -32,4 +32,10 @@ uint32_t VertexLayout::GetAttributeSize(const Attribute &attrib)
     }
 }
 
+void VertexLayout::PushAttribute(const Attribute &attribute)
+{
+    this->attributes.push_back(attribute);
+    this->stride += VertexLayout::GetAttributeSize(attribute);
+}
+
 } // namespace mr
