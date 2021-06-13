@@ -124,11 +124,6 @@ GlRenderer::GlRenderer()
         {AttributeType::FLOAT, 2}
     });
 
-    VertexBuffer::CreateParams vertexBuffCreateParams = {};
-    vertexBuffCreateParams.bufferSize = sizeof(g_vertex_buffer_data);
-    vertexBuffCreateParams.data = (void*)g_vertex_buffer_data;
-    vertexBuffCreateParams.vertexLayout = &layout;
-
     const uint32_t indices[] = {
          0,  1,  2,  2,  3,  0,
          4,  5,  6,  6,  7,  4,
@@ -138,14 +133,12 @@ GlRenderer::GlRenderer()
         20, 21, 22, 22, 23, 20,
     };
     
-    IndexBuffer::CreateParams indexBufferCreateParams = {};
-    indexBufferCreateParams.data = indices;
-    indexBufferCreateParams.elementCount = sizeof(indices) / sizeof(uint32_t);
-
     Mesh::CreateParams meshCreateParams = {};
-    meshCreateParams.vertexBuffer = VertexBuffer::Create(vertexBuffCreateParams);
-    meshCreateParams.indexBuffer = IndexBuffer::Create(indexBufferCreateParams);
-
+    meshCreateParams.vertices = g_vertex_buffer_data;
+    meshCreateParams.verticesArraySize = sizeof(g_vertex_buffer_data);
+    meshCreateParams.vertexLayout = &layout;
+    meshCreateParams.indices = indices;
+    meshCreateParams.indexCount = sizeof(indices) / sizeof(uint32_t);
     cube = new Mesh(meshCreateParams);
     
     const GLfloat g_light_source_vertices[] = {
@@ -160,11 +153,6 @@ GlRenderer::GlRenderer()
         {AttributeType::FLOAT, 3}
     });
 
-    vertexBuffCreateParams = {};
-    vertexBuffCreateParams.bufferSize = sizeof(g_light_source_vertices);
-    vertexBuffCreateParams.data = (void*)g_light_source_vertices;
-    vertexBuffCreateParams.vertexLayout = &lightSourceVertexLayout;
-
     const uint32_t lightSourceindices[] = {
         0, 1, 2, 
         0, 2, 3,
@@ -172,12 +160,12 @@ GlRenderer::GlRenderer()
         0, 4, 1
     };
 
-    indexBufferCreateParams = {};
-    indexBufferCreateParams.data = lightSourceindices;
-    indexBufferCreateParams.elementCount = sizeof(lightSourceindices) / sizeof(uint32_t);
-
-    meshCreateParams.vertexBuffer = VertexBuffer::Create(vertexBuffCreateParams);
-    meshCreateParams.indexBuffer = IndexBuffer::Create(indexBufferCreateParams);
+    meshCreateParams = {};
+    meshCreateParams.vertices = g_light_source_vertices;
+    meshCreateParams.verticesArraySize = sizeof(g_light_source_vertices);
+    meshCreateParams.vertexLayout = &lightSourceVertexLayout;
+    meshCreateParams.indices = lightSourceindices;
+    meshCreateParams.indexCount = sizeof(lightSourceindices) / sizeof(uint32_t);
     pyramid = new Mesh(meshCreateParams);
 
     // cam = ObserverCamera();

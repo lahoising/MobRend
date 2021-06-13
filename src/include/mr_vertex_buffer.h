@@ -12,9 +12,9 @@ class VertexBuffer : public Buffer
 public:
     typedef struct
     {
-        void *data;
+        const void *data;
         size_t bufferSize;
-        VertexLayout *vertexLayout;
+        const VertexLayout *vertexLayout;
     } CreateParams;
 
 public:

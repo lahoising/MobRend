@@ -14,7 +14,7 @@ namespace mr
     namespace ModelLoader
     {
         static Model *Load(const char *filepath);
-        static void ProcessNode(aiNode *rootNode, const aiScene *scene);
+        static std::vector<Mesh*> ProcessNode(aiNode *rootNode, const aiScene *scene);
         static Mesh *ProcessMesh(aiMesh *mesh, const aiScene *scene);
     } // namespace ModelLoader
     
@@ -26,7 +26,11 @@ Model::Model(const std::vector<Mesh*> &meshes)
 
 Model::~Model()
 {
-
+    for(Mesh *mesh : this->meshes)
+    {
+        delete(mesh);
+    }
+    this->meshes.clear();
 }
 
 Model *Model::Load(const char *filepath)
@@ -36,21 +40,20 @@ Model *Model::Load(const char *filepath)
 
 Model *ModelLoader::Load(const char *filepath)
 {
-    Model *model = new Model();
-    
     Assimp::Importer importer;
     const aiScene *scene = importer.ReadFile(filepath, aiProcess_Triangulate | aiProcess_FlipUVs);
     MR_ASSERT(scene && !(scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) && scene->mRootNode);
-    ModelLoader::ProcessNode(scene->mRootNode, scene);
+    auto meshes = ModelLoader::ProcessNode(scene->mRootNode, scene);
 
-    return model;
+    return new Model(meshes);
 }
 
-void ModelLoader::ProcessNode(aiNode *rootNode, const aiScene *scene)
+std::vector<Mesh*> ModelLoader::ProcessNode(aiNode *rootNode, const aiScene *scene)
 {
     std::queue<aiNode*> nodesQueue;
     nodesQueue.push(rootNode);
 
+    std::vector<Mesh*> meshes;
     while(!nodesQueue.empty())
     {
         aiNode *node = nodesQueue.front();
@@ -63,9 +66,11 @@ void ModelLoader::ProcessNode(aiNode *rootNode, const aiScene *scene)
 
         for(unsigned int i = 0; i < node->mNumMeshes; i++)
         {
-            ModelLoader::ProcessMesh(scene->mMeshes[node->mMeshes[i]], scene);
+            meshes.push_back(ModelLoader::ProcessMesh(scene->mMeshes[node->mMeshes[i]], scene));
         }
     }
+
+    return meshes;
 }
 
 Mesh *ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene)
@@ -136,12 +141,6 @@ Mesh *ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene)
         }
     }
 
-    VertexBuffer::CreateParams vertCreateParams = {};
-    vertCreateParams.data = buffer.data();
-    vertCreateParams.bufferSize = buffer.size();
-    vertCreateParams.vertexLayout = &layout;
-    VertexBuffer *vertBuffer = VertexBuffer::Create(vertCreateParams);
-
     std::vector<uint32_t> indices;
     for(unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
@@ -152,18 +151,13 @@ Mesh *ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene)
         }
     }
 
-    IndexBuffer::CreateParams indexCreateParams = {};
-    indexCreateParams.data = indices.data();
-    indexCreateParams.elementCount = indices.size();
-    IndexBuffer *indexBuffer = IndexBuffer::Create(indexCreateParams);
-
     Mesh::CreateParams params = {};
-    params.vertexBuffer = vertBuffer;
-    params.indexBuffer = indexBuffer;
+    params.vertices = buffer.data();
+    params.verticesArraySize = buffer.size();
+    params.vertexLayout = &layout;
+    params.indices = indices.data();
+    params.indexCount = indices.size();
     Mesh *loadedMesh = new Mesh(params);
-
-    delete(vertBuffer);
-    delete(indexBuffer);
     
     return loadedMesh;
 }

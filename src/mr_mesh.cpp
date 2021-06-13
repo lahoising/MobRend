@@ -18,8 +18,18 @@ namespace mr
 // }
 
 Mesh::Mesh(CreateParams &params)
-    : vertexBuffer(params.vertexBuffer), indexBuffer(params.indexBuffer) 
-{}
+{
+    VertexBuffer::CreateParams vertexCreateParams = {};
+    vertexCreateParams.bufferSize = params.verticesArraySize;
+    vertexCreateParams.data = params.vertices;
+    vertexCreateParams.vertexLayout = params.vertexLayout;
+    this->vertexBuffer = VertexBuffer::Create(vertexCreateParams);
+
+    IndexBuffer::CreateParams indexCreateParams = {};
+    indexCreateParams.data = params.indices;
+    indexCreateParams.elementCount = params.indexCount;
+    this->indexBuffer = IndexBuffer::Create(indexCreateParams);
+}
 
 Mesh::~Mesh()
 {

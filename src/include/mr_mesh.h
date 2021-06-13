@@ -14,8 +14,11 @@ class Mesh
 public:
     typedef struct
     {
-        VertexBuffer *vertexBuffer;
-        IndexBuffer *indexBuffer;
+        const VertexLayout *vertexLayout;
+        const void *vertices;
+        uint32_t verticesArraySize;
+        const uint32_t *indices;
+        uint32_t indexCount;
     } CreateParams;
 
 public:

@@ -16,6 +16,8 @@ public:
     Model(const std::vector<Mesh*> &meshes);
     ~Model();
 
+    const std::vector<Mesh*> &GetMeshes(){ return this->meshes; };
+
 private:
     std::vector<Mesh*> meshes;
 };
