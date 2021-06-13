@@ -2,6 +2,7 @@
 #define _MR_TEXTURE_H_
 
 #include <inttypes.h>
+#include <unordered_map>
 
 namespace mr
 {
@@ -18,6 +19,28 @@ public:
 
 protected:
     uint32_t w, h;
+};
+
+class TextureManager
+{
+public:
+    static TextureManager &GetInstance();
+    ~TextureManager();
+    inline void AddTexture(const char *filepath, Texture *texture)
+    {
+        this->loadedTextures[filepath] = texture;
+    }
+    inline Texture *GetTexture(const char *filepath)
+    {
+        return this->loadedTextures[filepath];
+    }
+    bool Contains(const char *filepath);
+
+private:
+    TextureManager();
+
+private:
+    std::unordered_map<std::string,Texture*> loadedTextures;
 };
 
 } // namespace mr

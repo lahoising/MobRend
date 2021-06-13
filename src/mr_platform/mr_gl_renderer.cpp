@@ -197,9 +197,6 @@ GlRenderer::~GlRenderer()
     delete(directionalLight);
     delete(spotlight);
 
-    delete(specMap);
-    delete(tex);
-
     delete(cube);
     delete(shader);
     delete(model);
