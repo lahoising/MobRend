@@ -116,7 +116,7 @@ if(${MOBREND_BUILD_GLSLANG})
 add_subdirectory("${EXTERNAL_INC}/glslang")
 endif()
 
-set(MOBREND_RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources" CACHE PATH "The directories holding resources such as shaders")
+set(MOBREND_SHADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders" CACHE PATH "Directories holding relevant shaders")
 set(MOBREND_PY_SCRIPTS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/scripts")
 foreach(RESOURCE_DIR ${MOBREND_RESOURCES_DIR})
     message("${RESOURCE_DIR}")

@@ -6,4 +6,4 @@ build/
 .vs/
 
 # shader binaries
-resources/**.spv
+resources/**/*.spv
