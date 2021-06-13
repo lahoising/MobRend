@@ -5,10 +5,19 @@ namespace mr
 {
 
 class Mesh;
+class Model;
+
 enum TopologyType
 {
     TRIANGLES = 0,
     WIREFRAME,
+};
+
+enum RenderObjectType
+{
+    NONE,
+    MESH,
+    MODEL
 };
 
 class Renderer
@@ -18,11 +27,19 @@ public:
     struct gui_init_info_s;
     typedef struct command_s
     {
-        Mesh *mesh;
+        union
+        {
+            Mesh *mesh;
+            Model *model;
+        };
         TopologyType topologyType;
+        RenderObjectType renderObjectType;
 
         struct command_s()
-            : mesh(nullptr), topologyType(TopologyType::TRIANGLES) {}
+            : mesh(nullptr), model(nullptr), 
+            topologyType(TopologyType::TRIANGLES),
+            renderObjectType(RenderObjectType::NONE)
+            {}
     } Command;
 
 public:

@@ -175,7 +175,7 @@ GlRenderer::GlRenderer()
     // camConfig.ortho.size = 3.0f;
     camConfig.perspective.aspectRatio = 1280.0f / 720.0f;
     camConfig.perspective.near = 0.1f;
-    camConfig.perspective.far = 100.0f;
+    camConfig.perspective.far = 1000.0f;
     cam.camera = Camera(
         Camera::Type::PERSPECTIVE,
         camConfig
@@ -188,7 +188,6 @@ GlRenderer::GlRenderer()
     Application::GetInstance().GetMainWindow()->SetCursorVisible(false);
 
     model = Model::Load("D:\\Documents\\Clases\\4th Year\\sem-2\\it386\\sprints\\3rd\\Lodge_Modular_Pieces_Exploded.fbx");
-    delete(model);
 }
 
 GlRenderer::~GlRenderer()
@@ -203,6 +202,7 @@ GlRenderer::~GlRenderer()
 
     delete(cube);
     delete(shader);
+    delete(model);
     
     delete(pyramid);
     delete(lightSourceShader);
@@ -274,6 +274,13 @@ void GlRenderer::OnRenderBegin()
 
     Renderer::Command cmd = {};
     cmd.mesh = cube;
+    cmd.renderObjectType = RenderObjectType::MESH;
+    this->Render(cmd);
+
+    shader->UploadFloat("u_scene.phongMaterial.diffuseMapStrength", 0.0f);
+    shader->UploadFloat("u_scene.phongMaterial.specularMapStrength", 0.0f);
+    cmd.model = model;
+    cmd.renderObjectType = RenderObjectType::MODEL;
     this->Render(cmd);
 
     shader->UploadMat4(
@@ -286,6 +293,8 @@ void GlRenderer::OnRenderBegin()
     );
 
     cmd.topologyType = TopologyType::WIREFRAME;
+    cmd.renderObjectType = RenderObjectType::MESH;
+    cmd.mesh = cube;
     this->Render(cmd);
 
     const glm::mat4 lightSourceScaleMat = glm::scale(identityMat, glm::vec3(0.2f, 0.2f, 0.2f));
@@ -317,14 +326,34 @@ void GlRenderer::OnRenderEnd()
 
 void GlRenderer::Render(Renderer::Command &cmd)
 {
-    const IndexBuffer *indexBuffer = cmd.mesh->GetIndexBuffer();
-    cmd.mesh->GetVertexBuffer()->Bind();
-    indexBuffer->Bind();
-    glDrawElements(
-        GlRenderer::GetTopology(cmd.topologyType),
-        indexBuffer->GetElementCount(),
-        GL_UNSIGNED_INT, nullptr
-    );
+    switch (cmd.renderObjectType)
+    {
+    case RenderObjectType::MESH:
+    {
+        const IndexBuffer *indexBuffer = cmd.mesh->GetIndexBuffer();
+        cmd.mesh->GetVertexBuffer()->Bind();
+        indexBuffer->Bind();
+        glDrawElements(
+            GlRenderer::GetTopology(cmd.topologyType),
+            indexBuffer->GetElementCount(),
+            GL_UNSIGNED_INT, nullptr
+        );
+    }
+    break;
+    
+    case RenderObjectType::MODEL:
+        cmd.renderObjectType = RenderObjectType::MESH;
+        for(auto &mesh : cmd.model->GetMeshes())
+        {
+            cmd.mesh = mesh;
+            this->Render(cmd);
+        }
+    break;
+
+    default:
+        mrwarn("Render cmd was called with no render object type");
+    break;
+    }
 }
 
 struct Renderer::gui_init_info_s *GlRenderer::GetGuiInitInfo()

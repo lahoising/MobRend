@@ -21,7 +21,7 @@ void FPSCamera::Update()
     glm::vec3 camRight = rotation * worldRight;
     glm::vec3 camUp = rotation * worldUp;
 
-    const float CAM_MOVEMENT_SPEED = 0.1f;
+    const float CAM_MOVEMENT_SPEED = 1.0f;
     glm::vec3 deltaMove = glm::vec3(0.0f, 0.0f, 0.0f);
     deltaMove += camRight * (float)(input.IsKeyPressed(GLFW_KEY_D) - input.IsKeyPressed(GLFW_KEY_A));
     deltaMove += camFwd * (float)(input.IsKeyPressed(GLFW_KEY_W) - input.IsKeyPressed(GLFW_KEY_S));
