@@ -28,8 +28,8 @@ public:
         this->directional = dirLight;
 
         mr::Shader::CreateParams shaderCreateParams = {};
-        shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\default_shader.vert.spv";
-        shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\default_shader.frag.spv";
+        shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.vert.spv";
+        shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.frag.spv";
         shader = mr::Shader::Create(shaderCreateParams);
 
         cam = mr::FPSCamera();
