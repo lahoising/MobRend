@@ -125,8 +125,8 @@ public:
     {
         ImGui::Begin("Camera Settings");
         {
-            ImGui::DragFloat("Camera Movement Speed", &this->cam.movementSpeed);
-            ImGui::DragFloat("Camera Sensitivity", &this->cam.sensitivity);
+            ImGui::DragFloat("Camera Movement Speed", &this->cam.movementSpeed, 0.01f);
+            ImGui::DragFloat("Camera Sensitivity", &this->cam.sensitivity, 0.01f);
         }
         ImGui::End();
     }

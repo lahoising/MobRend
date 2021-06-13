@@ -54,9 +54,6 @@ void Gui::BeginFrame()
     #endif
 
     ImGui::NewFrame();
-
-    static bool show = true;
-    ImGui::ShowDemoWindow(&show);
 }
 
 void Gui::EndFrame()
