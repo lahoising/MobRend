@@ -46,7 +46,20 @@ public:
         tex = mr::Texture::Create("D:\\Pictures\\Screenshots\\Screenshot (44).png");
         specMap = mr::Texture::Create("D:\\Documents\\progs\\krita_resources\\MobRend\\IU_Spec.png");
 
-        model = mr::Model::Load("D:\\Documents\\Clases\\4th Year\\sem-2\\it386\\sprints\\3rd\\Lodge_Modular_Pieces_Exploded.fbx");
+        model = mr::Model::Load("D:\\Documents\\git\\MobRend\\resources\\models\\kunai.fbx");
+
+        this->isCursonVisible = false;
+        mr::Application::GetInstance().GetMainWindow()->SetCursorVisible(isCursonVisible);
+    }
+
+    void Update()
+    {
+        mr::Window *mainWindow = mr::Application::GetInstance().GetMainWindow();
+        mr::Input &input = mainWindow->input;
+        if(input.KeyJustPressed(81))
+        {
+            mainWindow->SetCursorVisible(this->isCursonVisible = !this->isCursonVisible);
+        }
     }
 
     void Render(mr::Renderer *renderer)
@@ -111,6 +124,7 @@ private:
     mr::Light *directional = nullptr;
 
     mr::Model *model = nullptr;
+    bool isCursonVisible;
 };
 UserApp myApp;
 
@@ -141,7 +155,7 @@ void OnStart()
 
 void OnUpdate()
 {
-    mrlog("hey");
+    myApp.Update();
 }
 
 void OnRender(mr::Renderer *renderer)

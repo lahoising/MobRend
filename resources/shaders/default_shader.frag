@@ -102,6 +102,7 @@ void main(){
                         AmbientLight(u_scene.pointLight) * pointLightAttenuation;
     vec3 ambient = diffuseColor * ambientLight;
 
+    /// TODO: calculate diffuse in view space, not normal space
     vec3 norm = normalize(a_normal);
     vec3 diffuseLight = DiffuseLight(u_scene.ambientLight, norm, a_fragPos) * ambientAttenuation * ambientSpotlight + 
                         DiffuseLight(u_scene.pointLight, norm, a_fragPos) * pointLightAttenuation;
