@@ -66,7 +66,7 @@ bool Application::Init(Application::InitParams params)
 void Application::Update()
 {
     this->window->PollEvents();
-    if(this->window->input.WindowShouldClose() || this->window->input.KeyJustReleased(256))
+    if(this->window->input.WindowShouldClose())
         this->Close();
 }
 

@@ -21,15 +21,13 @@ void FPSCamera::Update()
     glm::vec3 camRight = rotation * worldRight;
     glm::vec3 camUp = rotation * worldUp;
 
-    const float CAM_MOVEMENT_SPEED = 1.0f;
     glm::vec3 deltaMove = glm::vec3(0.0f, 0.0f, 0.0f);
     deltaMove += camRight * (float)(input.IsKeyPressed(GLFW_KEY_D) - input.IsKeyPressed(GLFW_KEY_A));
     deltaMove += camFwd * (float)(input.IsKeyPressed(GLFW_KEY_W) - input.IsKeyPressed(GLFW_KEY_S));
     deltaMove += camUp * (float)(input.IsKeyPressed(GLFW_KEY_R) - input.IsKeyPressed(GLFW_KEY_F));
-    deltaMove *= CAM_MOVEMENT_SPEED;
+    deltaMove *= this->movementSpeed;
 
-    const float CAM_ROTATION_SPEED = 0.01f;
-    glm::vec2 mouseDelta = input.GetMouseDelta() * CAM_ROTATION_SPEED;
+    glm::vec2 mouseDelta = input.GetMouseDelta() * this->sensitivity;
     
     yaw += glm::radians(mouseDelta.x);
     while(yaw > 180.0f) yaw -= 360.0f;

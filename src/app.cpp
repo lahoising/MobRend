@@ -1,5 +1,6 @@
 #include <iostream>
 #include <unordered_map>
+#include <imgui.h>
 #include "mr_application.h"
 #include "mr_logger.h"
 #include "mr_model.h"
@@ -42,6 +43,7 @@ public:
             mr::Camera::Type::PERSPECTIVE,
             camConfig
         );
+        cam.movementSpeed = 0.3f;
 
         tex = mr::Texture::Create("D:\\Pictures\\Screenshots\\Screenshot (44).png");
         specMap = mr::Texture::Create("D:\\Documents\\progs\\krita_resources\\MobRend\\IU_Spec.png");
@@ -59,6 +61,11 @@ public:
         if(input.KeyJustPressed(81))
         {
             mainWindow->SetCursorVisible(this->isCursonVisible = !this->isCursonVisible);
+        }
+
+        if(input.KeyJustPressed(256))
+        {
+            mr::Application::GetInstance().Close();
         }
     }
 
@@ -114,6 +121,16 @@ public:
         renderer->Render(cmd);
     }
 
+    void RenderGui()
+    {
+        ImGui::Begin("Camera Settings");
+        {
+            ImGui::DragFloat("Camera Movement Speed", &this->cam.movementSpeed);
+            ImGui::DragFloat("Camera Sensitivity", &this->cam.sensitivity);
+        }
+        ImGui::End();
+    }
+
 private:
     mr::Shader *shader = nullptr;
 
@@ -131,6 +148,7 @@ UserApp myApp;
 void OnStart();
 void OnUpdate();
 void OnRender(mr::Renderer *renderer);
+void OnGuiRender();
 
 int main(int argc, char *argv[])
 {
@@ -138,6 +156,7 @@ int main(int argc, char *argv[])
     params.onStart = OnStart;
     params.onUpdate = OnUpdate;
     params.onRender = OnRender;
+    params.onGuiRender = OnGuiRender;
 
     params.windowCreateParams.width = 1280;
     params.windowCreateParams.height = 720;
@@ -161,4 +180,9 @@ void OnUpdate()
 void OnRender(mr::Renderer *renderer)
 {
     myApp.Render(renderer);
+}
+
+void OnGuiRender()
+{
+    myApp.RenderGui();
 }
