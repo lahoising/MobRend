@@ -13,6 +13,8 @@ def main():
 
     for source in shaders:
         out_spirv_file = source + '.spv'
+        if os.stat(out_spirv_file).st_mtime > os.stat(source).st_mtime:
+            continue
 
         print(out_spirv_file)
         completed = subprocess.run(
