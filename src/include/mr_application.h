@@ -9,6 +9,8 @@ namespace mr
 {
 typedef void (*OnStartFn)();
 typedef void (*OnUpdateFn)();
+typedef void (*OnRenderFn)(Renderer* renderer);
+typedef void (*OnGuiRenderFn)();
 typedef void (*OnDestroyFn)();
 
 class Application
@@ -18,6 +20,8 @@ public:
     {
         OnStartFn onStart;
         OnUpdateFn onUpdate;
+        OnRenderFn onRender;
+        OnGuiRenderFn onGuiRender;
         OnDestroyFn onDestroy;
         Window::CreateParams windowCreateParams;
     } RunParams;
@@ -41,6 +45,7 @@ private:
 
     bool Init(InitParams params);
     void Update();
+    void Render(OnRenderFn onRender, OnGuiRenderFn onGuiRender);
 
 private:
     bool running = false;

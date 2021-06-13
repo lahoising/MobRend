@@ -37,6 +37,8 @@ void Application::Run(Application::RunParams params)
         this->Update();
         if(params.onUpdate)
             params.onUpdate();
+
+        this->Render(params.onRender, params.onGuiRender);
     }
 
     if(params.onDestroy)
@@ -66,13 +68,19 @@ void Application::Update()
     this->window->PollEvents();
     if(this->window->input.WindowShouldClose() || this->window->input.KeyJustReleased(256))
         this->Close();
+}
 
+void Application::Render(OnRenderFn onRender, OnGuiRenderFn onGuiRender)
+{
     this->renderer->OnRenderBegin();
+    if(onRender) onRender(this->renderer);
 
-    // this->gui->BeginFrame();
-    // this->gui->EndFrame();
+    this->gui->BeginFrame();
+    if(onGuiRender) onGuiRender();
+    this->gui->EndFrame();
 
     this->renderer->OnRenderEnd();
+
     this->window->SwapBuffers();
 }
 
