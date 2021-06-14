@@ -27,6 +27,9 @@ public:
         shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.frag.spv";
         shader = mr::Shader::Create(shaderCreateParams);
 
+        shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\solid_color.frag.spv";
+        solidShader = mr::Shader::Create(shaderCreateParams);
+
         cam = mr::FPSCamera();
         mr::Camera::Config camConfig = {};
         camConfig.perspective.fov = glm::radians(60.0f);
@@ -130,10 +133,12 @@ public:
         delete(this->model);
         delete(this->directional);
         delete(this->shader);
+        delete(this->solidShader);
     }
 
 private:
     mr::Shader *shader = nullptr;
+    mr::Shader *solidShader = nullptr;
 
     mr::FPSCamera cam;
     mr::Texture *tex = nullptr;

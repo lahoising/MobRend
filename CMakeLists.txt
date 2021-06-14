@@ -118,7 +118,7 @@ endif()
 
 set(MOBREND_SHADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders" CACHE PATH "Directories holding relevant shaders")
 set(MOBREND_PY_SCRIPTS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/scripts")
-foreach(RESOURCE_DIR ${MOBREND_RESOURCES_DIR})
+foreach(RESOURCE_DIR ${MOBREND_SHADERS_DIR})
     message("${RESOURCE_DIR}")
     add_custom_command(
         TARGET app
