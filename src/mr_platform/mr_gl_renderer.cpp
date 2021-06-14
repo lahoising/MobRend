@@ -100,6 +100,31 @@ void GlRenderer::EnableRenderPass(RenderPassMask renderPassMask, bool enable)
     }
 }
 
+void GlRenderer::SetDepthTestFn(RenderPassFn fn)
+{
+    glDepthFunc( GlRenderer::GetRenderPassFn(fn) );
+}
+
+void GlRenderer::SetStencilTestFn(RenderPassFn fn, int refValue, unsigned int mask)
+{
+    glStencilFunc(
+        GlRenderer::GetRenderPassFn(fn),
+        refValue, mask
+    );
+}
+
+void GlRenderer::SetStencilTestAction(
+    StencilAction stencilFailAction, 
+    StencilAction depthFailAction, 
+    StencilAction stencilAndDepthFailAction)
+{
+    glStencilOp(
+        GlRenderer::GetStencilAction(stencilFailAction),
+        GlRenderer::GetStencilAction(depthFailAction),
+        GlRenderer::GetStencilAction(stencilAndDepthFailAction)
+    );
+}
+    
 struct Renderer::gui_init_info_s *GlRenderer::GetGuiInitInfo()
 {
     auto *guiInfo = (Renderer::gui_init_info_s*)malloc(sizeof(Renderer::gui_init_info_s));
@@ -131,6 +156,39 @@ GLenum GlRenderer::GetRenderPass(RenderPass pass)
     default: return 0;
     }
 }
+
+GLenum GlRenderer::GetRenderPassFn(RenderPassFn fn)
+{
+    switch (fn)
+    {
+    case RENDER_PASS_FN_ALWAY: return GL_ALWAYS;
+    case RENDER_PASS_FN_NEVER: return GL_NEVER;
+    case RENDER_PASS_FN_LESS: return GL_LESS;
+    case RENDER_PASS_FN_EQUAL: return GL_EQUAL;
+    case RENDER_PASS_FN_LESS_OR_EQUEAL: return GL_LEQUAL;
+    case RENDER_PASS_FN_GREATER: return GL_GREATER;
+    case RENDER_PASS_FN_NOT_EQUAL: return GL_NOTEQUAL;
+    case RENDER_PASS_FN_GREATER_OR_EQUAL: return GL_GEQUAL;
+    default: throw "Render pass function not supporter";
+    }
+}
+
+GLenum GlRenderer::GetStencilAction(StencilAction action)
+{
+    switch (action)
+    {
+    case STENCIL_ACTION_KEEP: return GL_KEEP;
+    case STENCIL_ACTION_ZERO: return GL_ZERO;
+    case STENCIL_ACTION_REPLACE: return GL_REPLACE;
+    case STENCIL_ACTION_INCREASE: return GL_INCR;
+    case STENCIL_ACTION_INCREASE_WRAP: return GL_INCR_WRAP;
+    case STENCIL_ACTION_DECREASE: return GL_DECR;
+    case STENCIL_ACTION_DECREASE_WRAP: return GL_DECR_WRAP;
+    case STENCIL_ACTION_INVERT: return GL_INVERT;
+    default: throw "Unknown stencil action";
+    }
+}
+
 
 } // namespace mr
 

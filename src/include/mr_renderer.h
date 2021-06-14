@@ -27,6 +27,30 @@ enum RenderPass
     RENDER_PASS_STENCIL = 2
 };
 
+enum RenderPassFn
+{
+    RENDER_PASS_FN_ALWAY,
+    RENDER_PASS_FN_NEVER,
+    RENDER_PASS_FN_LESS,
+    RENDER_PASS_FN_EQUAL,
+    RENDER_PASS_FN_LESS_OR_EQUEAL,
+    RENDER_PASS_FN_GREATER,
+    RENDER_PASS_FN_NOT_EQUAL,
+    RENDER_PASS_FN_GREATER_OR_EQUAL,
+};
+
+enum StencilAction
+{
+    STENCIL_ACTION_KEEP,
+    STENCIL_ACTION_ZERO,
+    STENCIL_ACTION_REPLACE,
+    STENCIL_ACTION_INCREASE,
+    STENCIL_ACTION_INCREASE_WRAP,
+    STENCIL_ACTION_DECREASE,
+    STENCIL_ACTION_DECREASE_WRAP,
+    STENCIL_ACTION_INVERT,
+};
+
 typedef unsigned int RenderPassMask;
 
 class Renderer
@@ -62,6 +86,12 @@ public:
     virtual void Render(Command &cmd) = 0;
 
     virtual void EnableRenderPass(RenderPassMask renderPassMask, bool enable) = 0;
+    virtual void SetDepthTestFn(RenderPassFn fn) = 0;
+    virtual void SetStencilTestFn(RenderPassFn fn, int refValue, unsigned int mask) = 0;
+    virtual void SetStencilTestAction(
+        StencilAction stencilFailAction, 
+        StencilAction depthFailAction, 
+        StencilAction stencilAndDepthFailAction) = 0;
 };
     
 } // namespace mr
