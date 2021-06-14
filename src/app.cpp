@@ -27,6 +27,7 @@ public:
         shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.frag.spv";
         shader = mr::Shader::Create(shaderCreateParams);
 
+        shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\solid_color.vert.spv";
         shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\solid_color.frag.spv";
         solidShader = mr::Shader::Create(shaderCreateParams);
 
@@ -135,11 +136,11 @@ public:
         renderer->Render(cmd);
 
         renderer->SetStencilTestFn(mr::RENDER_PASS_FN_NOT_EQUAL, 1, 0xFF);
-        renderer->SetStencilMask(0x00);
+        // renderer->SetStencilMask(0x00);
         renderer->EnableRenderPass(mr::RENDER_PASS_DEPTH, false);
         
         solidShader->Bind();
-        const float outlineThickness = 0.3f;
+        const float outlineThickness = 0.1f;
         static const glm::mat4 scaledModelMat = glm::scale(identityMat, glm::vec3(1.0f + outlineThickness));
         solidShader->UploadMat4("u_cam.viewProjection", this->cam.camera.GetViewProjection());
         solidShader->UploadMat4("u_cam.model", scaledModelMat);

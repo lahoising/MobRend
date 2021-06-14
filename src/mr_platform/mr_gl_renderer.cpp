@@ -116,18 +116,18 @@ void GlRenderer::SetStencilTestFn(RenderPassFn fn, int refValue, unsigned int ma
 void GlRenderer::SetStencilTestAction(
     StencilAction stencilFailAction, 
     StencilAction depthFailAction, 
-    StencilAction stencilAndDepthFailAction)
+    StencilAction bothPass)
 {
     glStencilOp(
         GlRenderer::GetStencilAction(stencilFailAction),
         GlRenderer::GetStencilAction(depthFailAction),
-        GlRenderer::GetStencilAction(stencilAndDepthFailAction)
+        GlRenderer::GetStencilAction(bothPass)
     );
 }
 
-void GlRenderer::SetStencilMask(uint8_t mask)
+void GlRenderer::SetStencilMask(uint32_t mask)
 {
-    glStencilMask(mask);
+    glStencilMask((unsigned int)mask);
 }
     
 struct Renderer::gui_init_info_s *GlRenderer::GetGuiInitInfo()

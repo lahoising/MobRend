@@ -27,8 +27,8 @@ public:
     virtual void SetStencilTestAction(
         StencilAction stencilFailAction, 
         StencilAction depthFailAction, 
-        StencilAction stencilAndDepthFailAction) override;
-    virtual void SetStencilMask(uint8_t mask) override;
+        StencilAction bothPass) override;
+    virtual void SetStencilMask(uint32_t mask) override;
 
 private:
     static GLenum GetTopology(TopologyType type);

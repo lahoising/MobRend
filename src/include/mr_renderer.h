@@ -93,8 +93,8 @@ public:
     virtual void SetStencilTestAction(
         StencilAction stencilFailAction, 
         StencilAction depthFailAction, 
-        StencilAction stencilAndDepthFailAction) = 0;
-    virtual void SetStencilMask(uint8_t mask) = 0;
+        StencilAction bothPass) = 0;
+    virtual void SetStencilMask(uint32_t mask) = 0;
 };
     
 } // namespace mr
