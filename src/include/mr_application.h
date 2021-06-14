@@ -7,22 +7,22 @@
 
 namespace mr
 {
-typedef void (*OnStartFn)();
-typedef void (*OnUpdateFn)();
-typedef void (*OnRenderFn)(Renderer* renderer);
-typedef void (*OnGuiRenderFn)();
-typedef void (*OnDestroyFn)();
+class Program
+{
+public:
+    virtual void OnStart() = 0;
+    virtual void OnUpdate() = 0;
+    virtual void OnRender(Renderer *renderer) = 0;
+    virtual void OnGuiRender() = 0;
+    virtual void OnDestroy() = 0;
+};
 
 class Application
 {
 public:
     typedef struct
     {
-        OnStartFn onStart;
-        OnUpdateFn onUpdate;
-        OnRenderFn onRender;
-        OnGuiRenderFn onGuiRender;
-        OnDestroyFn onDestroy;
+        Program *program;
         Window::CreateParams windowCreateParams;
     } RunParams;
 
@@ -45,7 +45,7 @@ private:
 
     bool Init(InitParams params);
     void Update();
-    void Render(OnRenderFn onRender, OnGuiRenderFn onGuiRender);
+    void Render(Program *prog);
 
 private:
     bool running = false;

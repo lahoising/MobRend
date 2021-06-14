@@ -29,20 +29,17 @@ void Application::Run(Application::RunParams params)
     this->running = this->Init(initParams);
     if(!this->running) return;
 
-    if(params.onStart)
-        params.onStart();
+    params.program->OnStart();
 
     while(this->running)
     {
         this->Update();
-        if(params.onUpdate)
-            params.onUpdate();
+        params.program->OnUpdate();
 
-        this->Render(params.onRender, params.onGuiRender);
+        this->Render(params.program);
     }
 
-    if(params.onDestroy)
-        params.onDestroy();
+    params.program->OnDestroy();
 }
 
 bool Application::Init(Application::InitParams params)
@@ -70,13 +67,13 @@ void Application::Update()
         this->Close();
 }
 
-void Application::Render(OnRenderFn onRender, OnGuiRenderFn onGuiRender)
+void Application::Render(Program *prog)
 {
     this->renderer->OnRenderBegin();
-    if(onRender) onRender(this->renderer);
+    prog->OnRender(this->renderer);
 
     this->gui->BeginFrame();
-    if(onGuiRender) onGuiRender();
+    prog->OnGuiRender();
     this->gui->EndFrame();
 
     this->renderer->OnRenderEnd();

@@ -8,19 +8,13 @@
 #include "mr_fps_camera.h"
 #include "mr_light.h"
 
-class UserApp
+class UserApp : public mr::Program
 {
 public:
     UserApp(){}
+    ~UserApp(){}
 
-    ~UserApp()
-    {
-        delete(this->model);
-        delete(this->directional);
-        delete(this->shader);
-    }
-
-    void Start()
+    virtual void OnStart() override
     {
         mr::DirectionalLight *dirLight = new mr::DirectionalLight(
             glm::vec3(1.0f, 1.0f, 1.0f), 1.0f
@@ -43,7 +37,7 @@ public:
             mr::Camera::Type::PERSPECTIVE,
             camConfig
         );
-        cam.movementSpeed = 0.3f;
+        cam.movementSpeed = 0.03f;
 
         tex = mr::Texture::Create("D:\\Pictures\\Screenshots\\Screenshot (44).png");
         specMap = mr::Texture::Create("D:\\Documents\\progs\\krita_resources\\MobRend\\IU_Spec.png");
@@ -54,7 +48,7 @@ public:
         mr::Application::GetInstance().GetMainWindow()->SetCursorVisible(isCursonVisible);
     }
 
-    void Update()
+    virtual void OnUpdate() override
     {
         mr::Window *mainWindow = mr::Application::GetInstance().GetMainWindow();
         mr::Input &input = mainWindow->input;
@@ -69,7 +63,7 @@ public:
         }
     }
 
-    void Render(mr::Renderer *renderer)
+    virtual void OnRender(mr::Renderer *renderer) override
     {
         glm::mat4 identityMat = glm::identity<glm::mat4>();
         cam.Update();
@@ -121,14 +115,21 @@ public:
         renderer->Render(cmd);
     }
 
-    void RenderGui()
+    virtual void OnGuiRender() override
     {
         ImGui::Begin("Camera Settings");
         {
-            ImGui::DragFloat("Camera Movement Speed", &this->cam.movementSpeed, 0.01f);
+            ImGui::DragFloat("Camera Movement Speed", &this->cam.movementSpeed, 0.001f);
             ImGui::DragFloat("Camera Sensitivity", &this->cam.sensitivity, 0.01f);
         }
         ImGui::End();
+    }
+
+    virtual void OnDestroy() override
+    {
+        delete(this->model);
+        delete(this->directional);
+        delete(this->shader);
     }
 
 private:
@@ -143,46 +144,18 @@ private:
     mr::Model *model = nullptr;
     bool isCursonVisible;
 };
-UserApp myApp;
-
-void OnStart();
-void OnUpdate();
-void OnRender(mr::Renderer *renderer);
-void OnGuiRender();
 
 int main(int argc, char *argv[])
 {
     mr::Application::RunParams params = {};
-    params.onStart = OnStart;
-    params.onUpdate = OnUpdate;
-    params.onRender = OnRender;
-    params.onGuiRender = OnGuiRender;
+    params.program = new UserApp();
 
     params.windowCreateParams.width = 1280;
     params.windowCreateParams.height = 720;
     params.windowCreateParams.windowName = "MobRend";
 
-    myApp = UserApp();
     mr::Application::GetInstance().Run(params);
+    
+    delete(params.program);
     return 0;
-}
-
-void OnStart()
-{
-    myApp.Start();
-}
-
-void OnUpdate()
-{
-    myApp.Update();
-}
-
-void OnRender(mr::Renderer *renderer)
-{
-    myApp.Render(renderer);
-}
-
-void OnGuiRender()
-{
-    myApp.RenderGui();
 }
