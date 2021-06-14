@@ -45,7 +45,7 @@ void GlRenderer::SetViewport(int x, int y, int width, int height)
 
 void GlRenderer::OnRenderBegin()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 void GlRenderer::OnRenderEnd()
@@ -124,6 +124,11 @@ void GlRenderer::SetStencilTestAction(
         GlRenderer::GetStencilAction(stencilAndDepthFailAction)
     );
 }
+
+void GlRenderer::SetStencilMask(uint8_t mask)
+{
+    glStencilMask(mask);
+}
     
 struct Renderer::gui_init_info_s *GlRenderer::GetGuiInitInfo()
 {
@@ -151,8 +156,8 @@ GLenum GlRenderer::GetRenderPass(RenderPass pass)
 {
     switch (pass)
     {
-    case RENDER_PASS_DEPTH: GL_DEPTH_TEST;
-    case RENDER_PASS_STENCIL: GL_STENCIL_TEST;
+    case RENDER_PASS_DEPTH: return GL_DEPTH_TEST;
+    case RENDER_PASS_STENCIL: return GL_STENCIL_TEST;
     default: return 0;
     }
 }
@@ -161,7 +166,7 @@ GLenum GlRenderer::GetRenderPassFn(RenderPassFn fn)
 {
     switch (fn)
     {
-    case RENDER_PASS_FN_ALWAY: return GL_ALWAYS;
+    case RENDER_PASS_FN_ALWAYS: return GL_ALWAYS;
     case RENDER_PASS_FN_NEVER: return GL_NEVER;
     case RENDER_PASS_FN_LESS: return GL_LESS;
     case RENDER_PASS_FN_EQUAL: return GL_EQUAL;

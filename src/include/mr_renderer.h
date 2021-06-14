@@ -1,6 +1,8 @@
 #ifndef _MR_RENDERER_H_
 #define _MR_RENDERER_H_
 
+#include <inttypes.h>
+
 namespace mr
 {
 
@@ -29,7 +31,7 @@ enum RenderPass
 
 enum RenderPassFn
 {
-    RENDER_PASS_FN_ALWAY,
+    RENDER_PASS_FN_ALWAYS,
     RENDER_PASS_FN_NEVER,
     RENDER_PASS_FN_LESS,
     RENDER_PASS_FN_EQUAL,
@@ -92,6 +94,7 @@ public:
         StencilAction stencilFailAction, 
         StencilAction depthFailAction, 
         StencilAction stencilAndDepthFailAction) = 0;
+    virtual void SetStencilMask(uint8_t mask) = 0;
 };
     
 } // namespace mr

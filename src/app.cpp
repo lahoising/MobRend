@@ -58,7 +58,11 @@ public:
             mr::RENDER_PASS_DEPTH | mr::RENDER_PASS_STENCIL,
             true
         );
-        rend->SetDepthTestFn(mr::RENDER_PASS_FN_ALWAY);
+        rend->SetStencilTestAction(
+            mr::STENCIL_ACTION_KEEP,
+            mr::STENCIL_ACTION_KEEP,
+            mr::STENCIL_ACTION_REPLACE
+        );
     }
 
     virtual void OnUpdate() override
@@ -125,7 +129,23 @@ public:
         cmd.topologyType = mr::TOPOLOGY_TRIANGLES;
         cmd.model = model;
         cmd.renderObjectType = mr::RENDER_OBJECT_MODEL;
+
+        renderer->SetStencilTestFn(mr::RENDER_PASS_FN_ALWAYS, 1, 0xFF);
+        renderer->SetStencilMask(0xFF);
         renderer->Render(cmd);
+
+        renderer->SetStencilTestFn(mr::RENDER_PASS_FN_NOT_EQUAL, 1, 0xFF);
+        renderer->SetStencilMask(0x00);
+        renderer->EnableRenderPass(mr::RENDER_PASS_DEPTH, false);
+        
+        solidShader->Bind();
+        const float outlineThickness = 0.3f;
+        static const glm::mat4 scaledModelMat = glm::scale(identityMat, glm::vec3(1.0f + outlineThickness));
+        solidShader->UploadMat4("u_cam.viewProjection", this->cam.camera.GetViewProjection());
+        solidShader->UploadMat4("u_cam.model", scaledModelMat);
+        renderer->Render(cmd);
+
+        renderer->EnableRenderPass(mr::RENDER_PASS_DEPTH, true);
     }
 
     virtual void OnGuiRender() override
