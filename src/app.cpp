@@ -51,10 +51,14 @@ public:
 
         mr::Application &app = mr::Application::GetInstance();
         app.GetMainWindow()->SetCursorVisible(isCursonVisible);
-        app.GetRenderer()->EnableRenderPass(
+        
+        mr::Renderer *rend = app.GetRenderer();
+        
+        rend->EnableRenderPass(
             mr::RENDER_PASS_DEPTH | mr::RENDER_PASS_STENCIL,
             true
         );
+        rend->SetDepthTestFn(mr::RENDER_PASS_FN_ALWAY);
     }
 
     virtual void OnUpdate() override
