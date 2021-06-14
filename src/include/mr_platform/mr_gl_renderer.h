@@ -21,8 +21,11 @@ public:
     virtual void DeleteGuiInitInfo(Renderer::gui_init_info_s *info) override;
     virtual void Render(Renderer::Command &cmd) override;
 
+    virtual void EnableRenderPass(RenderPassMask renderPassMask, bool enable) override;
+
 private:
     static GLenum GetTopology(TopologyType type);
+    static GLenum GetRenderPass(RenderPass pass);
 };
 
 } // namespace mr

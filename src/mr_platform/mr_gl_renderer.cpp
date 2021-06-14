@@ -59,7 +59,7 @@ void GlRenderer::Render(Renderer::Command &cmd)
 {
     switch (cmd.renderObjectType)
     {
-    case RenderObjectType::MESH:
+    case RenderObjectType::RENDER_OBJECT_MESH:
     {
         const IndexBuffer *indexBuffer = cmd.mesh->GetIndexBuffer();
         cmd.mesh->GetVertexBuffer()->Bind();
@@ -72,8 +72,8 @@ void GlRenderer::Render(Renderer::Command &cmd)
     }
     break;
     
-    case RenderObjectType::MODEL:
-        cmd.renderObjectType = RenderObjectType::MESH;
+    case RenderObjectType::RENDER_OBJECT_MODEL:
+        cmd.renderObjectType = RenderObjectType::RENDER_OBJECT_MESH;
         for(auto &mesh : cmd.model->GetMeshes())
         {
             cmd.mesh = mesh;
@@ -84,6 +84,19 @@ void GlRenderer::Render(Renderer::Command &cmd)
     default:
         mrwarn("Render cmd was called with no render object type");
     break;
+    }
+}
+
+void GlRenderer::EnableRenderPass(RenderPassMask renderPassMask, bool enable)
+{
+    void (*fn)(GLenum) = enable? glEnable : glDisable;
+    if(renderPassMask & RENDER_PASS_DEPTH)
+    {
+        fn( GlRenderer::GetRenderPass(RENDER_PASS_DEPTH) );
+    }
+    if(renderPassMask & RENDER_PASS_STENCIL)
+    {
+        fn( GlRenderer::GetRenderPass(RENDER_PASS_STENCIL) );
     }
 }
 
@@ -103,9 +116,19 @@ GLenum GlRenderer::GetTopology(TopologyType type)
 {
     switch (type)
     {
-    case TopologyType::TRIANGLES: return GL_TRIANGLES;
-    case TopologyType::WIREFRAME: return GL_LINE_STRIP;
+    case TopologyType::TOPOLOGY_TRIANGLES: return GL_TRIANGLES;
+    case TopologyType::TOPOLOGY_WIREFRAME: return GL_LINE_STRIP;
     default: throw "Unsupported topology type";
+    }
+}
+
+GLenum GlRenderer::GetRenderPass(RenderPass pass)
+{
+    switch (pass)
+    {
+    case RENDER_PASS_DEPTH: GL_DEPTH_TEST;
+    case RENDER_PASS_STENCIL: GL_STENCIL_TEST;
+    default: return 0;
     }
 }
 

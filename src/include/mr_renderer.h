@@ -9,16 +9,25 @@ class Model;
 
 enum TopologyType
 {
-    TRIANGLES = 0,
-    WIREFRAME,
+    TOPOLOGY_TRIANGLES = 0,
+    TOPOLOGY_WIREFRAME,
 };
 
 enum RenderObjectType
 {
-    NONE,
-    MESH,
-    MODEL
+    RENDER_OBJECT_NONE = 0,
+    RENDER_OBJECT_MESH,
+    RENDER_OBJECT_MODEL
 };
+
+enum RenderPass
+{
+    RENDER_PASS_NONE = 0,
+    RENDER_PASS_DEPTH = 1,
+    RENDER_PASS_STENCIL = 2
+};
+
+typedef unsigned int RenderPassMask;
 
 class Renderer
 {
@@ -37,8 +46,8 @@ public:
 
         struct command_s()
             : mesh(nullptr), model(nullptr), 
-            topologyType(TopologyType::TRIANGLES),
-            renderObjectType(RenderObjectType::NONE)
+            topologyType(TopologyType::TOPOLOGY_TRIANGLES),
+            renderObjectType(RenderObjectType::RENDER_OBJECT_NONE)
             {}
     } Command;
 
@@ -51,6 +60,8 @@ public:
     virtual gui_init_info_s *GetGuiInitInfo() = 0;
     virtual void DeleteGuiInitInfo(gui_init_info_s *info) = 0;
     virtual void Render(Command &cmd) = 0;
+
+    virtual void EnableRenderPass(RenderPassMask renderPassMask, bool enable) = 0;
 };
     
 } // namespace mr

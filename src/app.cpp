@@ -48,7 +48,13 @@ public:
         model = mr::Model::Load("D:\\Documents\\git\\MobRend\\resources\\models\\kunai.fbx");
 
         this->isCursonVisible = false;
-        mr::Application::GetInstance().GetMainWindow()->SetCursorVisible(isCursonVisible);
+
+        mr::Application &app = mr::Application::GetInstance();
+        app.GetMainWindow()->SetCursorVisible(isCursonVisible);
+        app.GetRenderer()->EnableRenderPass(
+            mr::RENDER_PASS_DEPTH | mr::RENDER_PASS_STENCIL,
+            true
+        );
     }
 
     virtual void OnUpdate() override
@@ -112,9 +118,9 @@ public:
         shader->UploadTexture2D("u_specularMap", specMap);
 
         mr::Renderer::Command cmd = {};
-        cmd.topologyType = mr::TopologyType::TRIANGLES;
+        cmd.topologyType = mr::TOPOLOGY_TRIANGLES;
         cmd.model = model;
-        cmd.renderObjectType = mr::RenderObjectType::MODEL;
+        cmd.renderObjectType = mr::RENDER_OBJECT_MODEL;
         renderer->Render(cmd);
     }
 
