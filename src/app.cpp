@@ -27,10 +27,6 @@ public:
         shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.frag.spv";
         shader = mr::Shader::Create(shaderCreateParams);
 
-        shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\solid_color.vert.spv";
-        shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\solid_color.frag.spv";
-        solidShader = mr::Shader::Create(shaderCreateParams);
-
         cam = mr::FPSCamera();
         mr::Camera::Config camConfig = {};
         camConfig.perspective.fov = glm::radians(60.0f);
@@ -52,18 +48,6 @@ public:
 
         mr::Application &app = mr::Application::GetInstance();
         app.GetMainWindow()->SetCursorVisible(isCursonVisible);
-        
-        mr::Renderer *rend = app.GetRenderer();
-        
-        rend->EnableRenderPass(
-            mr::RENDER_PASS_DEPTH | mr::RENDER_PASS_STENCIL,
-            true
-        );
-        rend->SetStencilTestAction(
-            mr::STENCIL_ACTION_KEEP,
-            mr::STENCIL_ACTION_KEEP,
-            mr::STENCIL_ACTION_REPLACE
-        );
     }
 
     virtual void OnUpdate() override
@@ -131,22 +115,7 @@ public:
         cmd.model = model;
         cmd.renderObjectType = mr::RENDER_OBJECT_MODEL;
 
-        renderer->SetStencilTestFn(mr::RENDER_PASS_FN_ALWAYS, 1, 0xFF);
-        renderer->SetStencilMask(0xFF);
         renderer->Render(cmd);
-
-        renderer->SetStencilTestFn(mr::RENDER_PASS_FN_NOT_EQUAL, 1, 0xFF);
-        // renderer->SetStencilMask(0x00);
-        renderer->EnableRenderPass(mr::RENDER_PASS_DEPTH, false);
-        
-        solidShader->Bind();
-        const float outlineThickness = 0.1f;
-        static const glm::mat4 scaledModelMat = glm::scale(identityMat, glm::vec3(1.0f + outlineThickness));
-        solidShader->UploadMat4("u_cam.viewProjection", this->cam.camera.GetViewProjection());
-        solidShader->UploadMat4("u_cam.model", scaledModelMat);
-        renderer->Render(cmd);
-
-        renderer->EnableRenderPass(mr::RENDER_PASS_DEPTH, true);
     }
 
     virtual void OnGuiRender() override
@@ -164,12 +133,10 @@ public:
         delete(this->model);
         delete(this->directional);
         delete(this->shader);
-        delete(this->solidShader);
     }
 
 private:
     mr::Shader *shader = nullptr;
-    mr::Shader *solidShader = nullptr;
 
     mr::FPSCamera cam;
     mr::Texture *tex = nullptr;
