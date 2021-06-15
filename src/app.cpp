@@ -47,6 +47,32 @@ public:
 
         this->isCursonVisible = false;
 
+        mr::VertexLayout layout = {
+            {mr::AttributeType::FLOAT, 3},
+            {mr::AttributeType::FLOAT, 3},
+            {mr::AttributeType::FLOAT, 2},
+        };
+
+        float quadVertices[] = {
+             0.5f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f,  1.0f, 0.0f,
+             0.5f,  0.5f, 0.0f, 0.0f, 0.0f, -1.0f,  1.0f, 1.0f,
+            -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, -1.0f,  0.0f, 1.0f,
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f,  0.0f, 0.0f
+        };
+
+        uint32_t quadIndices[] = {
+            0, 1, 2, 2, 3, 0
+        };
+
+        mr::Mesh::CreateParams meshCreateParams = {};
+        meshCreateParams.vertexLayout = &layout;
+        meshCreateParams.indices = quadIndices;
+        meshCreateParams.indexCount = sizeof(quadIndices) / sizeof(uint32_t);
+        meshCreateParams.vertices = quadVertices;
+        meshCreateParams.verticesArraySize = sizeof(quadVertices);
+        
+        this->quad = new mr::Mesh(meshCreateParams);
+
         mr::Application &app = mr::Application::GetInstance();
         app.GetMainWindow()->SetCursorVisible(isCursonVisible);
     }
@@ -115,7 +141,14 @@ public:
         cmd.topologyType = mr::TOPOLOGY_TRIANGLES;
         cmd.model = model;
         cmd.renderObjectType = mr::RENDER_OBJECT_MODEL;
+        renderer->Render(cmd);
 
+        shader->UploadFloat("u_scene.phongMaterial.diffuseMapStrength", 1.0f);
+
+        cmd = {};
+        cmd.topologyType = mr::TOPOLOGY_TRIANGLES;
+        cmd.mesh = this->quad;
+        cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
         renderer->Render(cmd);
     }
 
@@ -136,6 +169,7 @@ public:
 
     virtual void OnDestroy() override
     {
+        delete(this->quad);
         delete(this->model);
         delete(this->directional);
         delete(this->shader);
@@ -151,6 +185,7 @@ private:
     mr::DirectionalLight *directional = nullptr;
 
     mr::Model *model = nullptr;
+    mr::Mesh *quad = nullptr;
     bool isCursonVisible;
 };
 

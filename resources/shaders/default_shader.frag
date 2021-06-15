@@ -83,14 +83,14 @@ float WithinSpotlight(Light light, vec3 fragPosition)
 }
 
 void main(){
-    vec3 diffuseColor = mix(
-        u_scene.phongMaterial.diffuse,
-        vec3(texture(u_diffuseMap, a_texCoord)),
+    vec4 diffuseColor = mix(
+        vec4(u_scene.phongMaterial.diffuse, 1.0),
+        texture(u_diffuseMap, a_texCoord),
         u_scene.phongMaterial.diffuseMapStrength);
 
-    vec3 specularColor = mix(
-        u_scene.phongMaterial.specular,
-        vec3(texture(u_specularMap, a_texCoord)),
+    vec4 specularColor = mix(
+        vec4(u_scene.phongMaterial.specular, 1.0),
+        texture(u_specularMap, a_texCoord),
         u_scene.phongMaterial.specularMapStrength);
 
     float pointLightAttenuation = Attenuation(u_scene.pointLight, a_fragPos);
@@ -100,20 +100,18 @@ void main(){
 
     vec3 ambientLight = AmbientLight(u_scene.ambientLight) * ambientAttenuation * ambientSpotlight+ 
                         AmbientLight(u_scene.pointLight) * pointLightAttenuation;
-    vec3 ambient = diffuseColor * ambientLight;
+    vec4 ambient = diffuseColor * vec4(ambientLight, 1.0);
 
     /// TODO: calculate diffuse in view space, not normal space
     vec3 norm = normalize(a_normal);
     vec3 diffuseLight = DiffuseLight(u_scene.ambientLight, norm, a_fragPos) * ambientAttenuation * ambientSpotlight + 
                         DiffuseLight(u_scene.pointLight, norm, a_fragPos) * pointLightAttenuation;
-    vec3 diffuse = diffuseColor * diffuseLight;
+    vec4 diffuse = diffuseColor * vec4(diffuseLight, 1.0);
 
     vec3 viewDir = normalize(u_scene.viewPos - a_fragPos);
     vec3 specLight = 	SpecularLight(u_scene.ambientLight, viewDir, a_fragPos, norm, u_scene.phongMaterial.shininess) * ambientAttenuation * ambientSpotlight +
                         SpecularLight(u_scene.pointLight, viewDir, a_fragPos, norm, u_scene.phongMaterial.shininess) * pointLightAttenuation;
-    vec3 specular = specularColor * specLight;
+    vec4 specular = specularColor * vec4(specLight, 1.0);
 
-    vec3 result = (ambient + diffuse + specular) * u_scene.color;
-    // vec3 result = norm;
-    finalFragColor = vec4(result, 1.0);
+    finalFragColor = (ambient + diffuse + specular) * vec4(u_scene.color, 1.0);
 }

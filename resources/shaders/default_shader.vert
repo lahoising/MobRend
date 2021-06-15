@@ -9,13 +9,6 @@ layout(location = 1) out vec3 out_normal;
 layout(location = 2) out vec2 out_texCoord;
 
 /// TODO: use UBOs
-// layout(set = 0, binding = 0) uniform CameraUniforms
-// {
-//     mat4 viewProjection;
-//     mat4 model;
-//     mat3 normalMat;
-// } u_cam;
-
 layout(push_constant,std430) uniform CameraUniforms
 {
     mat4 viewProjection;
