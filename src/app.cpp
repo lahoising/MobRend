@@ -1,6 +1,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <imgui.h>
+#include <glm/gtc/type_ptr.hpp>
 #include "mr_application.h"
 #include "mr_logger.h"
 #include "mr_model.h"
@@ -120,10 +121,15 @@ public:
 
     virtual void OnGuiRender() override
     {
-        ImGui::Begin("Camera Settings");
+        ImGui::Begin("Scene Settings");
         {
             ImGui::DragFloat("Camera Movement Speed", &this->cam.movementSpeed, 0.001f);
             ImGui::DragFloat("Camera Sensitivity", &this->cam.sensitivity, 0.01f);
+
+            if(ImGui::DragFloat3("Light Direction", glm::value_ptr(this->directional->direction), 0.01f))
+            {
+                this->directional->direction = glm::normalize(this->directional->direction);
+            }
         }
         ImGui::End();
     }
@@ -142,7 +148,7 @@ private:
     mr::Texture *tex = nullptr;
     mr::Texture *specMap = nullptr;
 
-    mr::Light *directional = nullptr;
+    mr::DirectionalLight *directional = nullptr;
 
     mr::Model *model = nullptr;
     bool isCursonVisible;
