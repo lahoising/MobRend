@@ -102,6 +102,10 @@ void GlRenderer::EnableRenderPass(RenderPassMask renderPassMask, bool enable)
     {
         fn( GlRenderer::GetRenderPass(RENDER_PASS_BLEND) );
     }
+    if(renderPassMask & RENDER_PASS_CULLING)
+    {
+        fn( GlRenderer::GetRenderPass(RENDER_PASS_CULLING) );
+    }
 }
 
 void GlRenderer::SetDepthTestFn(RenderPassFn fn)
@@ -171,6 +175,7 @@ GLenum GlRenderer::GetRenderPass(RenderPass pass)
     case RENDER_PASS_DEPTH: return GL_DEPTH_TEST;
     case RENDER_PASS_STENCIL: return GL_STENCIL_TEST;
     case RENDER_PASS_BLEND: return GL_BLEND;
+    case RENDER_PASS_CULLING: return GL_CULL_FACE;
     default: return 0;
     }
 }

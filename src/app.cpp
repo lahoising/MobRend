@@ -80,11 +80,7 @@ public:
 
         mr::Renderer *rend = app.GetRenderer();
         rend->EnableRenderPass(
-            mr::RENDER_PASS_BLEND, true
-        );
-        rend->SetBlendFn(
-            mr::BLEND_FN_SRC_ALPHA,
-            mr::BLEND_FN_ONE_MINUS_SRC_ALPHA
+            mr::RENDER_PASS_CULLING, true
         );
     }
 

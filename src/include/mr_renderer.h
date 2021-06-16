@@ -24,10 +24,13 @@ enum RenderObjectType
 
 enum RenderPass
 {
-    RENDER_PASS_NONE = 0,
-    RENDER_PASS_DEPTH = 1,
-    RENDER_PASS_STENCIL = 2,
-    RENDER_PASS_BLEND = 4,
+    RENDER_PASS_NONE =      0,
+    RENDER_PASS_DEPTH =     1 << 0,
+    RENDER_PASS_STENCIL =   1 << 1,
+
+    // the following might not be render passes
+    RENDER_PASS_BLEND =     1 << 2,
+    RENDER_PASS_CULLING =   1 << 3,
 };
 
 enum RenderPassFn
@@ -109,7 +112,7 @@ public:
     virtual void EnableRenderPass(RenderPassMask renderPassMask, bool enable) = 0;
     virtual void SetDepthTestFn(RenderPassFn fn) = 0;
     virtual void SetStencilTestFn(RenderPassFn fn, int refValue, unsigned int mask) = 0;
-    virtual void SetBlendFn(BlendFn srcFactor, BlendFn dstFactor) = 0;
+    virtual void SetBlendFn(BlendFn srcFactor, BlendFn dstFactor) = 0; /// TODO: research order independent transparency
     virtual void SetStencilTestAction(
         StencilAction stencilFailAction, 
         StencilAction depthFailAction, 
