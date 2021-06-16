@@ -75,6 +75,19 @@ enum BlendFn
     BLEND_FN_ONE_MINUS_CONSTANT_ALPHA,
 };
 
+enum FrontFaceWinding
+{
+    FF_WINDING_CCW,
+    FF_WINDING_CW,
+};
+
+enum CullFace
+{
+    CULL_FACE_FRONT,
+    CULL_FACE_BACK,
+    CULL_FACE_FRONT_AND_BACK,
+};
+
 typedef unsigned int RenderPassMask;
 
 class Renderer
@@ -110,14 +123,19 @@ public:
     virtual void Render(Command &cmd) = 0;
 
     virtual void EnableRenderPass(RenderPassMask renderPassMask, bool enable) = 0;
+    
     virtual void SetDepthTestFn(RenderPassFn fn) = 0;
+    
     virtual void SetStencilTestFn(RenderPassFn fn, int refValue, unsigned int mask) = 0;
-    virtual void SetBlendFn(BlendFn srcFactor, BlendFn dstFactor) = 0; /// TODO: research order independent transparency
     virtual void SetStencilTestAction(
         StencilAction stencilFailAction, 
         StencilAction depthFailAction, 
         StencilAction bothPass) = 0;
     virtual void SetStencilMask(uint32_t mask) = 0;
+    
+    virtual void SetBlendFn(BlendFn srcFactor, BlendFn dstFactor) = 0; /// TODO: research order independent transparency
+    virtual void SetCullFace(CullFace cullFace) = 0;
+    virtual void SetFrontFaceWinding(FrontFaceWinding winding) = 0;
 };
     
 } // namespace mr

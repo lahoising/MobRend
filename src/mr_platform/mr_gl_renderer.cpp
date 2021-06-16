@@ -145,6 +145,17 @@ void GlRenderer::SetStencilMask(uint32_t mask)
 {
     glStencilMask((unsigned int)mask);
 }
+
+void GlRenderer::SetCullFace(CullFace cullFace)
+{
+    glCullFace( GlRenderer::GetCullFace(cullFace) );
+}
+
+void GlRenderer::SetFrontFaceWinding(FrontFaceWinding winding)
+{
+    glFrontFace( GlRenderer::GetWinding(winding) );
+}
+
     
 struct Renderer::gui_init_info_s *GlRenderer::GetGuiInitInfo()
 {
@@ -233,6 +244,28 @@ GLenum GlRenderer::GetBlendFn(BlendFn fn)
     default: throw "Unknown blend fn";
     }
 }
+
+GLenum GlRenderer::GetCullFace(CullFace cullFace)
+{
+    switch (cullFace)
+    {
+    case CULL_FACE_FRONT:           return GL_FRONT;
+    case CULL_FACE_BACK:            return GL_BACK;
+    case CULL_FACE_FRONT_AND_BACK:  return GL_FRONT_AND_BACK;
+    default: throw "Unknown cull face";
+    }
+}
+
+GLenum GlRenderer::GetWinding(FrontFaceWinding winding)
+{
+    switch (winding)
+    {
+    case FF_WINDING_CCW:    return GL_CCW;
+    case FF_WINDING_CW:     return GL_CW;
+    default: throw "Unknown winding";
+    }
+}
+
 
 } // namespace mr
 

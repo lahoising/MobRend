@@ -22,14 +22,20 @@ public:
     virtual void Render(Renderer::Command &cmd) override;
 
     virtual void EnableRenderPass(RenderPassMask renderPassMask, bool enable) override;
+    
     virtual void SetDepthTestFn(RenderPassFn fn) override;
+    
     virtual void SetStencilTestFn(RenderPassFn fn, int refValue, unsigned int mask) override;
-    virtual void SetBlendFn(BlendFn srcFactor, BlendFn dstFactor) override;
     virtual void SetStencilTestAction(
         StencilAction stencilFailAction, 
         StencilAction depthFailAction, 
         StencilAction bothPass) override;
     virtual void SetStencilMask(uint32_t mask) override;
+    
+    virtual void SetBlendFn(BlendFn srcFactor, BlendFn dstFactor) override;
+
+    virtual void SetCullFace(CullFace cullFace) override;
+    virtual void SetFrontFaceWinding(FrontFaceWinding winding) override;
 
 private:
     static GLenum GetTopology(TopologyType type);
@@ -37,6 +43,8 @@ private:
     static GLenum GetRenderPassFn(RenderPassFn fn);
     static GLenum GetStencilAction(StencilAction action);
     static GLenum GetBlendFn(BlendFn fn);
+    static GLenum GetCullFace(CullFace cullFace);
+    static GLenum GetWinding(FrontFaceWinding winding);
 };
 
 } // namespace mr

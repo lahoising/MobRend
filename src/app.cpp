@@ -82,6 +82,8 @@ public:
         rend->EnableRenderPass(
             mr::RENDER_PASS_CULLING, true
         );
+        // rend->SetFrontFaceWinding(mr::FF_WINDING_CW);
+        rend->SetCullFace(mr::CULL_FACE_FRONT);
     }
 
     virtual void OnUpdate() override
