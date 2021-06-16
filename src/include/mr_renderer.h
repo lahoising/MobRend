@@ -26,7 +26,8 @@ enum RenderPass
 {
     RENDER_PASS_NONE = 0,
     RENDER_PASS_DEPTH = 1,
-    RENDER_PASS_STENCIL = 2
+    RENDER_PASS_STENCIL = 2,
+    RENDER_PASS_BLEND = 4,
 };
 
 enum RenderPassFn
@@ -51,6 +52,24 @@ enum StencilAction
     STENCIL_ACTION_DECREASE,
     STENCIL_ACTION_DECREASE_WRAP,
     STENCIL_ACTION_INVERT,
+};
+
+enum BlendFn
+{
+    BLEND_FN_ZERO,
+    BLEND_FN_ONE,
+    BLEND_FN_SRC_COLOR,
+    BLEND_FN_ONE_MINUS_SRC_COLOR,
+    BLEND_FN_DST_COLOR,
+    BLEND_FN_ONE_MINUS_DST_COLOR,
+    BLEND_FN_SRC_ALPHA,
+    BLEND_FN_ONE_MINUS_SRC_ALPHA,
+    BLEND_FN_DST_ALPHA,
+    BLEND_FN_ONE_MINUS_DST_ALPHA,
+    BLEND_FN_CONSTANT_COLOR,
+    BLEND_FN_ONE_MINUS_CONSTANT_COLOR,
+    BLEND_FN_CONSTANT_ALPHA,
+    BLEND_FN_ONE_MINUS_CONSTANT_ALPHA,
 };
 
 typedef unsigned int RenderPassMask;
@@ -90,6 +109,7 @@ public:
     virtual void EnableRenderPass(RenderPassMask renderPassMask, bool enable) = 0;
     virtual void SetDepthTestFn(RenderPassFn fn) = 0;
     virtual void SetStencilTestFn(RenderPassFn fn, int refValue, unsigned int mask) = 0;
+    virtual void SetBlendFn(BlendFn srcFactor, BlendFn dstFactor) = 0;
     virtual void SetStencilTestAction(
         StencilAction stencilFailAction, 
         StencilAction depthFailAction, 

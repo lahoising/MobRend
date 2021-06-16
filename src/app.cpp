@@ -42,7 +42,8 @@ public:
 
         // tex = mr::Texture::Create("D:\\Pictures\\Screenshots\\Screenshot (44).png");
         tex = mr::Texture::Create("D:\\Documents\\Art\\Sprites\\Exports\\alphas.png");
-        specMap = mr::Texture::Create("D:\\Documents\\progs\\krita_resources\\MobRend\\IU_Spec.png");
+        // specMap = mr::Texture::Create("D:\\Documents\\progs\\krita_resources\\MobRend\\IU_Spec.png");
+        specMap = mr::Texture::Create("D:\\Documents\\Art\\Sprites\\Exports\\semi_transparent_window.png");
 
         model = mr::Model::Load("D:\\Documents\\git\\MobRend\\resources\\models\\kunai.fbx");
 
@@ -76,6 +77,15 @@ public:
 
         mr::Application &app = mr::Application::GetInstance();
         app.GetMainWindow()->SetCursorVisible(isCursonVisible);
+
+        mr::Renderer *rend = app.GetRenderer();
+        rend->EnableRenderPass(
+            mr::RENDER_PASS_BLEND, true
+        );
+        rend->SetBlendFn(
+            mr::BLEND_FN_SRC_ALPHA,
+            mr::BLEND_FN_ONE_MINUS_SRC_ALPHA
+        );
     }
 
     virtual void OnUpdate() override
@@ -116,9 +126,9 @@ public:
             normalMat
         );
 
-        shader->UploadVec3(
+        shader->UploadVec4(
             "u_scene.color",
-            glm::vec3(1.0f, 1.0f, 1.0f)
+            glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)
         );
 
         directional->Bind(shader, "u_scene.ambientLight");
@@ -128,10 +138,10 @@ public:
             cam.camera.GetPosition()
         );
 
-        shader->UploadVec3("u_scene.phongMaterial.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
+        shader->UploadVec4("u_scene.phongMaterial.diffuse", glm::vec4(1.0f, 0.5f, 0.31f, 0.4f));
         shader->UploadFloat("u_scene.phongMaterial.diffuseMapStrength", 0.0f);
         
-        shader->UploadVec3("u_scene.phongMaterial.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+        shader->UploadVec4("u_scene.phongMaterial.specular", glm::vec4(0.5f, 0.5f, 0.5f, 0.0f));
         shader->UploadFloat("u_scene.phongMaterial.specularMapStrength", 0.0f);
         shader->UploadFloat("u_scene.phongMaterial.shininess", 32.f);
 
@@ -150,6 +160,13 @@ public:
         cmd.topologyType = mr::TOPOLOGY_TRIANGLES;
         cmd.mesh = this->quad;
         cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
+        renderer->Render(cmd);
+
+        shader->UploadTexture2D("u_diffuseMap", specMap);
+        shader->UploadMat4("u_cam.model", glm::translate(
+            identityMat, glm::vec3(0.0f, 0.0f, -2.5f)
+        ));
+
         renderer->Render(cmd);
     }
 

@@ -21,10 +21,10 @@ struct Light
 
 struct PhongMaterial
 {
-    vec3 diffuse;
+    vec4 diffuse;
     float diffuseMapStrength;
 
-    vec3 specular;
+    vec4 specular;
     float specularMapStrength;
 
     float shininess;
@@ -36,7 +36,7 @@ layout(binding = 1) uniform sampler2D u_specularMap;
 layout(push_constant,std430) uniform Misc
 {
     PhongMaterial phongMaterial;
-    vec3 color;
+    vec4 color;
     vec3 viewPos;
     Light pointLight;
     Light ambientLight;
@@ -84,12 +84,12 @@ float WithinSpotlight(Light light, vec3 fragPosition)
 
 void main(){
     vec4 diffuseColor = mix(
-        vec4(u_scene.phongMaterial.diffuse, 1.0),
+        u_scene.phongMaterial.diffuse,
         texture(u_diffuseMap, a_texCoord),
         u_scene.phongMaterial.diffuseMapStrength);
 
     vec4 specularColor = mix(
-        vec4(u_scene.phongMaterial.specular, 0.0),
+        u_scene.phongMaterial.specular,
         texture(u_specularMap, a_texCoord),
         u_scene.phongMaterial.specularMapStrength);
 
@@ -113,8 +113,8 @@ void main(){
                         SpecularLight(u_scene.pointLight, viewDir, a_fragPos, norm, u_scene.phongMaterial.shininess) * pointLightAttenuation;
     vec4 specular = specularColor * vec4(specLight, 1.0);
 
-    vec4 result = (ambient + diffuse + specular) * vec4(u_scene.color, 1.0);
-    if(result.w < 0.1)
+    vec4 result = (ambient + diffuse + specular) * u_scene.color;
+    if(result.w < 0.6)
         discard;
     finalFragColor = result;
 }

@@ -98,6 +98,10 @@ void GlRenderer::EnableRenderPass(RenderPassMask renderPassMask, bool enable)
     {
         fn( GlRenderer::GetRenderPass(RENDER_PASS_STENCIL) );
     }
+    if(renderPassMask & RENDER_PASS_BLEND)
+    {
+        fn( GlRenderer::GetRenderPass(RENDER_PASS_BLEND) );
+    }
 }
 
 void GlRenderer::SetDepthTestFn(RenderPassFn fn)
@@ -110,6 +114,14 @@ void GlRenderer::SetStencilTestFn(RenderPassFn fn, int refValue, unsigned int ma
     glStencilFunc(
         GlRenderer::GetRenderPassFn(fn),
         refValue, mask
+    );
+}
+
+void GlRenderer::SetBlendFn(BlendFn srcFactor, BlendFn dstFactor)
+{
+    glBlendFunc(
+        GlRenderer::GetBlendFn(srcFactor),
+        GlRenderer::GetBlendFn(dstFactor)
     );
 }
 
@@ -158,6 +170,7 @@ GLenum GlRenderer::GetRenderPass(RenderPass pass)
     {
     case RENDER_PASS_DEPTH: return GL_DEPTH_TEST;
     case RENDER_PASS_STENCIL: return GL_STENCIL_TEST;
+    case RENDER_PASS_BLEND: return GL_BLEND;
     default: return 0;
     }
 }
@@ -194,6 +207,27 @@ GLenum GlRenderer::GetStencilAction(StencilAction action)
     }
 }
 
+GLenum GlRenderer::GetBlendFn(BlendFn fn)
+{
+    switch(fn)
+    {
+    case BLEND_FN_ZERO:                     return GL_ZERO;
+    case BLEND_FN_ONE:                      return GL_ONE;
+    case BLEND_FN_SRC_COLOR:                return GL_SRC_COLOR;
+    case BLEND_FN_ONE_MINUS_SRC_COLOR:      return GL_ONE_MINUS_SRC_COLOR;
+    case BLEND_FN_DST_COLOR:                return GL_DST_COLOR;
+    case BLEND_FN_ONE_MINUS_DST_COLOR:      return GL_ONE_MINUS_DST_COLOR;
+    case BLEND_FN_SRC_ALPHA:                return GL_SRC_ALPHA;
+    case BLEND_FN_ONE_MINUS_SRC_ALPHA:      return GL_ONE_MINUS_SRC_ALPHA;
+    case BLEND_FN_DST_ALPHA:                return GL_DST_ALPHA;
+    case BLEND_FN_ONE_MINUS_DST_ALPHA:      return GL_ONE_MINUS_DST_ALPHA;
+    case BLEND_FN_CONSTANT_COLOR:           return GL_CONSTANT_COLOR;
+    case BLEND_FN_ONE_MINUS_CONSTANT_COLOR: return GL_ONE_MINUS_CONSTANT_COLOR;
+    case BLEND_FN_CONSTANT_ALPHA:           return GL_CONSTANT_ALPHA;
+    case BLEND_FN_ONE_MINUS_CONSTANT_ALPHA: return GL_ONE_MINUS_CONSTANT_ALPHA;
+    default: throw "Unknown blend fn";
+    }
+}
 
 } // namespace mr
 

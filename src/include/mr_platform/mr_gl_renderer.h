@@ -24,6 +24,7 @@ public:
     virtual void EnableRenderPass(RenderPassMask renderPassMask, bool enable) override;
     virtual void SetDepthTestFn(RenderPassFn fn) override;
     virtual void SetStencilTestFn(RenderPassFn fn, int refValue, unsigned int mask) override;
+    virtual void SetBlendFn(BlendFn srcFactor, BlendFn dstFactor) override;
     virtual void SetStencilTestAction(
         StencilAction stencilFailAction, 
         StencilAction depthFailAction, 
@@ -35,6 +36,7 @@ private:
     static GLenum GetRenderPass(RenderPass pass);
     static GLenum GetRenderPassFn(RenderPassFn fn);
     static GLenum GetStencilAction(StencilAction action);
+    static GLenum GetBlendFn(BlendFn fn);
 };
 
 } // namespace mr

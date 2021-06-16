@@ -183,6 +183,21 @@ void GlShader::UploadVec3(const char *uniformName,const glm::vec3 &vec)
 	);
 }
 
+void GlShader::UploadVec4(const char *uniformName,const glm::vec4 &vec)
+{
+	if(this->uniformLocations.find(uniformName) == this->uniformLocations.end())
+	{
+		this->uniformLocations[uniformName] = glGetUniformLocation(this->programId, uniformName);
+	}
+
+	const unsigned int location = this->uniformLocations[uniformName];
+	glUniform4fv(
+		location,
+		1,
+		glm::value_ptr(vec)
+	);
+}
+
 void GlShader::UploadInt(const char *uniformName, int32_t i)
 {
 	if(this->uniformLocations.find(uniformName) == this->uniformLocations.end())
