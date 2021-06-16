@@ -89,7 +89,7 @@ void main(){
         u_scene.phongMaterial.diffuseMapStrength);
 
     vec4 specularColor = mix(
-        vec4(u_scene.phongMaterial.specular, 1.0),
+        vec4(u_scene.phongMaterial.specular, 0.0),
         texture(u_specularMap, a_texCoord),
         u_scene.phongMaterial.specularMapStrength);
 
@@ -113,5 +113,8 @@ void main(){
                         SpecularLight(u_scene.pointLight, viewDir, a_fragPos, norm, u_scene.phongMaterial.shininess) * pointLightAttenuation;
     vec4 specular = specularColor * vec4(specLight, 1.0);
 
-    finalFragColor = (ambient + diffuse + specular) * vec4(u_scene.color, 1.0);
+    vec4 result = (ambient + diffuse + specular) * vec4(u_scene.color, 1.0);
+    if(result.w < 0.1)
+        discard;
+    finalFragColor = result;
 }

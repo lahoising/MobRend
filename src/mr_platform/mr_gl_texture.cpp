@@ -47,7 +47,7 @@ void GlTexture::GenerateTexture(unsigned char *imageContent, ImageData imageData
 
         glTexImage2D(
             GL_TEXTURE_2D, 0,
-            GL_RGB,
+            format,
             imageData.width, imageData.height,
             0, 
             format, GL_UNSIGNED_BYTE,
