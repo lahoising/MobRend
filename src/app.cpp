@@ -138,7 +138,7 @@ public:
             cam.camera.GetPosition()
         );
 
-        shader->UploadVec4("u_scene.phongMaterial.diffuse", glm::vec4(1.0f, 0.5f, 0.31f, 0.4f));
+        shader->UploadVec4("u_scene.phongMaterial.diffuse", glm::vec4(1.0f, 0.5f, 0.31f, 1.0f));
         shader->UploadFloat("u_scene.phongMaterial.diffuseMapStrength", 0.0f);
         
         shader->UploadVec4("u_scene.phongMaterial.specular", glm::vec4(0.5f, 0.5f, 0.5f, 0.0f));
@@ -163,6 +163,7 @@ public:
         renderer->Render(cmd);
 
         shader->UploadTexture2D("u_diffuseMap", specMap);
+        // shader->UploadFloat("u_scene.phongMaterial.diffuseMapStrength", 0.0f);
         shader->UploadMat4("u_cam.model", glm::translate(
             identityMat, glm::vec3(0.0f, 0.0f, -2.5f)
         ));

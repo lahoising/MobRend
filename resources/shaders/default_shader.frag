@@ -113,8 +113,9 @@ void main(){
                         SpecularLight(u_scene.pointLight, viewDir, a_fragPos, norm, u_scene.phongMaterial.shininess) * pointLightAttenuation;
     vec4 specular = specularColor * vec4(specLight, 1.0);
 
-    vec4 result = (ambient + diffuse + specular) * u_scene.color;
-    if(result.w < 0.6)
+    // vec4 result = (ambient + diffuse + specular) * u_scene.color;
+    vec4 result = diffuseColor;
+    if(result.w < 0.1)
         discard;
     finalFragColor = result;
 }
