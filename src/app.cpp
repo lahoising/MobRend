@@ -8,6 +8,7 @@
 #include "mr_shader.h"
 #include "mr_fps_camera.h"
 #include "mr_light.h"
+#include "mr_framebuffer.h"
 
 class UserApp : public mr::Program
 {
@@ -79,11 +80,10 @@ public:
         app.GetMainWindow()->SetCursorVisible(isCursonVisible);
 
         mr::Renderer *rend = app.GetRenderer();
-        rend->EnableRenderPass(
-            mr::RENDER_PASS_CULLING, true
-        );
-        // rend->SetFrontFaceWinding(mr::FF_WINDING_CW);
-        rend->SetCullFace(mr::CULL_FACE_FRONT);
+
+        mr::Framebuffer::CreateParams frameBufferCreateParams = {};
+        
+        this->framebuffer = mr::Framebuffer::Create(frameBufferCreateParams);
     }
 
     virtual void OnUpdate() override
@@ -186,6 +186,7 @@ public:
 
     virtual void OnDestroy() override
     {
+        if(this->framebuffer) delete(this->framebuffer);
         delete(this->quad);
         delete(this->model);
         delete(this->directional);
@@ -193,6 +194,7 @@ public:
     }
 
 private:
+    mr::Framebuffer *framebuffer = nullptr;
     mr::Shader *shader = nullptr;
 
     mr::FPSCamera cam;
