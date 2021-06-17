@@ -32,7 +32,8 @@ private:
 
 private:
     static unsigned int GetFramebufferUsage(mr::FramebufferUsage usage);
-    static unsigned int GetFramebufferAttachment(mr::Framebuffer::AttachmentType attachmentType);
+    static unsigned int GetAttachment(mr::Framebuffer::AttachmentType attachmentType);
+    static unsigned int GetAttachmentInternalFormat(Framebuffer::AttachmentType attachmentType);
 
 private:
     unsigned int framebufferId;

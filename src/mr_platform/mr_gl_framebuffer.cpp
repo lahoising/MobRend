@@ -10,6 +10,9 @@ GlFramebuffer::GlFramebuffer(Framebuffer::CreateParams &createParams)
     glGenFramebuffers(1, &this->framebufferId);
     glBindFramebuffer(GL_FRAMEBUFFER, this->framebufferId);
 
+    this->width = createParams.width;
+    this->height = createParams.height;
+
     for(auto &att : createParams.attachments)
     {
         this->attachments.push_back( GlFramebuffer::CreateAttachment(att) );
@@ -36,7 +39,17 @@ GlFramebuffer::GlAttachment GlFramebuffer::CreateAttachment(const Framebuffer::A
 
     if(ret.isRenderbufferObject)
     {
-
+        glGenRenderbuffers(1, &ret.renderObjectId);
+        glBindRenderbuffer(GL_RENDERBUFFER, ret.renderObjectId);
+        glRenderbufferStorage(
+            GL_RENDERBUFFER, 
+            GlFramebuffer::GetAttachmentInternalFormat(att.type), 
+            this->width, this->height);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+        glFramebufferRenderbuffer(
+            GL_FRAMEBUFFER,
+            GlFramebuffer::GetAttachment(att.type),
+            GL_RENDERBUFFER, ret.renderObjectId);
     }
     else
     {
@@ -52,7 +65,7 @@ GlFramebuffer::GlAttachment GlFramebuffer::CreateAttachment(const Framebuffer::A
         ret.texture = (GlTexture*)Texture::Create(texCreateParams);
         glFramebufferTexture2D(
             GL_FRAMEBUFFER, 
-            GlFramebuffer::GetFramebufferAttachment(att.type),
+            GlFramebuffer::GetAttachment(att.type),
             GL_TEXTURE_2D,
             ret.texture->GetTextureId(),
             0);
@@ -82,13 +95,24 @@ GLenum GlFramebuffer::GetFramebufferUsage(FramebufferUsage usage)
     }
 }
 
-unsigned int GlFramebuffer::GetFramebufferAttachment(mr::Framebuffer::AttachmentType attachmentType)
+unsigned int GlFramebuffer::GetAttachment(mr::Framebuffer::AttachmentType attachmentType)
 {
     switch (attachmentType)
     {
     case ATTACHMENT_COLOR_0:            return GL_COLOR_ATTACHMENT0;
     case ATTACHMENT_DEPTH:              return GL_DEPTH_ATTACHMENT;
     case ATTACHMENT_DEPTH24_STENCIL8:   return GL_DEPTH_STENCIL_ATTACHMENT;
+    default: throw "Unknown attachment type";
+    }
+}
+
+unsigned int GlFramebuffer::GetAttachmentInternalFormat(Framebuffer::AttachmentType attachmentType)
+{
+    switch (attachmentType)
+    {
+    case ATTACHMENT_COLOR_0:            return GL_RGBA;
+    case ATTACHMENT_DEPTH:              return GL_DEPTH_COMPONENT32;
+    case ATTACHMENT_DEPTH24_STENCIL8:   return GL_DEPTH24_STENCIL8;
     default: throw "Unknown attachment type";
     }
 }

@@ -86,7 +86,8 @@ public:
         frameBufferCreateParams.width = window->GetFramebufferWidth();
         frameBufferCreateParams.height = window->GetFramebufferHeight();
         frameBufferCreateParams.attachments = {
-            { mr::Framebuffer::ATTACHMENT_COLOR_0, false }
+            { mr::Framebuffer::ATTACHMENT_COLOR_0, false },
+            { mr::Framebuffer::ATTACHMENT_DEPTH24_STENCIL8, true }
         };
         this->framebuffer = mr::Framebuffer::Create(frameBufferCreateParams);
     }
