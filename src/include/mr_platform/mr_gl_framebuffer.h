@@ -27,6 +27,7 @@ public:
     virtual void Bind(FramebufferUsage usage) override;
     virtual void Unbind(FramebufferUsage usage) override;
     virtual void Clear(FramebufferUsage usage) override;
+    virtual Texture *GetTextureAttachment(uint32_t index) override;
 
 private:
     GlAttachment CreateAttachment(const Framebuffer::Attachment &specifications);

@@ -109,6 +109,10 @@ public:
 
     virtual void OnRender(mr::Renderer *renderer) override
     {
+        mr::FramebufferUsage framebufferUsage = mr::FRAMEBUFFER_USAGE_READ_WRITE;
+        this->framebuffer->Bind(framebufferUsage);
+        this->framebuffer->Clear(framebufferUsage);
+
         glm::mat4 identityMat = glm::identity<glm::mat4>();
         cam.Update();
 
@@ -173,6 +177,8 @@ public:
         ));
 
         renderer->Render(cmd);
+
+        this->framebuffer->Unbind(framebufferUsage);
     }
 
     virtual void OnGuiRender() override

@@ -103,6 +103,12 @@ void GlFramebuffer::Clear(FramebufferUsage usage)
     glClear(bufferBitMask);
 }
 
+Texture *GlFramebuffer::GetTextureAttachment(uint32_t index)
+{
+    GlFramebuffer::GlAttachment &att = this->attachments[index];
+    return att.isRenderbufferObject? nullptr : att.texture;
+}
+
 GLenum GlFramebuffer::GetFramebufferUsage(FramebufferUsage usage)
 {
     switch (usage)
