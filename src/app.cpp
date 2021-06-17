@@ -42,9 +42,9 @@ public:
         cam.movementSpeed = 0.03f;
 
         // tex = mr::Texture::Create("D:\\Pictures\\Screenshots\\Screenshot (44).png");
-        tex = mr::Texture::Create("D:\\Documents\\Art\\Sprites\\Exports\\alphas.png");
+        tex = mr::Texture::Load("D:\\Documents\\Art\\Sprites\\Exports\\alphas.png");
         // specMap = mr::Texture::Create("D:\\Documents\\progs\\krita_resources\\MobRend\\IU_Spec.png");
-        specMap = mr::Texture::Create("D:\\Documents\\Art\\Sprites\\Exports\\semi_transparent_window.png");
+        specMap = mr::Texture::Load("D:\\Documents\\Art\\Sprites\\Exports\\semi_transparent_window.png");
 
         model = mr::Model::Load("D:\\Documents\\git\\MobRend\\resources\\models\\kunai.fbx");
 

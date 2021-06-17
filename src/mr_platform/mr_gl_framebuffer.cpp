@@ -10,7 +10,10 @@ GlFramebuffer::GlFramebuffer(Framebuffer::CreateParams &createParams)
     glGenFramebuffers(1, &this->framebufferId);
     glBindFramebuffer(GL_FRAMEBUFFER, this->framebufferId);
 
-
+    for(auto &att : createParams.attachments)
+    {
+        this->attachments.push_back( GlFramebuffer::CreateAttachment(att) );
+    }
 
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
@@ -23,6 +26,24 @@ GlFramebuffer::GlFramebuffer(Framebuffer::CreateParams &createParams)
 GlFramebuffer::~GlFramebuffer()
 {
     glDeleteFramebuffers(1, &this->framebufferId);
+    /// TODO: delete all attachments
+}
+
+GlFramebuffer::GlAttachment GlFramebuffer::CreateAttachment(const Framebuffer::Attachment &att)
+{
+    GlFramebuffer::GlAttachment ret = {};
+    ret.isRenderbufferObject = att.isRenderbufferObject;
+
+    if(ret.isRenderbufferObject)
+    {
+
+    }
+    else
+    {
+        // ret.texture = Texture::Create();
+    }
+
+    return ret;
 }
 
 void GlFramebuffer::Bind(FramebufferUsage usage)

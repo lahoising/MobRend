@@ -11,8 +11,8 @@ class GlTexture : public Texture
 {
 public:
     GlTexture(const char *filepath);
-    GlTexture(unsigned char *imageContent, ImageData imageData);
-    void GenerateTexture(unsigned char *imageContent, ImageData imageData);
+    GlTexture(const Texture::CreateParams &params);
+    void GenerateTexture(const Texture::CreateParams &params);
     virtual ~GlTexture() override;
     virtual void Bind() override;
     virtual void Unbind() override;

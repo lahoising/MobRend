@@ -6,8 +6,27 @@
 
 namespace mr
 {
+
+Texture *Texture::Create(const CreateParams &params)
+{
+    TextureManager &manager = TextureManager::GetInstance();
+    if(manager.Contains(params.referenceName.c_str()))
+    {
+        return manager.GetTexture(params.referenceName.c_str());
+    }
     
-Texture *Texture::Create(const char *filepath)
+    Texture *ret = nullptr;
+    #ifdef MOBREND_GL_RENDERING
+    ret = new GlTexture(params);
+    #else
+    ret = nullptr;
+    #endif
+
+    manager.AddTexture(params.referenceName.c_str(), ret);
+    return ret;
+}
+    
+Texture *Texture::Load(const char *filepath)
 {
     TextureManager &manager = TextureManager::GetInstance();
     if(manager.Contains(filepath))

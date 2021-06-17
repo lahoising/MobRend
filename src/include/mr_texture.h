@@ -3,6 +3,7 @@
 
 #include <inttypes.h>
 #include <unordered_map>
+#include "mr_image_loader.h"
 
 namespace mr
 {
@@ -10,7 +11,16 @@ namespace mr
 class Texture
 {
 public:
-    static Texture *Create(const char *filepath);
+    struct CreateParams
+    {
+        ImageData format;
+        std::string referenceName;
+        const void *content;
+    };
+
+public:
+    static Texture *Load(const char *filepath);
+    static Texture *Create(const CreateParams &params);
     virtual ~Texture() = 0 {};
     virtual void Bind() = 0;
     virtual void Unbind() = 0;
