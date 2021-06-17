@@ -29,7 +29,13 @@ GlFramebuffer::GlFramebuffer(Framebuffer::CreateParams &createParams)
 GlFramebuffer::~GlFramebuffer()
 {
     glDeleteFramebuffers(1, &this->framebufferId);
-    /// TODO: delete all attachments
+    for(auto &att : this->attachments)
+    {
+        if(att.isRenderbufferObject)
+        {
+            glDeleteRenderbuffers(1, &att.renderObjectId);
+        }
+    }
 }
 
 GlFramebuffer::GlAttachment GlFramebuffer::CreateAttachment(const Framebuffer::Attachment &att)
@@ -84,6 +90,19 @@ void GlFramebuffer::Unbind(FramebufferUsage usage)
     glBindFramebuffer( GlFramebuffer::GetFramebufferUsage(usage), 0 );
 }
 
+void GlFramebuffer::Clear(FramebufferUsage usage)
+{
+    glBindFramebuffer( GlFramebuffer::GetFramebufferUsage(usage), this->framebufferId );
+    
+    GLenum bufferBitMask = 0;
+    for(auto &att : this->attachments)
+    {
+        bufferBitMask |= bufferBitMask;
+    }
+
+    glClear(bufferBitMask);
+}
+
 GLenum GlFramebuffer::GetFramebufferUsage(FramebufferUsage usage)
 {
     switch (usage)
@@ -114,6 +133,17 @@ unsigned int GlFramebuffer::GetAttachmentInternalFormat(Framebuffer::AttachmentT
     case ATTACHMENT_DEPTH:              return GL_DEPTH_COMPONENT32;
     case ATTACHMENT_DEPTH24_STENCIL8:   return GL_DEPTH24_STENCIL8;
     default: throw "Unknown attachment type";
+    }
+}
+
+unsigned int GlFramebuffer::GetBufferBit(Framebuffer::AttachmentType type)
+{
+    switch (type)
+    {
+    case ATTACHMENT_COLOR_0:            return GL_COLOR_BUFFER_BIT;
+    case ATTACHMENT_DEPTH:              return GL_DEPTH_BUFFER_BIT;
+    case ATTACHMENT_DEPTH24_STENCIL8:   return GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
+    default: throw "Unknown framebuffer attachment type";
     }
 }
 

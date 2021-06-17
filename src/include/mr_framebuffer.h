@@ -40,6 +40,7 @@ public:
     virtual ~Framebuffer() = 0 {};
     virtual void Bind(FramebufferUsage usage) = 0;
     virtual void Unbind(FramebufferUsage usage) = 0;
+    virtual void Clear(FramebufferUsage usage) = 0;
 };
 
 } // namespace mr

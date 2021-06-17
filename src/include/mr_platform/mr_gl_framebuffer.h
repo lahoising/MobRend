@@ -26,6 +26,7 @@ public:
     virtual ~GlFramebuffer() override;
     virtual void Bind(FramebufferUsage usage) override;
     virtual void Unbind(FramebufferUsage usage) override;
+    virtual void Clear(FramebufferUsage usage) override;
 
 private:
     GlAttachment CreateAttachment(const Framebuffer::Attachment &specifications);
@@ -34,6 +35,7 @@ private:
     static unsigned int GetFramebufferUsage(mr::FramebufferUsage usage);
     static unsigned int GetAttachment(mr::Framebuffer::AttachmentType attachmentType);
     static unsigned int GetAttachmentInternalFormat(Framebuffer::AttachmentType attachmentType);
+    static unsigned int GetBufferBit(Framebuffer::AttachmentType type);
 
 private:
     unsigned int framebufferId;
