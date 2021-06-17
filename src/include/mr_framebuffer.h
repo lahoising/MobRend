@@ -20,20 +20,19 @@ public:
     {
         ATTACHMENT_COLOR_0,
         ATTACHMENT_DEPTH,
-        ATTACHMENT_STENCIL,
         ATTACHMENT_DEPTH24_STENCIL8,
     };
 
     struct Attachment
     {
         AttachmentType type;
-        uint32_t width, height;
         bool isRenderbufferObject;
     };
 
     struct CreateParams
     {
         std::vector<Attachment> attachments;
+        uint32_t width, height;
     };
 
 public:

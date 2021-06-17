@@ -1,6 +1,7 @@
 #ifndef _MR_WINDOW_H_
 #define _MR_WINDOW_H_
 
+#include <inttypes.h>
 #include <unordered_map>
 #include "mr_input.h"
 
@@ -12,7 +13,7 @@ class Window
 public:
     typedef struct
     {
-        int width, height;
+        uint32_t width, height;
         char *windowName;
     } CreateParams;
 
@@ -24,6 +25,10 @@ public:
     virtual void PollEvents() = 0;
     virtual void *GetHandle() = 0;
     virtual void SetCursorVisible(bool visible) = 0;
+    virtual uint32_t GetWidth() = 0;
+    virtual uint32_t GetHeight() = 0;
+    virtual uint32_t GetFramebufferWidth() = 0;
+    virtual uint32_t GetFramebufferHeight() = 0;
 
 public:
     Input input;

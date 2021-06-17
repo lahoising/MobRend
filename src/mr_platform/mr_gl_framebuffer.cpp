@@ -40,7 +40,22 @@ GlFramebuffer::GlAttachment GlFramebuffer::CreateAttachment(const Framebuffer::A
     }
     else
     {
-        // ret.texture = Texture::Create();
+        Texture::CreateParams texCreateParams = {};
+        texCreateParams.info.width = this->width;
+        texCreateParams.info.height = this->height;
+        texCreateParams.content = nullptr;
+        const size_t ATTACHMENT_NAME_SIZE = 64;
+        char buff[ATTACHMENT_NAME_SIZE] = {};
+        snprintf(buff, ATTACHMENT_NAME_SIZE, "framebuffer_attachment_%u_%u_%u", this->framebufferId, this->width, this->height);
+        texCreateParams.referenceName = buff;
+    
+        ret.texture = (GlTexture*)Texture::Create(texCreateParams);
+        glFramebufferTexture2D(
+            GL_FRAMEBUFFER, 
+            GlFramebuffer::GetFramebufferAttachment(att.type),
+            GL_TEXTURE_2D,
+            ret.texture->GetTextureId(),
+            0);
     }
 
     return ret;
@@ -64,6 +79,17 @@ GLenum GlFramebuffer::GetFramebufferUsage(FramebufferUsage usage)
     case FRAMEBUFFER_USAGE_READ:        return GL_READ_FRAMEBUFFER;
     case FRAMEBUFFER_USAGE_WRITE:       return GL_DRAW_FRAMEBUFFER;
     default: throw "Unknown framebuffer usage";
+    }
+}
+
+unsigned int GlFramebuffer::GetFramebufferAttachment(mr::Framebuffer::AttachmentType attachmentType)
+{
+    switch (attachmentType)
+    {
+    case ATTACHMENT_COLOR_0:            return GL_COLOR_ATTACHMENT0;
+    case ATTACHMENT_DEPTH:              return GL_DEPTH_ATTACHMENT;
+    case ATTACHMENT_DEPTH24_STENCIL8:   return GL_DEPTH_STENCIL_ATTACHMENT;
+    default: throw "Unknown attachment type";
     }
 }
 

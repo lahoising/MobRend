@@ -142,5 +142,34 @@ void GlfwWindow::SetCursorVisible(bool visible)
     glfwSetInputMode(this->window, GLFW_CURSOR, visible? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
 }
 
+uint32_t GlfwWindow::GetWidth()  
+{
+    int width = 0;
+    glfwGetWindowSize(this->window, &width, nullptr);
+    return (uint32_t)width;
+}
+
+uint32_t GlfwWindow::GetHeight() 
+{
+    int height = 0;
+    glfwGetWindowSize(this->window, nullptr, &height);
+    return (uint32_t)height;
+}
+
+uint32_t GlfwWindow::GetFramebufferWidth()
+{
+    int width = 0;
+    glfwGetFramebufferSize(this->window, &width, nullptr);
+    return (uint32_t)width;
+}
+
+uint32_t GlfwWindow::GetFramebufferHeight()
+{
+    int height = 0;
+    glfwGetFramebufferSize(this->window, nullptr, &height);
+    return (uint32_t)height;
+}
+
+
 } // namespace mr
 #endif

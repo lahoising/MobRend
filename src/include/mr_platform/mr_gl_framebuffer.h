@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "mr_framebuffer.h"
-#include "mr_texture.h"
+#include "mr_platform/mr_gl_texture.h"
 
 namespace mr
 {
@@ -17,7 +17,7 @@ public:
         union
         {
             unsigned int renderObjectId;
-            Texture *texture;
+            GlTexture *texture;
         };
     };
 
@@ -28,11 +28,15 @@ public:
     virtual void Unbind(FramebufferUsage usage) override;
 
 private:
-    static GlAttachment CreateAttachment(const Framebuffer::Attachment &specifications);
+    GlAttachment CreateAttachment(const Framebuffer::Attachment &specifications);
+
+private:
     static unsigned int GetFramebufferUsage(mr::FramebufferUsage usage);
+    static unsigned int GetFramebufferAttachment(mr::Framebuffer::AttachmentType attachmentType);
 
 private:
     unsigned int framebufferId;
+    uint32_t width, height;
     std::vector<GlAttachment> attachments;
 };
 

@@ -77,12 +77,17 @@ public:
         this->quad = new mr::Mesh(meshCreateParams);
 
         mr::Application &app = mr::Application::GetInstance();
-        app.GetMainWindow()->SetCursorVisible(isCursonVisible);
+        mr::Window *window = app.GetMainWindow();
+        window->SetCursorVisible(isCursonVisible);
 
         mr::Renderer *rend = app.GetRenderer();
 
         mr::Framebuffer::CreateParams frameBufferCreateParams = {};
-        
+        frameBufferCreateParams.width = window->GetFramebufferWidth();
+        frameBufferCreateParams.height = window->GetFramebufferHeight();
+        frameBufferCreateParams.attachments = {
+            { mr::Framebuffer::ATTACHMENT_COLOR_0, false }
+        };
         this->framebuffer = mr::Framebuffer::Create(frameBufferCreateParams);
     }
 

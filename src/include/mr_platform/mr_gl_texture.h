@@ -17,6 +17,8 @@ public:
     virtual void Bind() override;
     virtual void Unbind() override;
 
+    unsigned int GetTextureId(){ return this->textureId; }
+
 private:
     static unsigned int GetFormat(Texture::Format format);
     static unsigned int GetInternalFormat(Texture::Format format);
