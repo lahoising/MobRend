@@ -7,15 +7,24 @@
 
 namespace mr
 {
-    
+
 class Texture
 {
 public:
+    enum Format
+    {
+        TEXTURE_FORMAT_RGB,
+        TEXTURE_FORMAT_RGBA,
+        TEXTURE_FORMAT_DEPTH,
+        TEXTURE_FORMAT_DEPTH_STENCIL
+    };
+    
     struct CreateParams
     {
-        ImageData format;
+        ImageData info;
         std::string referenceName;
         const void *content;
+        Format format;
     };
 
 public:

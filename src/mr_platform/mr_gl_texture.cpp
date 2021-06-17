@@ -17,7 +17,14 @@ GlTexture::GlTexture(const char *filepath)
 
     Texture::CreateParams params = {};
     params.content = imageData;
-    params.format = data;
+    params.info = data;
+    
+    switch (params.info.nrChannels)
+    {
+    case 3: params.format = Texture::TEXTURE_FORMAT_RGB; break;
+    case 4: params.format = Texture::TEXTURE_FORMAT_RGBA; break;
+    default: break;
+    }
 
     this->GenerateTexture(params);
     ImageLoader::DeleteImage((unsigned char *)params.content);
@@ -35,20 +42,13 @@ void GlTexture::GenerateTexture(const Texture::CreateParams &params)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    int format = 0;
-    switch (params.format.nrChannels)
-    {
-    case 3: format = GL_RGB; break;
-    case 4: format = GL_RGBA; break;
-    default: break;
-    }
-
     glTexImage2D(
         GL_TEXTURE_2D, 0,
-        format,
-        params.format.width, params.format.height,
+        GlTexture::GetInternalFormat(params.format),
+        params.info.width, params.info.height,
         0, 
-        format, GL_UNSIGNED_BYTE,
+        GlTexture::GetFormat(params.format),
+        GlTexture::GetContentType(params.format),
         params.content
     );
     glGenerateMipmap(GL_TEXTURE_2D);
@@ -71,5 +71,41 @@ void GlTexture::Unbind()
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+unsigned int GlTexture::GetInternalFormat(Texture::Format format)
+{
+    switch (format)
+    {
+    case TEXTURE_FORMAT_RGB:            return GL_RGB;
+    case TEXTURE_FORMAT_RGBA:           return GL_RGBA;
+    case TEXTURE_FORMAT_DEPTH:          return GL_DEPTH_COMPONENT32;
+    case TEXTURE_FORMAT_DEPTH_STENCIL:  return GL_DEPTH_STENCIL;
+    default: throw "Unknown texture format";
+    }
+}
+
+unsigned int GlTexture::GetFormat(Texture::Format format)
+{
+    switch (format)
+    {
+    case TEXTURE_FORMAT_RGB:            return GL_RGB;
+    case TEXTURE_FORMAT_RGBA:           return GL_RGBA;
+    case TEXTURE_FORMAT_DEPTH:          return GL_DEPTH_COMPONENT;
+    case TEXTURE_FORMAT_DEPTH_STENCIL:  return GL_DEPTH24_STENCIL8;
+    default: throw "Unknown texture format";
+    }
+}
+
+unsigned int GlTexture::GetContentType(Texture::Format format)
+{
+    switch (format)
+    {
+    case TEXTURE_FORMAT_RGB:
+    case TEXTURE_FORMAT_RGBA:
+        return GL_UNSIGNED_BYTE;
+    case TEXTURE_FORMAT_DEPTH: return GL_UNSIGNED_INT;
+    case TEXTURE_FORMAT_DEPTH_STENCIL: return GL_UNSIGNED_INT_24_8;
+    default: throw "Unknown texture format";
+    }
+}
 
 } // namespace mr

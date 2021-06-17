@@ -18,6 +18,11 @@ public:
     virtual void Unbind() override;
 
 private:
+    static unsigned int GetFormat(Texture::Format format);
+    static unsigned int GetInternalFormat(Texture::Format format);
+    static unsigned int GetContentType(Texture::Format format);
+
+private:
     unsigned int textureId;
     // unsigned char *imageContent;
 };
