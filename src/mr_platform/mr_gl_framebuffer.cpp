@@ -42,6 +42,7 @@ GlFramebuffer::GlAttachment GlFramebuffer::CreateAttachment(const Framebuffer::A
 {
     GlFramebuffer::GlAttachment ret = {};
     ret.isRenderbufferObject = att.isRenderbufferObject;
+    ret.type = att.type;
 
     if(ret.isRenderbufferObject)
     {
@@ -97,7 +98,7 @@ void GlFramebuffer::Clear(FramebufferUsage usage)
     GLenum bufferBitMask = 0;
     for(auto &att : this->attachments)
     {
-        bufferBitMask |= bufferBitMask;
+        bufferBitMask |= GlFramebuffer::GetBufferBit(att.type);
     }
 
     glClear(bufferBitMask);

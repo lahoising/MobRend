@@ -13,12 +13,13 @@ class GlFramebuffer : public Framebuffer
 public:
     struct GlAttachment
     {
-        bool isRenderbufferObject;
         union
         {
             unsigned int renderObjectId;
             GlTexture *texture;
         };
+        Framebuffer::AttachmentType type;
+        bool isRenderbufferObject;
     };
 
 public:

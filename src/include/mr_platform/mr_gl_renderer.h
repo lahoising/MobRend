@@ -14,6 +14,7 @@ class GlRenderer : public Renderer
 public:
     GlRenderer();
     virtual ~GlRenderer() override;
+    virtual void Clear() override;
     virtual void SetViewport(int x, int y, int width, int height) override;
     virtual void OnRenderBegin() override;
     virtual void OnRenderEnd() override;

@@ -29,6 +29,11 @@ public:
         shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.frag.spv";
         shader = mr::Shader::Create(shaderCreateParams);
 
+        shaderCreateParams = {};
+        shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\quad.vert.spv";
+        shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\quad.frag.spv";
+        simpleQuad = mr::Shader::Create(shaderCreateParams);
+
         cam = mr::FPSCamera();
         mr::Camera::Config camConfig = {};
         camConfig.perspective.fov = glm::radians(60.0f);
@@ -76,6 +81,23 @@ public:
         
         this->quad = new mr::Mesh(meshCreateParams);
 
+        layout = {
+            {mr::AttributeType::FLOAT, 2},
+            {mr::AttributeType::FLOAT, 2},
+        };
+
+        float screenVertices[] = {
+             0.9f, -0.9f, 1.0f, 0.0f,
+             0.9f,  0.9f, 1.0f, 1.0f,
+            -0.9f,  0.9f, 0.0f, 1.0f,
+            -0.9f, -0.9f, 0.0f, 0.0f
+        };
+
+        meshCreateParams.vertexLayout = &layout;
+        meshCreateParams.vertices = screenVertices;
+        meshCreateParams.verticesArraySize = sizeof(screenVertices);
+        this->screen = new mr::Mesh(meshCreateParams);
+
         mr::Application &app = mr::Application::GetInstance();
         mr::Window *window = app.GetMainWindow();
         window->SetCursorVisible(isCursonVisible);
@@ -113,6 +135,9 @@ public:
         this->framebuffer->Bind(framebufferUsage);
         this->framebuffer->Clear(framebufferUsage);
 
+        renderer->EnableRenderPass(
+            mr::RENDER_PASS_DEPTH, true
+        );
         glm::mat4 identityMat = glm::identity<glm::mat4>();
         cam.Update();
 
@@ -179,6 +204,21 @@ public:
         renderer->Render(cmd);
 
         this->framebuffer->Unbind(framebufferUsage);
+
+        renderer->Clear();
+        this->simpleQuad->Bind();
+        renderer->EnableRenderPass(
+            mr::RENDER_PASS_DEPTH, false
+        );
+
+        this->simpleQuad->UploadTexture2D("u_tex", this->framebuffer->GetTextureAttachment(0));
+        
+        cmd = {};
+        // cmd.topologyType = mr::TOPOLOGY_WIREFRAME;
+        cmd.topologyType = mr::TOPOLOGY_TRIANGLES;
+        cmd.mesh = this->screen;
+        cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
+        renderer->Render(cmd);
     }
 
     virtual void OnGuiRender() override
@@ -203,11 +243,13 @@ public:
         delete(this->model);
         delete(this->directional);
         delete(this->shader);
+        delete(this->simpleQuad);
     }
 
 private:
     mr::Framebuffer *framebuffer = nullptr;
     mr::Shader *shader = nullptr;
+    mr::Shader *simpleQuad = nullptr;
 
     mr::FPSCamera cam;
     mr::Texture *tex = nullptr;
@@ -217,6 +259,7 @@ private:
 
     mr::Model *model = nullptr;
     mr::Mesh *quad = nullptr;
+    mr::Mesh *screen = nullptr;
     bool isCursonVisible;
 };
 
