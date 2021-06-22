@@ -30,13 +30,14 @@ private:
 private:
     typedef struct
     {
-        void (*generate)(GlTexture *texture, const GlTexture::CreateParams &params);
+        void (*generate)(GlTexture *texture, const Texture::CreateParams &params);
         unsigned int type;
     } GeneratorInfo;
 
     static GeneratorInfo BuildGeneratorInfo(GlTexture::Type type);
-    static void GenerateTexture2D(GlTexture *texture, const GlTexture::CreateParams &params);
-    static void GenerateTextureCube(GlTexture *texture, const GlTexture::CreateParams &params);
+    static void Texture2D(const Texture::Specs *specs, unsigned int textureType);
+    static void GenerateTexture2D(GlTexture *texture, const Texture::CreateParams &params);
+    static void GenerateTextureCube(GlTexture *texture, const Texture::CreateParams &params);
 
 private:
     unsigned int textureId;

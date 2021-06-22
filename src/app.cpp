@@ -46,14 +46,25 @@ public:
         );
         cam.movementSpeed = 0.03f;
 
-        // tex = mr::Texture::Create("D:\\Pictures\\Screenshots\\Screenshot (44).png");
         mr::Texture::LoadParams textureLoadParams = {};
         textureLoadParams.type = mr::Texture::TEXTURE_TYPE_2D;
         textureLoadParams.filepath = "D:\\Documents\\Art\\Sprites\\Exports\\alphas.png";
         tex = mr::Texture::Load(textureLoadParams);
-        // specMap = mr::Texture::Create("D:\\Documents\\progs\\krita_resources\\MobRend\\IU_Spec.png");
+        
         textureLoadParams.filepath = "D:\\Documents\\Art\\Sprites\\Exports\\semi_transparent_window.png";
         specMap = mr::Texture::Load(textureLoadParams);
+
+        mr::Texture::CubePaths cubeMapPaths = {};
+        cubeMapPaths.right = "D:\\Workspace\\Downloads\\skybox\\right.jpg";
+        cubeMapPaths.left = "D:\\Workspace\\Downloads\\skybox\\left.jpg";
+        cubeMapPaths.top = "D:\\Workspace\\Downloads\\skybox\\top.jpg";
+        cubeMapPaths.bottom = "D:\\Workspace\\Downloads\\skybox\\bottom.jpg";
+        cubeMapPaths.front = "D:\\Workspace\\Downloads\\skybox\\front.jpg";
+        cubeMapPaths.back = "D:\\Workspace\\Downloads\\skybox\\back.jpg";
+        
+        textureLoadParams.cubeMapPaths = &cubeMapPaths;
+        textureLoadParams.type = mr::Texture::TEXTURE_TYPE_CUBE;
+        this->cubeMap = mr::Texture::Load(textureLoadParams);
 
         model = mr::Model::Load("D:\\Documents\\git\\MobRend\\resources\\models\\kunai.fbx");
 
@@ -258,6 +269,7 @@ private:
     mr::FPSCamera cam;
     mr::Texture *tex = nullptr;
     mr::Texture *specMap = nullptr;
+    mr::Texture *cubeMap = nullptr;
 
     mr::DirectionalLight *directional = nullptr;
 

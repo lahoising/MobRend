@@ -85,11 +85,6 @@ void GlTexture::GenerateTexture(const Texture::CreateParams &params)
     glGenTextures(1, &this->textureId);
     glBindTexture(info.type, this->textureId);
 
-    glTexParameteri(info.type, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(info.type, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(info.type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(info.type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
     info.generate(this,params);
     glGenerateMipmap(info.type);
 
@@ -106,6 +101,9 @@ GlTexture::GeneratorInfo GlTexture::BuildGeneratorInfo(GlTexture::Type type)
     case GlTexture::TEXTURE_TYPE_2D: 
         info.generate = GlTexture::GenerateTexture2D;
     break;
+    case GlTexture::TEXTURE_TYPE_CUBE:
+        info.generate = GlTexture::GenerateTextureCube;
+    break;
     default: throw "Unknown texture type";
     }
 
@@ -114,14 +112,40 @@ GlTexture::GeneratorInfo GlTexture::BuildGeneratorInfo(GlTexture::Type type)
 
 void GlTexture::GenerateTexture2D(GlTexture *texture, const GlTexture::CreateParams &params)
 {
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    GlTexture::Texture2D(params.specs, GL_TEXTURE_2D);
+}
+
+void GlTexture::GenerateTextureCube(GlTexture *texture, const GlTexture::CreateParams &params)
+{
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    GlTexture::Texture2D(&params.cubeSpecs->right,  GL_TEXTURE_CUBE_MAP_POSITIVE_X);
+    GlTexture::Texture2D(&params.cubeSpecs->left,   GL_TEXTURE_CUBE_MAP_NEGATIVE_X);
+    GlTexture::Texture2D(&params.cubeSpecs->top,    GL_TEXTURE_CUBE_MAP_POSITIVE_Y);
+    GlTexture::Texture2D(&params.cubeSpecs->bottom, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y);
+    GlTexture::Texture2D(&params.cubeSpecs->front,  GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
+    GlTexture::Texture2D(&params.cubeSpecs->back,   GL_TEXTURE_CUBE_MAP_POSITIVE_Z);
+}
+
+void GlTexture::Texture2D(const Texture::Specs *specs, unsigned int textureType)
+{
     glTexImage2D(
-        GL_TEXTURE_2D, 0,
-        GlTexture::GetInternalFormat(params.specs->format),
-        params.specs->info.width, params.specs->info.height,
+        textureType, 0,
+        GlTexture::GetInternalFormat(specs->format),
+        specs->info.width, specs->info.height,
         0, 
-        GlTexture::GetFormat(params.specs->format),
-        GlTexture::GetContentType(params.specs->format),
-        params.specs->content
+        GlTexture::GetFormat(specs->format),
+        GlTexture::GetContentType(specs->format),
+        specs->content
     );
 }
 
