@@ -118,6 +118,11 @@ void GlRenderer::SetDepthTestFn(RenderPassFn fn)
     glDepthFunc( GlRenderer::GetRenderPassFn(fn) );
 }
 
+void GlRenderer::SetDepthMask(bool writeable)
+{
+    glDepthMask(writeable? GL_TRUE : GL_FALSE);
+}
+
 void GlRenderer::SetStencilTestFn(RenderPassFn fn, int refValue, unsigned int mask)
 {
     glStencilFunc(

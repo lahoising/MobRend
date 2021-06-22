@@ -83,7 +83,7 @@ void GlTexture::GenerateTexture(const Texture::CreateParams &params)
 {
     GeneratorInfo info = GlTexture::BuildGeneratorInfo(params.type);
     glGenTextures(1, &this->textureId);
-    glBindTexture(info.type, this->textureId);
+    glBindTexture(this->textureType = info.type, this->textureId);
 
     info.generate(this,params);
     glGenerateMipmap(info.type);
@@ -132,8 +132,8 @@ void GlTexture::GenerateTextureCube(GlTexture *texture, const GlTexture::CreateP
     GlTexture::Texture2D(&params.cubeSpecs->left,   GL_TEXTURE_CUBE_MAP_NEGATIVE_X);
     GlTexture::Texture2D(&params.cubeSpecs->top,    GL_TEXTURE_CUBE_MAP_POSITIVE_Y);
     GlTexture::Texture2D(&params.cubeSpecs->bottom, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y);
-    GlTexture::Texture2D(&params.cubeSpecs->front,  GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
-    GlTexture::Texture2D(&params.cubeSpecs->back,   GL_TEXTURE_CUBE_MAP_POSITIVE_Z);
+    GlTexture::Texture2D(&params.cubeSpecs->front,  GL_TEXTURE_CUBE_MAP_POSITIVE_Z);
+    GlTexture::Texture2D(&params.cubeSpecs->back,   GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
 }
 
 void GlTexture::Texture2D(const Texture::Specs *specs, unsigned int textureType)
@@ -156,12 +156,12 @@ GlTexture::~GlTexture()
 
 void GlTexture::Bind()
 {
-    glBindTexture(GL_TEXTURE_2D, this->textureId);
+    glBindTexture(this->textureType, this->textureId);
 }
 
 void GlTexture::Unbind()
 {
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(this->textureType, 0);
 }
 
 unsigned int GlTexture::GetInternalFormat(Texture::Format format)

@@ -41,6 +41,7 @@ private:
 
 private:
     unsigned int textureId;
+    unsigned int textureType;
     // unsigned char *imageContent;
 };
 

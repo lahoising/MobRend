@@ -30,7 +30,7 @@ public:
     virtual void UploadVec4(const char *uniformName,const glm::vec4 &vec) = 0;
     virtual void UploadInt(const char *uniformName, int32_t i) = 0;
     virtual void UploadBool(const char *uniformName, bool val) = 0;
-    virtual void UploadTexture2D(const char *uniformName, Texture *texture) = 0;
+    virtual void UploadTexture(const char *uniformName, Texture *texture) = 0;
 };
 
 } // namespace mr

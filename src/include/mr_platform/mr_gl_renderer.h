@@ -25,6 +25,7 @@ public:
     virtual void EnableRenderPass(RenderPassMask renderPassMask, bool enable) override;
     
     virtual void SetDepthTestFn(RenderPassFn fn) override;
+    void SetDepthMask(bool writeable) override;
     
     virtual void SetStencilTestFn(RenderPassFn fn, int refValue, unsigned int mask) override;
     virtual void SetStencilTestAction(

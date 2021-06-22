@@ -220,7 +220,7 @@ void GlShader::UploadBool(const char *uniformName, bool val)
 	glUniform1i(location, val? 1 : 0);
 }
 
-void GlShader::UploadTexture2D(const char *uniformName, Texture *texture)
+void GlShader::UploadTexture(const char *uniformName, Texture *texture)
 {
 	if(this->uniformLocations.find(uniformName) == this->uniformLocations.end())
 	{

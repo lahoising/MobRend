@@ -126,6 +126,7 @@ public:
     virtual void EnableRenderPass(RenderPassMask renderPassMask, bool enable) = 0;
     
     virtual void SetDepthTestFn(RenderPassFn fn) = 0;
+    virtual void SetDepthMask(bool writeable) = 0;
     
     virtual void SetStencilTestFn(RenderPassFn fn, int refValue, unsigned int mask) = 0;
     virtual void SetStencilTestAction(

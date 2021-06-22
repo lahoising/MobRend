@@ -22,7 +22,7 @@ public:
     virtual void UploadVec4(const char *uniformName,const glm::vec4 &vec) override;
     virtual void UploadInt(const char *uniformName, int32_t i) override;
     virtual void UploadBool(const char *uniformName, bool val) override;
-    virtual void UploadTexture2D(const char *uniformName, Texture *texture) override;
+    virtual void UploadTexture(const char *uniformName, Texture *texture) override;
 
 private:
     std::string CompileFromSpirV(const std::vector<uint32_t> &source);

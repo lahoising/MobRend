@@ -44,6 +44,9 @@ public:
 
     void SetConfiguration(Type type, Config config);
     const glm::mat4 &GetViewProjection() const { return this->viewProjMat; }
+
+    const glm::mat4 &GetViewMatrix() const { return this->viewMatrix; }
+    const glm::mat4 &GetProjectionMatrix() const { return this->projMatrix; }
     
     const glm::vec3 &GetPosition() const { return this->position; }
     void      SetPosition(const glm::vec3 &position);

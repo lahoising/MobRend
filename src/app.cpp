@@ -34,6 +34,11 @@ public:
         shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\quad.frag.spv";
         simpleQuad = mr::Shader::Create(shaderCreateParams);
 
+        shaderCreateParams = {};
+        shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\skybox.vert.spv";
+        shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\skybox.frag.spv";
+        this->skyboxShader = mr::Shader::Create(shaderCreateParams);
+
         cam = mr::FPSCamera();
         mr::Camera::Config camConfig = {};
         camConfig.perspective.fov = glm::radians(60.0f);
@@ -113,6 +118,39 @@ public:
         meshCreateParams.verticesArraySize = sizeof(screenVertices);
         this->screen = new mr::Mesh(meshCreateParams);
 
+        layout = {
+            {mr::AttributeType::FLOAT, 3}
+        };
+
+        float skyboxVertices[] = {
+             1.0f, -1.0f, -1.0f,
+             1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f,
+
+            -1.0f, -1.0f,  1.0f,
+            -1.0f,  1.0f,  1.0f,
+             1.0f,  1.0f,  1.0f,
+             1.0f, -1.0f,  1.0f,
+        };
+
+        uint32_t skyboxIndices[] = {
+            0, 1, 2, 2, 3, 0,   // front
+            4, 5, 6, 6, 7, 4,   // back
+            7, 6, 1, 1, 0, 7,   // right
+            3, 2, 5, 5, 4, 3,   // left
+            1, 6, 5, 5, 2, 1,   // top
+            7, 0, 3, 3, 4, 7    // bottom 
+        };
+
+        meshCreateParams = {};
+        meshCreateParams.vertexLayout = &layout;
+        meshCreateParams.vertices = skyboxVertices;
+        meshCreateParams.verticesArraySize = sizeof(skyboxVertices);
+        meshCreateParams.indices = skyboxIndices;
+        meshCreateParams.indexCount = sizeof(skyboxIndices) / sizeof(uint32_t);
+        this->skybox = new mr::Mesh(meshCreateParams);
+
         mr::Application &app = mr::Application::GetInstance();
         mr::Window *window = app.GetMainWindow();
         window->SetCursorVisible(isCursonVisible);
@@ -153,8 +191,22 @@ public:
         renderer->EnableRenderPass(
             mr::RENDER_PASS_DEPTH, true
         );
+
         glm::mat4 identityMat = glm::identity<glm::mat4>();
         cam.Update();
+
+        renderer->SetDepthMask(false);
+            this->skyboxShader->Bind();
+            this->skyboxShader->UploadMat4(
+                "u_cam.viewProjection", 
+                glm::mat4(glm::mat3(cam.camera.GetViewMatrix())) * cam.camera.GetProjectionMatrix()
+            );
+            this->skyboxShader->UploadTexture("u_skybox", this->cubeMap);
+            mr::Renderer::Command cmd = {};
+            cmd.mesh = this->skybox;
+            cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
+            renderer->Render(cmd);
+        renderer->SetDepthMask(true);
 
         shader->Bind();
 
@@ -193,10 +245,10 @@ public:
         shader->UploadFloat("u_scene.phongMaterial.specularMapStrength", 0.0f);
         shader->UploadFloat("u_scene.phongMaterial.shininess", 32.f);
 
-        shader->UploadTexture2D("u_diffuseMap", tex);
-        shader->UploadTexture2D("u_specularMap", specMap);
+        shader->UploadTexture("u_diffuseMap", tex);
+        shader->UploadTexture("u_specularMap", specMap);
 
-        mr::Renderer::Command cmd = {};
+        cmd = {};
         cmd.topologyType = mr::TOPOLOGY_TRIANGLES;
         cmd.model = model;
         cmd.renderObjectType = mr::RENDER_OBJECT_MODEL;
@@ -210,7 +262,7 @@ public:
         cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
         renderer->Render(cmd);
 
-        shader->UploadTexture2D("u_diffuseMap", specMap);
+        shader->UploadTexture("u_diffuseMap", specMap);
         // shader->UploadFloat("u_scene.phongMaterial.diffuseMapStrength", 0.0f);
         shader->UploadMat4("u_cam.model", glm::translate(
             identityMat, glm::vec3(0.0f, 0.0f, -2.5f)
@@ -226,7 +278,7 @@ public:
             mr::RENDER_PASS_DEPTH, false
         );
 
-        this->simpleQuad->UploadTexture2D("u_tex", this->framebuffer->GetTextureAttachment(0));
+        this->simpleQuad->UploadTexture("u_tex", this->framebuffer->GetTextureAttachment(0));
         
         cmd = {};
         // cmd.topologyType = mr::TOPOLOGY_WIREFRAME;
@@ -256,15 +308,18 @@ public:
         if(this->framebuffer) delete(this->framebuffer);
         delete(this->quad);
         delete(this->model);
+        delete(this->skybox);
         delete(this->directional);
         delete(this->shader);
         delete(this->simpleQuad);
+        delete(this->skyboxShader);
     }
 
 private:
     mr::Framebuffer *framebuffer = nullptr;
     mr::Shader *shader = nullptr;
     mr::Shader *simpleQuad = nullptr;
+    mr::Shader *skyboxShader = nullptr;
 
     mr::FPSCamera cam;
     mr::Texture *tex = nullptr;
@@ -276,6 +331,7 @@ private:
     mr::Model *model = nullptr;
     mr::Mesh *quad = nullptr;
     mr::Mesh *screen = nullptr;
+    mr::Mesh *skybox = nullptr;
     bool isCursonVisible;
 };
 
