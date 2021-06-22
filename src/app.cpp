@@ -185,6 +185,7 @@ public:
 
     virtual void OnRender(mr::Renderer *renderer) override
     {
+        mr::Renderer::Command cmd = {};
         mr::FramebufferUsage framebufferUsage = mr::FRAMEBUFFER_USAGE_READ_WRITE;
         this->framebuffer->Bind(framebufferUsage);
         this->framebuffer->Clear(framebufferUsage);
@@ -195,19 +196,6 @@ public:
 
         glm::mat4 identityMat = glm::identity<glm::mat4>();
         cam.Update();
-
-        renderer->SetDepthMask(false);
-            this->skyboxShader->Bind();
-            this->skyboxShader->UploadMat4(
-                "u_cam.viewProjection", 
-                cam.camera.GetProjectionMatrix() * glm::mat4(glm::mat3(cam.camera.GetViewMatrix()))
-            );
-            this->skyboxShader->UploadTexture("u_skybox", this->cubeMap);
-            mr::Renderer::Command cmd = {};
-            cmd.mesh = this->skybox;
-            cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
-            renderer->Render(cmd);
-        renderer->SetDepthMask(true);
 
         shader->Bind();
 
@@ -270,6 +258,19 @@ public:
         ));
 
         renderer->Render(cmd);
+
+        renderer->SetDepthTestFn(mr::RENDER_PASS_FN_LESS_OR_EQUEAL);
+            this->skyboxShader->Bind();
+            this->skyboxShader->UploadMat4(
+                "u_cam.viewProjection", 
+                cam.camera.GetProjectionMatrix() * glm::mat4(glm::mat3(cam.camera.GetViewMatrix()))
+            );
+            this->skyboxShader->UploadTexture("u_skybox", this->cubeMap);
+            cmd = {};
+            cmd.mesh = this->skybox;
+            cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
+            renderer->Render(cmd);
+        renderer->SetDepthTestFn(mr::RENDER_PASS_FN_LESS);
 
         this->framebuffer->Unbind(framebufferUsage);
 

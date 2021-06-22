@@ -11,5 +11,6 @@ layout(push_constant,std430) uniform Cam
 void main()
 {
     TexCoords = aPos;
-    gl_Position = u_cam.viewProjection * vec4(aPos, 1.0);
+    vec4 pos = u_cam.viewProjection * vec4(aPos, 1.0);
+    gl_Position = pos.xyww;
 }
