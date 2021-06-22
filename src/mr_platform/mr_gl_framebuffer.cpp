@@ -60,10 +60,12 @@ GlFramebuffer::GlAttachment GlFramebuffer::CreateAttachment(const Framebuffer::A
     }
     else
     {
+        Texture::Specs specs = {};
+        specs.info.width = this->width;
+        specs.info.height = this->height;
+
         Texture::CreateParams texCreateParams = {};
-        texCreateParams.info.width = this->width;
-        texCreateParams.info.height = this->height;
-        texCreateParams.content = nullptr;
+        texCreateParams.specs = &specs;
         const size_t ATTACHMENT_NAME_SIZE = 64;
         char buff[ATTACHMENT_NAME_SIZE] = {};
         snprintf(buff, ATTACHMENT_NAME_SIZE, "framebuffer_attachment_%u_%u_%u", this->framebufferId, this->width, this->height);

@@ -24,23 +24,62 @@ public:
         TEXTURE_TYPE_2D,
         TEXTURE_TYPE_CUBE,
     };
+
+    struct Specs
+    {
+        ImageData info;
+        const void *content;
+        Format format;
+    };
+
+    struct CubeSpecs
+    {
+        Specs right;
+        Specs left;
+        Specs top;
+        Specs bottom;
+        Specs front;
+        Specs back;
+    };
     
     struct CreateParams
     {
-        ImageData info;
+        union
+        {
+            const Specs *specs;
+            const CubeSpecs *cubeSpecs;
+        };
         std::string referenceName;
-        const void *content;
-        Format format;
         Type type;
 
         CreateParams() :
-            info(), referenceName(""), content(nullptr),
-            format(TEXTURE_FORMAT_RGBA), type(TEXTURE_TYPE_2D)
+            specs(nullptr), referenceName(""), type(TEXTURE_TYPE_2D)
             {}
     };
 
+    struct CubePaths
+    {
+        const char *right;
+        const char *left;
+        const char *top;
+        const char *bottom;
+        const char *front;
+        const char *back;
+    };
+
+    struct LoadParams
+    {
+
+        union
+        {
+            const char *filepath;
+            const CubePaths *cubeMapPaths;
+        };
+        Type type;
+    };
+
 public:
-    static Texture *Load(const char *filepath);
+    static Texture *Load(const LoadParams &params);
     static Texture *Create(const CreateParams &params);
     virtual ~Texture() = 0 {};
     virtual void Bind() = 0;

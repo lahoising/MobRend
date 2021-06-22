@@ -10,7 +10,7 @@ namespace mr
 class GlTexture : public Texture
 {
 public:
-    GlTexture(const char *filepath);
+    GlTexture(const Texture::LoadParams &params);
     GlTexture(const Texture::CreateParams &params);
     void GenerateTexture(const Texture::CreateParams &params);
     virtual ~GlTexture() override;
@@ -25,6 +25,8 @@ private:
     static unsigned int GetContentType(Texture::Format format);
     static unsigned int GetTextureType(Texture::Type type);
 
+    static Texture::Specs CreateSpecs(const char *filepath);
+
 private:
     typedef struct
     {
@@ -34,6 +36,7 @@ private:
 
     static GeneratorInfo BuildGeneratorInfo(GlTexture::Type type);
     static void GenerateTexture2D(GlTexture *texture, const GlTexture::CreateParams &params);
+    static void GenerateTextureCube(GlTexture *texture, const GlTexture::CreateParams &params);
 
 private:
     unsigned int textureId;

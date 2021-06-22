@@ -26,22 +26,22 @@ Texture *Texture::Create(const CreateParams &params)
     return ret;
 }
     
-Texture *Texture::Load(const char *filepath)
+Texture *Texture::Load(const LoadParams &params)
 {
     TextureManager &manager = TextureManager::GetInstance();
-    if(manager.Contains(filepath))
+    if(manager.Contains(params.filepath))
     {
-        return manager.GetTexture(filepath);
+        return manager.GetTexture(params.filepath);
     }
     
     Texture *ret = nullptr;
     #ifdef MOBREND_GL_RENDERING
-    ret = new GlTexture(filepath);
+    ret = new GlTexture(params);
     #else
     ret = nullptr;
     #endif
 
-    manager.AddTexture(filepath, ret);
+    manager.AddTexture(params.filepath, ret);
     return ret;
 }
 

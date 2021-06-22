@@ -10,27 +10,73 @@ GlTexture::GlTexture(const Texture::CreateParams &params)
     this->GenerateTexture(params);
 }
 
-GlTexture::GlTexture(const char *filepath)
+GlTexture::GlTexture(const LoadParams &params)
+{
+    Texture::CreateParams createParams = {};
+    createParams.type = params.type;
+
+    switch (params.type)
+    {
+    case GlTexture::TEXTURE_TYPE_2D:
+    {
+        Specs specs = GlTexture::CreateSpecs(params.filepath);
+        createParams.specs = &specs;
+        createParams.referenceName = params.filepath;
+
+        this->GenerateTexture(createParams);
+        ImageLoader::DeleteImage((unsigned char *)specs.content);
+    }
+    break;
+    
+    case GlTexture::TEXTURE_TYPE_CUBE:
+    {
+        CubeSpecs specs = {};
+        specs.right = GlTexture::CreateSpecs(params.cubeMapPaths->right);
+        specs.left = GlTexture::CreateSpecs(params.cubeMapPaths->left);
+        specs.top = GlTexture::CreateSpecs(params.cubeMapPaths->top);
+        specs.bottom = GlTexture::CreateSpecs(params.cubeMapPaths->bottom);
+        specs.front = GlTexture::CreateSpecs(params.cubeMapPaths->front);
+        specs.back = GlTexture::CreateSpecs(params.cubeMapPaths->back);
+
+        createParams.cubeSpecs = &specs;
+        createParams.referenceName = "cube_map_";
+        createParams.referenceName += params.cubeMapPaths->right;
+
+        this->GenerateTexture(createParams);
+
+        ImageLoader::DeleteImage((unsigned char *)specs.right.content);
+        ImageLoader::DeleteImage((unsigned char *)specs.left.content);
+        ImageLoader::DeleteImage((unsigned char *)specs.top.content);
+        ImageLoader::DeleteImage((unsigned char *)specs.bottom.content);
+        ImageLoader::DeleteImage((unsigned char *)specs.front.content);
+        ImageLoader::DeleteImage((unsigned char *)specs.back.content);
+    }
+    break;
+
+    default: throw "Unknown texture type";
+    }
+
+    mrlog("tex id: %u", this->textureId);
+}
+
+Texture::Specs GlTexture::CreateSpecs(const char *filepath)
 {
     ImageData data = {};
     unsigned char *imageData = ImageLoader::Load(filepath, &data);
 
-    Texture::CreateParams params = {};
-    params.content = imageData;
-    params.info = data;
+    Texture::Specs specs = {};
+    specs.content = imageData;
+    specs.info = data;
     // default type is texture 2d
     
-    switch (params.info.nrChannels)
+    switch (specs.info.nrChannels)
     {
-    case 3: params.format = Texture::TEXTURE_FORMAT_RGB; break;
-    case 4: params.format = Texture::TEXTURE_FORMAT_RGBA; break;
+    case 3: specs.format = Texture::TEXTURE_FORMAT_RGB; break;
+    case 4: specs.format = Texture::TEXTURE_FORMAT_RGBA; break;
     default: break;
     }
 
-    this->GenerateTexture(params);
-    ImageLoader::DeleteImage((unsigned char *)params.content);
-
-    mrlog("tex id: %u", this->textureId);
+    return specs;
 }
 
 void GlTexture::GenerateTexture(const Texture::CreateParams &params)
@@ -70,12 +116,12 @@ void GlTexture::GenerateTexture2D(GlTexture *texture, const GlTexture::CreatePar
 {
     glTexImage2D(
         GL_TEXTURE_2D, 0,
-        GlTexture::GetInternalFormat(params.format),
-        params.info.width, params.info.height,
+        GlTexture::GetInternalFormat(params.specs->format),
+        params.specs->info.width, params.specs->info.height,
         0, 
-        GlTexture::GetFormat(params.format),
-        GlTexture::GetContentType(params.format),
-        params.content
+        GlTexture::GetFormat(params.specs->format),
+        GlTexture::GetContentType(params.specs->format),
+        params.specs->content
     );
 }
 
