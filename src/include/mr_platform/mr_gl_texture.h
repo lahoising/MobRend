@@ -23,6 +23,17 @@ private:
     static unsigned int GetFormat(Texture::Format format);
     static unsigned int GetInternalFormat(Texture::Format format);
     static unsigned int GetContentType(Texture::Format format);
+    static unsigned int GetTextureType(Texture::Type type);
+
+private:
+    typedef struct
+    {
+        void (*generate)(GlTexture *texture, const GlTexture::CreateParams &params);
+        unsigned int type;
+    } GeneratorInfo;
+
+    static GeneratorInfo BuildGeneratorInfo(GlTexture::Type type);
+    static void GenerateTexture2D(GlTexture *texture, const GlTexture::CreateParams &params);
 
 private:
     unsigned int textureId;

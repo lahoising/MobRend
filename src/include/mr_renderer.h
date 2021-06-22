@@ -106,7 +106,7 @@ public:
         RenderObjectType renderObjectType;
 
         struct command_s()
-            : mesh(nullptr), model(nullptr), 
+            : mesh(nullptr), 
             topologyType(TopologyType::TOPOLOGY_TRIANGLES),
             renderObjectType(RenderObjectType::RENDER_OBJECT_NONE)
             {}

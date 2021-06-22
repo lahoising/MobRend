@@ -18,6 +18,12 @@ public:
         TEXTURE_FORMAT_DEPTH,
         TEXTURE_FORMAT_DEPTH_STENCIL
     };
+
+    enum Type
+    {
+        TEXTURE_TYPE_2D,
+        TEXTURE_TYPE_CUBE,
+    };
     
     struct CreateParams
     {
@@ -25,6 +31,12 @@ public:
         std::string referenceName;
         const void *content;
         Format format;
+        Type type;
+
+        CreateParams() :
+            info(), referenceName(""), content(nullptr),
+            format(TEXTURE_FORMAT_RGBA), type(TEXTURE_TYPE_2D)
+            {}
     };
 
 public:
