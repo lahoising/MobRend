@@ -19,7 +19,7 @@ GlTexture::GlTexture(const LoadParams &params)
     {
     case GlTexture::TEXTURE_TYPE_2D:
     {
-        Specs specs = GlTexture::CreateSpecs(params.filepath);
+        Specs specs = GlTexture::CreateSpecs(params.filepath, params.invertVertically);
         createParams.specs = &specs;
         createParams.referenceName = params.filepath;
 
@@ -31,12 +31,12 @@ GlTexture::GlTexture(const LoadParams &params)
     case GlTexture::TEXTURE_TYPE_CUBE:
     {
         CubeSpecs specs = {};
-        specs.right = GlTexture::CreateSpecs(params.cubeMapPaths->right);
-        specs.left = GlTexture::CreateSpecs(params.cubeMapPaths->left);
-        specs.top = GlTexture::CreateSpecs(params.cubeMapPaths->top);
-        specs.bottom = GlTexture::CreateSpecs(params.cubeMapPaths->bottom);
-        specs.front = GlTexture::CreateSpecs(params.cubeMapPaths->front);
-        specs.back = GlTexture::CreateSpecs(params.cubeMapPaths->back);
+        specs.right = GlTexture::CreateSpecs(params.cubeMapPaths->right, params.invertVertically);
+        specs.left = GlTexture::CreateSpecs(params.cubeMapPaths->left, params.invertVertically);
+        specs.top = GlTexture::CreateSpecs(params.cubeMapPaths->top, params.invertVertically);
+        specs.bottom = GlTexture::CreateSpecs(params.cubeMapPaths->bottom, params.invertVertically);
+        specs.front = GlTexture::CreateSpecs(params.cubeMapPaths->front, params.invertVertically);
+        specs.back = GlTexture::CreateSpecs(params.cubeMapPaths->back, params.invertVertically);
 
         createParams.cubeSpecs = &specs;
         createParams.referenceName = "cube_map_";
@@ -59,10 +59,10 @@ GlTexture::GlTexture(const LoadParams &params)
     mrlog("tex id: %u", this->textureId);
 }
 
-Texture::Specs GlTexture::CreateSpecs(const char *filepath)
+Texture::Specs GlTexture::CreateSpecs(const char *filepath, bool invertVertically)
 {
     ImageData data = {};
-    unsigned char *imageData = ImageLoader::Load(filepath, &data);
+    unsigned char *imageData = ImageLoader::Load(filepath, &data, invertVertically);
 
     Texture::Specs specs = {};
     specs.content = imageData;

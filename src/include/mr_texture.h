@@ -76,6 +76,12 @@ public:
             const CubePaths *cubeMapPaths;
         };
         Type type;
+        bool invertVertically;
+
+        LoadParams() :
+        filepath(nullptr), type(TEXTURE_TYPE_2D),
+        invertVertically(true)
+        {}
     };
 
 public:

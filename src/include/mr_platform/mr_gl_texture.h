@@ -25,7 +25,7 @@ private:
     static unsigned int GetContentType(Texture::Format format);
     static unsigned int GetTextureType(Texture::Type type);
 
-    static Texture::Specs CreateSpecs(const char *filepath);
+    static Texture::Specs CreateSpecs(const char *filepath, bool invertVertically);
 
 private:
     typedef struct

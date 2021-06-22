@@ -69,6 +69,7 @@ public:
         
         textureLoadParams.cubeMapPaths = &cubeMapPaths;
         textureLoadParams.type = mr::Texture::TEXTURE_TYPE_CUBE;
+        textureLoadParams.invertVertically = false;
         this->cubeMap = mr::Texture::Load(textureLoadParams);
 
         model = mr::Model::Load("D:\\Documents\\git\\MobRend\\resources\\models\\kunai.fbx");
@@ -199,7 +200,7 @@ public:
             this->skyboxShader->Bind();
             this->skyboxShader->UploadMat4(
                 "u_cam.viewProjection", 
-                glm::mat4(glm::mat3(cam.camera.GetViewMatrix())) * cam.camera.GetProjectionMatrix()
+                cam.camera.GetProjectionMatrix() * glm::mat4(glm::mat3(cam.camera.GetViewMatrix()))
             );
             this->skyboxShader->UploadTexture("u_skybox", this->cubeMap);
             mr::Renderer::Command cmd = {};
