@@ -25,8 +25,10 @@ public:
         this->directional = dirLight;
 
         mr::Shader::CreateParams shaderCreateParams = {};
-        shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.vert.spv";
-        shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.frag.spv";
+        // shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.vert.spv";
+        // shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.frag.spv";
+        shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\reflections.vert.spv";
+        shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\reflections.frag.spv";
         shader = mr::Shader::Create(shaderCreateParams);
 
         shaderCreateParams = {};
@@ -197,6 +199,78 @@ public:
         glm::mat4 identityMat = glm::identity<glm::mat4>();
         cam.Update();
 
+        this->shader->Bind();
+        this->shader->UploadMat4("u_cam.viewProjection", cam.camera.GetViewProjection());
+        this->shader->UploadMat4("u_cam.model", identityMat);
+        this->shader->UploadMat3("u_cam.normalMat", glm::mat3(glm::transpose(glm::inverse(identityMat))));
+        this->shader->UploadVec3("u_fragCam.cameraPos", cam.camera.GetPosition());
+        this->shader->UploadTexture("u_skybox", this->cubeMap);
+
+        cmd = {};
+        cmd.topologyType = mr::TOPOLOGY_TRIANGLES;
+        cmd.model = model;
+        cmd.renderObjectType = mr::RENDER_OBJECT_MODEL;
+        renderer->Render(cmd);
+
+        renderer->SetDepthTestFn(mr::RENDER_PASS_FN_LESS_OR_EQUEAL);
+            this->skyboxShader->Bind();
+            this->skyboxShader->UploadMat4(
+                "u_cam.viewProjection", 
+                cam.camera.GetProjectionMatrix() * glm::mat4(glm::mat3(cam.camera.GetViewMatrix()))
+            );
+            this->skyboxShader->UploadTexture("u_skybox", this->cubeMap);
+            cmd = {};
+            cmd.mesh = this->skybox;
+            cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
+            renderer->Render(cmd);
+        renderer->SetDepthTestFn(mr::RENDER_PASS_FN_LESS);
+
+        this->framebuffer->Unbind(framebufferUsage);
+
+        renderer->Clear();
+        this->simpleQuad->Bind();
+        renderer->EnableRenderPass(
+            mr::RENDER_PASS_DEPTH, false
+        );
+
+        this->simpleQuad->UploadTexture("u_tex", this->framebuffer->GetTextureAttachment(0));
+        
+        cmd = {};
+        cmd.mesh = this->screen;
+        cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
+        renderer->Render(cmd);
+    }
+
+    virtual void OnGuiRender() override
+    {
+        ImGui::Begin("Scene Settings");
+        {
+            ImGui::DragFloat("Camera Movement Speed", &this->cam.movementSpeed, 0.001f);
+            ImGui::DragFloat("Camera Sensitivity", &this->cam.sensitivity, 0.01f);
+
+            if(ImGui::DragFloat3("Light Direction", glm::value_ptr(this->directional->direction), 0.01f))
+            {
+                this->directional->direction = glm::normalize(this->directional->direction);
+            }
+        }
+        ImGui::End();
+    }
+
+    virtual void OnDestroy() override
+    {
+        if(this->framebuffer) delete(this->framebuffer);
+        delete(this->quad);
+        delete(this->model);
+        delete(this->skybox);
+        delete(this->directional);
+        delete(this->shader);
+        delete(this->simpleQuad);
+        delete(this->skyboxShader);
+    }
+
+    void SetupDefaultShader()
+    {
+        glm::mat4 identityMat = glm::identity<glm::mat4>();
         shader->Bind();
 
         shader->UploadMat4(
@@ -236,85 +310,6 @@ public:
 
         shader->UploadTexture("u_diffuseMap", tex);
         shader->UploadTexture("u_specularMap", specMap);
-
-        cmd = {};
-        cmd.topologyType = mr::TOPOLOGY_TRIANGLES;
-        cmd.model = model;
-        cmd.renderObjectType = mr::RENDER_OBJECT_MODEL;
-        renderer->Render(cmd);
-
-        shader->UploadFloat("u_scene.phongMaterial.diffuseMapStrength", 1.0f);
-
-        cmd = {};
-        cmd.topologyType = mr::TOPOLOGY_TRIANGLES;
-        cmd.mesh = this->quad;
-        cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
-        renderer->Render(cmd);
-
-        shader->UploadTexture("u_diffuseMap", specMap);
-        // shader->UploadFloat("u_scene.phongMaterial.diffuseMapStrength", 0.0f);
-        shader->UploadMat4("u_cam.model", glm::translate(
-            identityMat, glm::vec3(0.0f, 0.0f, -2.5f)
-        ));
-
-        renderer->Render(cmd);
-
-        renderer->SetDepthTestFn(mr::RENDER_PASS_FN_LESS_OR_EQUEAL);
-            this->skyboxShader->Bind();
-            this->skyboxShader->UploadMat4(
-                "u_cam.viewProjection", 
-                cam.camera.GetProjectionMatrix() * glm::mat4(glm::mat3(cam.camera.GetViewMatrix()))
-            );
-            this->skyboxShader->UploadTexture("u_skybox", this->cubeMap);
-            cmd = {};
-            cmd.mesh = this->skybox;
-            cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
-            renderer->Render(cmd);
-        renderer->SetDepthTestFn(mr::RENDER_PASS_FN_LESS);
-
-        this->framebuffer->Unbind(framebufferUsage);
-
-        renderer->Clear();
-        this->simpleQuad->Bind();
-        renderer->EnableRenderPass(
-            mr::RENDER_PASS_DEPTH, false
-        );
-
-        this->simpleQuad->UploadTexture("u_tex", this->framebuffer->GetTextureAttachment(0));
-        
-        cmd = {};
-        // cmd.topologyType = mr::TOPOLOGY_WIREFRAME;
-        cmd.topologyType = mr::TOPOLOGY_TRIANGLES;
-        cmd.mesh = this->screen;
-        cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
-        renderer->Render(cmd);
-    }
-
-    virtual void OnGuiRender() override
-    {
-        ImGui::Begin("Scene Settings");
-        {
-            ImGui::DragFloat("Camera Movement Speed", &this->cam.movementSpeed, 0.001f);
-            ImGui::DragFloat("Camera Sensitivity", &this->cam.sensitivity, 0.01f);
-
-            if(ImGui::DragFloat3("Light Direction", glm::value_ptr(this->directional->direction), 0.01f))
-            {
-                this->directional->direction = glm::normalize(this->directional->direction);
-            }
-        }
-        ImGui::End();
-    }
-
-    virtual void OnDestroy() override
-    {
-        if(this->framebuffer) delete(this->framebuffer);
-        delete(this->quad);
-        delete(this->model);
-        delete(this->skybox);
-        delete(this->directional);
-        delete(this->shader);
-        delete(this->simpleQuad);
-        delete(this->skyboxShader);
     }
 
 private:
