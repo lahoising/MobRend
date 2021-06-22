@@ -113,6 +113,15 @@ void GlRenderer::EnableRenderPass(RenderPassMask renderPassMask, bool enable)
     }
 }
 
+void GlRenderer::EnableFeatures(RendererFeatureMask mask, bool enable)
+{
+    void (*fn)(GLenum) = enable? glEnable : glDisable;
+    if(mask & RENDERER_FEATURE_SHADER_POINT_SIZE)
+    {
+        fn( GlRenderer::GetRendererFeature(RENDERER_FEATURE_SHADER_POINT_SIZE) );
+    }
+}
+
 void GlRenderer::SetDepthTestFn(RenderPassFn fn)
 {
     glDepthFunc( GlRenderer::GetRenderPassFn(fn) );
@@ -186,6 +195,15 @@ GLenum GlRenderer::GetTopology(TopologyType type)
     case TopologyType::TOPOLOGY_TRIANGLES: return GL_TRIANGLES;
     case TopologyType::TOPOLOGY_WIREFRAME: return GL_LINE_STRIP;
     default: throw "Unsupported topology type";
+    }
+}
+
+GLenum GlRenderer::GetRendererFeature(RendererFeature feature)
+{
+    switch (feature)
+    {
+    case RENDERER_FEATURE_SHADER_POINT_SIZE: return GL_PROGRAM_POINT_SIZE;
+    default: return 0;
     }
 }
 

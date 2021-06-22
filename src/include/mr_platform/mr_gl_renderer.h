@@ -23,6 +23,7 @@ public:
     virtual void Render(Renderer::Command &cmd) override;
 
     virtual void EnableRenderPass(RenderPassMask renderPassMask, bool enable) override;
+    virtual void EnableFeatures(RendererFeatureMask mask, bool enable) override;
     
     virtual void SetDepthTestFn(RenderPassFn fn) override;
     void SetDepthMask(bool writeable) override;
@@ -41,6 +42,7 @@ public:
 
 private:
     static GLenum GetTopology(TopologyType type);
+    static GLenum GetRendererFeature(RendererFeature feature);
     static GLenum GetRenderPass(RenderPass pass);
     static GLenum GetRenderPassFn(RenderPassFn fn);
     static GLenum GetStencilAction(StencilAction action);

@@ -33,6 +33,11 @@ enum RenderPass
     RENDER_PASS_CULLING =   1 << 3,
 };
 
+enum RendererFeature
+{
+    RENDERER_FEATURE_SHADER_POINT_SIZE = 1 << 0
+};
+
 enum RenderPassFn
 {
     RENDER_PASS_FN_ALWAYS,
@@ -89,6 +94,7 @@ enum CullFace
 };
 
 typedef unsigned int RenderPassMask;
+typedef unsigned int RendererFeatureMask;
 
 class Renderer
 {
@@ -124,6 +130,7 @@ public:
     virtual void Render(Command &cmd) = 0;
 
     virtual void EnableRenderPass(RenderPassMask renderPassMask, bool enable) = 0;
+    virtual void EnableFeatures(RendererFeatureMask mask, bool enable) = 0;
     
     virtual void SetDepthTestFn(RenderPassFn fn) = 0;
     virtual void SetDepthMask(bool writeable) = 0;
