@@ -12,6 +12,7 @@
 #include "mr_texture.h"
 #include "mr_asset_manager.h"
 #include "mr_uniform_layout.h"
+#include "mr_platform/mr_gl_uniform_buffer.h"
 
 namespace mr
 {
@@ -233,6 +234,20 @@ void GlShader::UploadTexture(const char *uniformName, Texture *texture)
 	const unsigned int textureSlot = this->textureLocationToTextureSlot[location];
 	glActiveTexture(textureSlot);
 	texture->Bind();
+}
+
+void GlShader::UploadUniformBuffer(const char *uniformBufferName, UniformBuffer *ubo)
+{
+	if(this->uniformLocations.find(uniformBufferName) == this->uniformLocations.end())
+	{
+		this->uniformLocations[uniformBufferName] = glGetUniformBlockIndex(this->programId, uniformBufferName);
+	}
+
+	GlUniformBuffer *buffer = (GlUniformBuffer*)ubo;
+	glUniformBlockBinding(
+		this->programId, 
+		this->uniformLocations[uniformBufferName],
+		buffer->GetBinding());
 }
 
 void GlShader::Bind()

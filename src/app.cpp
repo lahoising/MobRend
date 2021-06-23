@@ -9,6 +9,7 @@
 #include "mr_fps_camera.h"
 #include "mr_light.h"
 #include "mr_framebuffer.h"
+#include "mr_uniform_buffer.h"
 
 class UserApp : public mr::Program
 {
@@ -25,10 +26,10 @@ public:
         this->directional = dirLight;
 
         mr::Shader::CreateParams shaderCreateParams = {};
-        // shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.vert.spv";
-        // shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.frag.spv";
-        shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\reflections.vert.spv";
-        shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\reflections.frag.spv";
+        shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.vert.spv";
+        shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.frag.spv";
+        // shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\reflections.vert.spv";
+        // shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\reflections.frag.spv";
         shader = mr::Shader::Create(shaderCreateParams);
 
         shaderCreateParams = {};
@@ -79,9 +80,9 @@ public:
         this->isCursonVisible = false;
 
         mr::VertexLayout layout = {
-            {mr::AttributeType::FLOAT, 3},
-            {mr::AttributeType::FLOAT, 3},
-            {mr::AttributeType::FLOAT, 2},
+            {mr::AttributeType::ATTRIBUTE_TYPE_FLOAT, 3},
+            {mr::AttributeType::ATTRIBUTE_TYPE_FLOAT, 3},
+            {mr::AttributeType::ATTRIBUTE_TYPE_FLOAT, 2},
         };
 
         float quadVertices[] = {
@@ -105,8 +106,8 @@ public:
         this->quad = new mr::Mesh(meshCreateParams);
 
         layout = {
-            {mr::AttributeType::FLOAT, 2},
-            {mr::AttributeType::FLOAT, 2},
+            {mr::AttributeType::ATTRIBUTE_TYPE_FLOAT, 2},
+            {mr::AttributeType::ATTRIBUTE_TYPE_FLOAT, 2},
         };
 
         float screenVertices[] = {
@@ -122,7 +123,7 @@ public:
         this->screen = new mr::Mesh(meshCreateParams);
 
         layout = {
-            {mr::AttributeType::FLOAT, 3}
+            {mr::AttributeType::ATTRIBUTE_TYPE_FLOAT, 3}
         };
 
         float skyboxVertices[] = {
@@ -168,6 +169,12 @@ public:
             { mr::Framebuffer::ATTACHMENT_DEPTH24_STENCIL8, true }
         };
         this->framebuffer = mr::Framebuffer::Create(frameBufferCreateParams);
+
+        mr::UniformBuffer::CreateParams uboCreateParams = {};
+        uboCreateParams.binding = 0;
+        uboCreateParams.bufferSize = sizeof(glm::mat4) + sizeof(glm::mat3);
+        this->camUBO = mr::UniformBuffer::Create(uboCreateParams);
+        this->shader->UploadUniformBuffer("CameraMatrices", this->camUBO);
     }
 
     virtual void OnUpdate() override
@@ -199,12 +206,12 @@ public:
         glm::mat4 identityMat = glm::identity<glm::mat4>();
         cam.Update();
 
-        this->shader->Bind();
-        this->shader->UploadMat4("u_cam.viewProjection", cam.camera.GetViewProjection());
-        this->shader->UploadMat4("u_cam.model", identityMat);
-        this->shader->UploadMat3("u_cam.normalMat", glm::mat3(glm::transpose(glm::inverse(identityMat))));
-        this->shader->UploadVec3("u_fragCam.cameraPos", cam.camera.GetPosition());
-        this->shader->UploadTexture("u_skybox", this->cubeMap);
+        float camMatrices[9 + 16] = {};
+        memcpy(camMatrices, glm::value_ptr(cam.camera.GetViewProjection()), sizeof(glm::mat4));
+        glm::mat3 normalMat = glm::transpose(glm::inverse(identityMat));
+        memcpy(camMatrices + sizeof(glm::mat4), glm::value_ptr(normalMat), sizeof(glm::mat3));
+        this->camUBO->SetData(camMatrices, sizeof(camMatrices), 0);
+        this->SetupDefaultShader();
 
         cmd = {};
         cmd.topologyType = mr::TOPOLOGY_TRIANGLES;
@@ -259,6 +266,7 @@ public:
     virtual void OnDestroy() override
     {
         if(this->framebuffer) delete(this->framebuffer);
+        delete(this->camUBO);
         delete(this->quad);
         delete(this->model);
         delete(this->skybox);
@@ -273,21 +281,21 @@ public:
         glm::mat4 identityMat = glm::identity<glm::mat4>();
         shader->Bind();
 
-        shader->UploadMat4(
-            "u_cam.viewProjection",
-            cam.camera.GetViewProjection()
-        );
+        // shader->UploadMat4(
+        //     "u_viewProjection",
+        //     cam.camera.GetViewProjection()
+        // );
 
         shader->UploadMat4(
-            "u_cam.model",
+            "u_model",
             identityMat
         );
 
-        glm::mat3 normalMat = glm::transpose(glm::inverse(identityMat));
-        shader->UploadMat3(
-            "u_cam.normalMat",
-            normalMat
-        );
+        // glm::mat3 normalMat = glm::transpose(glm::inverse(identityMat));
+        // shader->UploadMat3(
+        //     "u_normalMat",
+        //     normalMat
+        // );
 
         shader->UploadVec4(
             "u_scene.color",
@@ -317,6 +325,7 @@ private:
     mr::Shader *shader = nullptr;
     mr::Shader *simpleQuad = nullptr;
     mr::Shader *skyboxShader = nullptr;
+    mr::UniformBuffer *camUBO = nullptr;
 
     mr::FPSCamera cam;
     mr::Texture *tex = nullptr;

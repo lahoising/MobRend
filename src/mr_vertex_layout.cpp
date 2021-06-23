@@ -27,7 +27,7 @@ uint32_t VertexLayout::GetAttributeSize(const Attribute &attrib)
 {
     switch (attrib.type)
     {
-    case AttributeType::FLOAT: return sizeof(float) * attrib.count;
+    case AttributeType::ATTRIBUTE_TYPE_FLOAT: return sizeof(float) * attrib.count;
     default: throw "Unknow attribute type provided";
     }
 }

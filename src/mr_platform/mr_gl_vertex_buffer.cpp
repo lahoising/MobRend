@@ -54,7 +54,7 @@ unsigned int GlVertexBuffer::GetAttribType(AttributeType attributeType)
 {
     switch (attributeType)
     {
-    case AttributeType::FLOAT: return GL_FLOAT;
+    case AttributeType::ATTRIBUTE_TYPE_FLOAT: return GL_FLOAT;
     default: throw "Unsupported attribute type";
     }
 }

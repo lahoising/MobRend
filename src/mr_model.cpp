@@ -86,17 +86,17 @@ Mesh *ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene)
     VertexLayout layout = {};
     if(mesh->HasPositions())
     {
-        layout.PushAttribute({AttributeType::FLOAT, 3});
+        layout.PushAttribute({AttributeType::ATTRIBUTE_TYPE_FLOAT, 3});
         vertAttributes.push_back(POSITION);
     }
     if(mesh->HasNormals())
     {
-        layout.PushAttribute({AttributeType::FLOAT, 3});
+        layout.PushAttribute({AttributeType::ATTRIBUTE_TYPE_FLOAT, 3});
         vertAttributes.push_back(NORMAL);
     }
     for(unsigned int i = 0; mesh->HasTextureCoords(i); i++)
     {
-        layout.PushAttribute({AttributeType::FLOAT, 2});
+        layout.PushAttribute({AttributeType::ATTRIBUTE_TYPE_FLOAT, 2});
         vertAttributes.push_back(TEXCOORD);
     }
 

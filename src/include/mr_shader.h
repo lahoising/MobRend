@@ -6,6 +6,7 @@
 namespace mr
 {
 class Texture;
+class UniformBuffer;
     
 class Shader
 {
@@ -31,6 +32,7 @@ public:
     virtual void UploadInt(const char *uniformName, int32_t i) = 0;
     virtual void UploadBool(const char *uniformName, bool val) = 0;
     virtual void UploadTexture(const char *uniformName, Texture *texture) = 0;
+    virtual void UploadUniformBuffer(const char *uniformBufferName, UniformBuffer *ubo) = 0;
 };
 
 } // namespace mr

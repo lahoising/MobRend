@@ -23,6 +23,7 @@ public:
     virtual void UploadInt(const char *uniformName, int32_t i) override;
     virtual void UploadBool(const char *uniformName, bool val) override;
     virtual void UploadTexture(const char *uniformName, Texture *texture) override;
+    virtual void UploadUniformBuffer(const char *uniformBufferName, UniformBuffer *ubo) override;
 
 private:
     std::string CompileFromSpirV(const std::vector<uint32_t> &source);

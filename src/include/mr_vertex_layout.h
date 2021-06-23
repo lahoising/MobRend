@@ -10,7 +10,7 @@ namespace mr
 
 enum AttributeType
 {
-    FLOAT
+    ATTRIBUTE_TYPE_FLOAT
 };
 
 typedef struct

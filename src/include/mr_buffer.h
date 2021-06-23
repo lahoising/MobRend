@@ -16,5 +16,6 @@ public:
 
 #include "mr_vertex_buffer.h"
 #include "mr_index_buffer.h"
+#include "mr_uniform_buffer.h"
 
 #endif

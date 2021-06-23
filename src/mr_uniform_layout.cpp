@@ -25,9 +25,9 @@ static UniformType IdentifyUniformType(const std::string &word)
     case 'f':
         if(strstr(scanner, "float"))
         {
-            return UniformType::FLOAT;
+            return UniformType::UNIFORM_TYPE_FLOAT;
         }
-        return UniformType::UDSTRUCT;
+        return UniformType::UNIFORM_TYPE_UDSTRUCT;
     break;
 
     case 'v': // vec of some kind
@@ -35,13 +35,13 @@ static UniformType IdentifyUniformType(const std::string &word)
         {
             switch (*(scanner + 3))
             {
-            case '2': return UniformType::VEC2;
-            case '3': return UniformType::VEC3;
-            case '4': return UniformType::VEC4;
-            default: return UniformType::UDSTRUCT;
+            case '2': return UniformType::UNIFORM_TYPE_VEC2;
+            case '3': return UniformType::UNIFORM_TYPE_VEC3;
+            case '4': return UniformType::UNIFORM_TYPE_VEC4;
+            default: return UniformType::UNIFORM_TYPE_UDSTRUCT;
             }
         }
-        return UniformType::UDSTRUCT;
+        return UniformType::UNIFORM_TYPE_UDSTRUCT;
     break;
 
     case 's': // sampler of some kind
@@ -51,17 +51,17 @@ static UniformType IdentifyUniformType(const std::string &word)
             {
                 switch (*(scanner -= 1))
                 {
-                case '1': return UniformType::TEX1D;
-                case '2': return UniformType::TEX2D;
-                case '3': return UniformType::TEX3D;
-                default: return UniformType::UDSTRUCT;
+                case '1': return UniformType::UNIFORM_TYPE_TEX1D;
+                case '2': return UniformType::UNIFORM_TYPE_TEX2D;
+                case '3': return UniformType::UNIFORM_TYPE_TEX3D;
+                default: return UniformType::UNIFORM_TYPE_UDSTRUCT;
                 }
             }
         }
-        return UniformType::UDSTRUCT;
+        return UniformType::UNIFORM_TYPE_UDSTRUCT;
     break;
     
-    default: return UniformType::UDSTRUCT;
+    default: return UniformType::UNIFORM_TYPE_UDSTRUCT;
     }
 }
 

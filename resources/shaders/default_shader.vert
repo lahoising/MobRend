@@ -8,19 +8,22 @@ layout(location = 0) out vec3 out_fragPos;
 layout(location = 1) out vec3 out_normal;
 layout(location = 2) out vec2 out_texCoord;
 
-/// TODO: use UBOs
-layout(push_constant,std430) uniform CameraUniforms
+layout(binding = 0,std140) uniform CameraMatrices
 {
-    mat4 viewProjection;
-    mat4 model;
-    mat3 normalMat;
-} u_cam;
+    mat4 u_viewProjection;
+    mat3 u_normalMat;
+};
+
+layout(push_constant,std140) uniform Model
+{
+    mat4 u_model;
+};
 
 void main(){
-    vec4 pos = u_cam.model * vec4(a_pos, 1.0);
-    gl_Position = u_cam.viewProjection * pos;
+    vec4 pos = u_model * vec4(a_pos, 1.0);
+    gl_Position = u_viewProjection * pos;
 
     out_fragPos = vec3(pos);
-    out_normal = u_cam.normalMat * a_normal;
+    out_normal = u_normalMat * a_normal;
     out_texCoord = a_texCoord;
 }
