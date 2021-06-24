@@ -25,11 +25,39 @@ struct Renderer::gui_init_info_s
     char glVersion[16];
 };
 
+#ifndef NDEBUG
+static void GLAPIENTRY GlErrorMessageCallback( GLenum source,
+                 GLenum type,
+                 GLuint id,
+                 GLenum severity,
+                 GLsizei length,
+                 const GLchar* message,
+                 const void* userParam )
+{
+    const char *msg = "OpenGL error 0x%x (severity 0x%x): %s";
+    if(type == GL_DEBUG_TYPE_ERROR)
+    {
+        mrerr(msg, type, severity, message);
+    }
+    else
+    {
+        mrwarn(msg, type, severity, message);
+    }
+}
+#endif
+
 GlRenderer::GlRenderer()
 {
     #ifdef MOBREND_GLFW_WINDOW
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     #endif
+
+    #ifndef NDEBUG
+    mrlog("enable gl debug output");
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(GlErrorMessageCallback, 0);
+    #endif
+
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
 }
