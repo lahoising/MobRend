@@ -10,7 +10,7 @@ layout(binding = 0) uniform CamMatrices
     mat4 u_viewProjection;
 };
 
-layout(push_constant,std430) uniform ModelMatrices
+layout(push_constant,std140) uniform ModelMatrices
 {
     mat4 model;
 } u_model;

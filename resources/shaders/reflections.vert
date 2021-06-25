@@ -14,13 +14,13 @@ layout(binding = 0,std140) uniform CamMatrices
 
 layout(push_constant,std140) uniform ModelMatrix
 {
-    mat4 u_model;
-};
+    mat4 model;
+} u_model;
 
 void main()
 {
     o_normal = u_normalMat * a_normal;
     o_uv = a_uv;
-    vec3 pos = vec3(u_model * vec4(a_pos, 1.0));
+    vec3 pos = vec3(u_model.model * vec4(a_pos, 1.0));
     gl_Position = u_viewProjection * vec4(pos, 1.0);
 }

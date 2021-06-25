@@ -30,10 +30,10 @@ struct PhongMaterial
     float shininess;
 };
 
-layout(binding = 0) uniform sampler2D u_diffuseMap;
-layout(binding = 1) uniform sampler2D u_specularMap;
+layout(binding = 1) uniform sampler2D u_diffuseMap;
+layout(binding = 2) uniform sampler2D u_specularMap;
 
-layout(push_constant,std430) uniform Misc
+layout(push_constant,std140) uniform Misc
 {
     PhongMaterial phongMaterial;
     vec4 color;

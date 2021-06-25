@@ -16,11 +16,11 @@ layout(binding = 0,std140) uniform CameraMatrices
 
 layout(push_constant,std140) uniform Model
 {
-    mat4 u_model;
-};
+    mat4 model;
+} u_model;
 
 void main(){
-    vec4 pos = u_model * vec4(a_pos, 1.0);
+    vec4 pos = u_model.model * vec4(a_pos, 1.0);
     gl_Position = u_viewProjection * pos;
 
     out_fragPos = vec3(pos);
