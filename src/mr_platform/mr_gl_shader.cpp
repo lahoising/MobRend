@@ -247,7 +247,7 @@ void GlShader::UploadUniformBuffer(const char *uniformBufferName, UniformBuffer 
 	glUniformBlockBinding(
 		this->programId, 
 		this->uniformLocations[uniformBufferName],
-		buffer->GetBinding());
+		(GLuint)buffer->GetBinding());
 }
 
 void GlShader::Bind()

@@ -26,7 +26,7 @@ public:
         this->directional = dirLight;
 
         mr::Shader::CreateParams shaderCreateParams = {};
-        shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\reflections.vert.spv";
+        shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\simple.vert.spv";
         shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\simple.frag.spv";
         shader = mr::Shader::Create(shaderCreateParams);
 
@@ -47,7 +47,40 @@ public:
         textureLoadParams.filepath = "D:\\Documents\\Art\\Sprites\\Exports\\alphas.png";
         tex = mr::Texture::Load(textureLoadParams);
         
-        model = mr::Model::Load("D:\\Documents\\git\\MobRend\\resources\\models\\kunai.fbx");
+        mr::VertexLayout layout = {
+            { mr::ATTRIBUTE_TYPE_FLOAT, 3 },
+            { mr::ATTRIBUTE_TYPE_FLOAT, 2 }
+        };
+
+        float cubeVertices[] = {
+             1.0f, -1.0f, 0.0f,    1.0f, 0.0f,
+             1.0f,  1.0f, 0.0f,    1.0f, 1.0f,
+            -1.0f,  1.0f, 0.0f,    0.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f,    0.0f, 0.0f,
+
+        //      1.0f, -1.0f,  1.0f,    1.0f, 0.0f,
+        //      1.0f,  1.0f,  1.0f,    1.0f, 1.0f,
+        //      1.0f,  1.0f, -1.0f,    0.0f, 1.0f,
+        //      1.0f, -1.0f, -1.0f,    0.0f, 0.0f,
+
+        //     -1.0f, -1.0f,  1.0f,    1.0f, 0.0f,
+        //     -1.0f,  1.0f,  1.0f,    1.0f, 1.0f,
+        //      1.0f,  1.0f,  1.0f,    0.0f, 1.0f,
+        //      1.0f, -1.0f,  1.0f,    0.0f, 0.0f,
+        };
+
+        uint32_t cubeIndices[] = {
+            0, 1, 2, 2, 3, 0,
+        };
+
+        mr::Mesh::CreateParams meshCreateParams = {};
+        meshCreateParams.vertexLayout = &layout;
+        meshCreateParams.vertices = cubeVertices;
+        meshCreateParams.verticesArraySize = sizeof(cubeVertices);
+        meshCreateParams.indices = cubeIndices;
+        meshCreateParams.indexCount = sizeof(cubeIndices) / sizeof(uint32_t);
+        this->cube = new mr::Mesh(meshCreateParams);
+        // model = mr::Model::Load("D:\\Documents\\git\\MobRend\\resources\\models\\kunai.fbx");
 
         this->isCursonVisible = false;
 
@@ -56,12 +89,15 @@ public:
         window->SetCursorVisible(isCursonVisible);
 
         mr::Renderer *rend = app.GetRenderer();
+        rend->EnableRenderPass(
+            mr::RENDER_PASS_CULLING, false
+        );
 
         mr::UniformBuffer::CreateParams uboCreateParams = {};
         uboCreateParams.binding = 0;
-        uboCreateParams.bufferSize = sizeof(glm::mat4) + sizeof(glm::mat3);
+        uboCreateParams.bufferSize = sizeof(glm::mat4);
         this->camUBO = mr::UniformBuffer::Create(uboCreateParams);
-        this->shader->UploadUniformBuffer("CameraMatrices", this->camUBO);
+        this->shader->UploadUniformBuffer("CamMatrices", this->camUBO);
     }
 
     virtual void OnUpdate() override
@@ -86,20 +122,15 @@ public:
         glm::mat4 identityMat = glm::identity<glm::mat4>();
         cam.Update();
         
-        glm::mat3 normalMat = glm::transpose(glm::inverse(cam.camera.GetViewMatrix()));
-        float matrices[16 + 9] = {};
-        memcpy(matrices, glm::value_ptr(cam.camera.GetViewProjection()), sizeof(glm::mat4));
-        memcpy(matrices + sizeof(glm::mat4) / sizeof(float), glm::value_ptr(normalMat), sizeof(glm::mat3));
-        this->camUBO->SetData(matrices, sizeof(matrices), 0);
+        this->camUBO->SetData(glm::value_ptr(cam.camera.GetViewProjection()), sizeof(glm::mat4), 0);
 
         this->shader->Bind();
-        this->shader->UploadMat4("u_model", identityMat);
-        // this->shader->UploadTexture("u_texture", this->tex);
+        this->shader->UploadMat4("u_model.model", identityMat);
+        this->shader->UploadTexture("u_texture", this->tex);
 
         cmd = {};
-        cmd.topologyType = mr::TOPOLOGY_TRIANGLES;
-        cmd.model = model;
-        cmd.renderObjectType = mr::RENDER_OBJECT_MODEL;
+        cmd.mesh = this->cube;
+        cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
         renderer->Render(cmd);
     }
 
@@ -122,6 +153,7 @@ public:
     {
         delete(this->camUBO);
         delete(this->model);
+        delete(this->cube);
         delete(this->directional);
         delete(this->shader);
     }
@@ -136,6 +168,7 @@ private:
     mr::DirectionalLight *directional = nullptr;
 
     mr::Model *model = nullptr;
+    mr::Mesh *cube = nullptr;
     bool isCursonVisible;
 };
 

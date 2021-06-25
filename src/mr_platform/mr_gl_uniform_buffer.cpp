@@ -19,7 +19,7 @@ GlUniformBuffer::GlUniformBuffer(const UniformBuffer::CreateParams &params)
         0, params.bufferSize);
 }
 
-void GlUniformBuffer::SetData(void *data, uint32_t size, uint32_t offset)
+void GlUniformBuffer::SetData(const void *data, uint32_t size, uint32_t offset)
 {
     glBindBuffer(GL_UNIFORM_BUFFER, this->bufferId);
     glBufferSubData(GL_UNIFORM_BUFFER, (int)offset, size, data);

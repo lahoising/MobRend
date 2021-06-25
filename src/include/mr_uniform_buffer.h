@@ -21,7 +21,7 @@ public:
     virtual ~UniformBuffer() = 0 {}
     virtual void Bind() const = 0;
     virtual void Unbind() const = 0;
-    virtual void SetData(void *data, uint32_t size, uint32_t offset) = 0;
+    virtual void SetData(const void *data, uint32_t size, uint32_t offset) = 0;
 };
 
 } // namespace mr

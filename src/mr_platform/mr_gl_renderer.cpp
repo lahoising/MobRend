@@ -83,9 +83,6 @@ void GlRenderer::OnRenderBegin()
 
 void GlRenderer::OnRenderEnd()
 {
-    auto error = glGetError();
-    if(error)
-        printf("gl error %x\n", error);
 }
 
 void GlRenderer::Render(Renderer::Command &cmd)

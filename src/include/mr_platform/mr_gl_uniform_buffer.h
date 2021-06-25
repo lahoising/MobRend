@@ -13,7 +13,7 @@ public:
     virtual ~GlUniformBuffer() override;
     virtual void Bind() const override;
     virtual void Unbind() const override;
-    virtual void SetData(void *data, uint32_t size, uint32_t offset) override;
+    virtual void SetData(const void *data, uint32_t size, uint32_t offset) override;
 
     unsigned int GetBufferId(){ return this->bufferId; }
     uint32_t GetBinding(){ return this->binding; }
