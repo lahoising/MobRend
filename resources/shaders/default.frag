@@ -6,6 +6,17 @@ layout(location = 0) in vec3 a_fragPos;
 layout(location = 1) in vec3 a_normal;
 layout(location = 2) in vec2 a_texCoord;
 
+struct PhongMaterial
+{
+    vec4 diffuse;
+    // float diffuseMapStrength;
+
+    vec4 specular;
+    // float specularMapStrength;
+
+    float shininess;
+};
+
 struct Light
 {
     vec3 position;
@@ -14,8 +25,10 @@ struct Light
     float type;
 };
 
+/// TODO: bind lights to UBOs
 layout(push_constant,std140) uniform Scene 
 {
+    PhongMaterial material;
     Light directional;
     Light ambient;
     vec3 viewPos;
@@ -49,6 +62,7 @@ void main()
 
     vec3 norm = normalize(a_normal);
     vec4 diffuse = vec4(DiffuseLight(u_scene.directional, norm, a_fragPos), 1.0 );
+    diffuse *= u_scene.material.diffuse;
 
     vec3 viewDir = normalize(u_scene.viewPos - a_fragPos);
     vec4 specular = vec4(
@@ -57,8 +71,12 @@ void main()
             viewDir, 
             a_fragPos, 
             norm, 
-            32.0),
+            u_scene.material.shininess),
         1.0);
+    specular *= u_scene.material.specular;
 
-    o_color = diffuse + specular + ambient;
+    vec4 result = diffuse + specular + ambient;
+    if(result.w < 0.1)
+        discard;
+    o_color = result;
 }

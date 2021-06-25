@@ -103,6 +103,7 @@ public:
         this->skyboxCubeMap = mr::Texture::Load(textureLoadParams);
 
         model = mr::Model::Load("D:\\Documents\\git\\MobRend\\resources\\models\\kunai.fbx");
+        this->lodge = mr::Model::Load("D:\\Documents\\Clases\\4th Year\\sem-2\\it386\\sprints\\3rd\\Meshes\\SM_Mesh_bearingSupport_Large.fbx");
 
         this->isCursonVisible = false;
 
@@ -155,15 +156,25 @@ public:
 
         this->directional->Bind(this->shader, "u_scene.directional");
         this->ambient->Bind(this->shader, "u_scene.ambient");
-        // this->shader->UploadVec4("u_scene.phongMaterial.diffuse", {0.5f, 0.5f, 0.5f, 1.0f});
+        this->shader->UploadVec4("u_scene.material.diffuse", {1.0f, 0.5f, 0.2f, 1.0f});
         // this->shader->UploadFloat("u_scene.phongMaterial.diffuseMapStrength", 0.0f);
-        // this->shader->UploadVec4("u_scene.phongMaterial.specular", {1.0f, 1.0f, 1.0f, 1.0f});
+        this->shader->UploadVec4("u_scene.material.specular", {0.1f, 0.2f, 1.0f, 1.0f});
         // this->shader->UploadFloat("u_scene.phongMaterial.specularMapStrength", 0.0f);
-        // this->shader->UploadFloat("u_scene.phongMaterial.shininess", 1.0f);
+        this->shader->UploadFloat("u_scene.material.shininess", 12.0f);
         this->shader->UploadVec3("u_scene.viewPos", this->cam.camera.GetPosition());
 
         cmd = {};
         cmd.model = this->model;
+        cmd.renderObjectType = mr::RENDER_OBJECT_MODEL;
+        renderer->Render(cmd);
+
+        glm::mat4 lodgeModelMatrix = glm::translate(identityMat, {0.0f, 0.0f, 10.0f});
+        normalMat = glm::mat3(glm::transpose(glm::inverse(lodgeModelMatrix)));
+        this->camUBO->SetData(glm::value_ptr(normalMat), sizeof(glm::mat4), sizeof(glm::mat4));
+        this->shader->UploadMat4("u_model.model", lodgeModelMatrix);
+
+        cmd = {};
+        cmd.model = this->lodge;
         cmd.renderObjectType = mr::RENDER_OBJECT_MODEL;
         renderer->Render(cmd);
 
@@ -189,6 +200,7 @@ public:
     {
         delete(this->camUBO);
         delete(this->model);
+        delete(this->lodge);
         delete(this->skybox);
         delete(this->directional);
         delete(this->ambient);
@@ -225,6 +237,7 @@ private:
     mr::AmbientLight *ambient = nullptr;
 
     mr::Model *model = nullptr;
+    mr::Model *lodge = nullptr;
     mr::Mesh *skybox = nullptr;
     bool isCursonVisible;
 };
