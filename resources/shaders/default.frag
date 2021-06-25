@@ -17,8 +17,14 @@ struct Light
 layout(push_constant,std140) uniform Scene 
 {
     Light directional;
+    Light ambient;
     vec3 viewPos;
 } u_scene;
+
+vec3 AmbientLight(Light light)
+{
+    return light.color * light.intensity * float(light.type == 0.0);
+}
 
 vec3 DiffuseLight(Light light, vec3 normal, vec3 fragmentPosition)
 {
@@ -39,6 +45,8 @@ vec3 SpecularLight(Light light, vec3 viewDir, vec3 fragPosition, vec3 normal, fl
 
 void main()
 {
+    vec4 ambient = vec4(AmbientLight(u_scene.ambient), 1.0);
+
     vec3 norm = normalize(a_normal);
     vec4 diffuse = vec4(DiffuseLight(u_scene.directional, norm, a_fragPos), 1.0 );
 
@@ -52,5 +60,5 @@ void main()
             32.0),
         1.0);
 
-    o_color = diffuse + specular;
+    o_color = diffuse + specular + ambient;
 }

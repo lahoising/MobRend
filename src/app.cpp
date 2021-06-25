@@ -25,6 +25,10 @@ public:
         dirLight->direction = glm::normalize(glm::vec3(0.0f, -0.2f, 0.8f));
         this->directional = dirLight;
 
+        this->ambient = new mr::AmbientLight(
+            glm::vec3(0.3f, 1.0f, 0.5f), 0.1f
+        );
+
         mr::Shader::CreateParams shaderCreateParams = {};
         shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.vert.spv";
         shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default.frag.spv";
@@ -150,6 +154,7 @@ public:
         this->shader->UploadMat4("u_model.model", identityMat);
 
         this->directional->Bind(this->shader, "u_scene.directional");
+        this->ambient->Bind(this->shader, "u_scene.ambient");
         // this->shader->UploadVec4("u_scene.phongMaterial.diffuse", {0.5f, 0.5f, 0.5f, 1.0f});
         // this->shader->UploadFloat("u_scene.phongMaterial.diffuseMapStrength", 0.0f);
         // this->shader->UploadVec4("u_scene.phongMaterial.specular", {1.0f, 1.0f, 1.0f, 1.0f});
@@ -186,6 +191,7 @@ public:
         delete(this->model);
         delete(this->skybox);
         delete(this->directional);
+        delete(this->ambient);
         delete(this->shader);
         delete(this->skyboxShader);
     }
@@ -216,6 +222,7 @@ private:
     mr::Texture *skyboxCubeMap = nullptr;
 
     mr::DirectionalLight *directional = nullptr;
+    mr::AmbientLight *ambient = nullptr;
 
     mr::Model *model = nullptr;
     mr::Mesh *skybox = nullptr;
