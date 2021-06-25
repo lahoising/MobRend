@@ -9,13 +9,15 @@ layout(location = 2) in vec2 a_texCoord;
 struct PhongMaterial
 {
     vec4 diffuse;
-    // float diffuseMapStrength;
+    float diffuseMapStrength;
 
     vec4 specular;
-    // float specularMapStrength;
+    float specularMapStrength;
 
     float shininess;
 };
+
+layout(binding = 1) uniform sampler2D u_diffuseMap;
 
 struct Light
 {
@@ -62,7 +64,10 @@ void main()
 
     vec3 norm = normalize(a_normal);
     vec4 diffuse = vec4(DiffuseLight(u_scene.directional, norm, a_fragPos), 1.0 );
-    diffuse *= u_scene.material.diffuse;
+    diffuse *= mix(
+        u_scene.material.diffuse,
+        texture(u_diffuseMap,a_texCoord),
+        u_scene.material.diffuseMapStrength);
 
     vec3 viewDir = normalize(u_scene.viewPos - a_fragPos);
     vec4 specular = vec4(

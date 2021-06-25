@@ -53,7 +53,8 @@ public:
 
         mr::Texture::LoadParams textureLoadParams = {};
         textureLoadParams.type = mr::Texture::TEXTURE_TYPE_2D;
-        textureLoadParams.filepath = "D:\\Documents\\Art\\Sprites\\Exports\\alphas.png";
+        textureLoadParams.invertVertically = false;
+        textureLoadParams.filepath = "D:\\Documents\\Clases\\4th Year\\sem-2\\it386\\sprints\\3rd\\Textures\\T_Bell_BaseColor.jpg";
         tex = mr::Texture::Load(textureLoadParams);
         
         mr::VertexLayout layout = {
@@ -103,7 +104,7 @@ public:
         this->skyboxCubeMap = mr::Texture::Load(textureLoadParams);
 
         model = mr::Model::Load("D:\\Documents\\git\\MobRend\\resources\\models\\kunai.fbx");
-        this->lodge = mr::Model::Load("D:\\Documents\\Clases\\4th Year\\sem-2\\it386\\sprints\\3rd\\Meshes\\SM_Mesh_bearingSupport_Large.fbx");
+        this->lodge = mr::Model::Load("D:\\Documents\\Clases\\4th Year\\sem-2\\it386\\sprints\\3rd\\Meshes\\SM_Bell.fbx");
 
         this->isCursonVisible = false;
 
@@ -157,7 +158,7 @@ public:
         this->directional->Bind(this->shader, "u_scene.directional");
         this->ambient->Bind(this->shader, "u_scene.ambient");
         this->shader->UploadVec4("u_scene.material.diffuse", {1.0f, 0.5f, 0.2f, 1.0f});
-        // this->shader->UploadFloat("u_scene.phongMaterial.diffuseMapStrength", 0.0f);
+        this->shader->UploadFloat("u_scene.phongMaterial.diffuseMapStrength", 0.0f);
         this->shader->UploadVec4("u_scene.material.specular", {0.1f, 0.2f, 1.0f, 1.0f});
         // this->shader->UploadFloat("u_scene.phongMaterial.specularMapStrength", 0.0f);
         this->shader->UploadFloat("u_scene.material.shininess", 12.0f);
@@ -171,7 +172,10 @@ public:
         glm::mat4 lodgeModelMatrix = glm::translate(identityMat, {0.0f, 0.0f, 10.0f});
         normalMat = glm::mat3(glm::transpose(glm::inverse(lodgeModelMatrix)));
         this->camUBO->SetData(glm::value_ptr(normalMat), sizeof(glm::mat4), sizeof(glm::mat4));
+        
         this->shader->UploadMat4("u_model.model", lodgeModelMatrix);
+        this->shader->UploadFloat("u_scene.material.diffuseMapStrength", 1.0f);
+        this->shader->UploadTexture("u_diffuseMap", this->tex);
 
         cmd = {};
         cmd.model = this->lodge;
@@ -231,6 +235,7 @@ private:
 
     mr::FPSCamera cam;
     mr::Texture *tex = nullptr;
+    mr::Texture *lodgeSpecMap = nullptr;
     mr::Texture *skyboxCubeMap = nullptr;
 
     mr::DirectionalLight *directional = nullptr;
