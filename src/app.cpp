@@ -39,6 +39,10 @@ public:
         shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\skybox.frag.spv";
         this->skyboxShader = mr::Shader::Create(shaderCreateParams);
 
+        shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\quad.vert.spv";
+        shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\gaussian.frag.spv";
+        gaussianBlurShader = mr::Shader::Create(shaderCreateParams);
+
         cam = mr::FPSCamera();
         mr::Camera::Config camConfig = {};
         camConfig.perspective.fov = glm::radians(60.0f);
@@ -95,6 +99,29 @@ public:
         meshCreateParams.indexCount = sizeof(skyboxIndices) / sizeof(uint32_t);
         this->skybox = new mr::Mesh(meshCreateParams);
 
+        layout = {
+            {mr::ATTRIBUTE_TYPE_FLOAT, 2},
+            {mr::ATTRIBUTE_TYPE_FLOAT, 2},
+        };
+
+        float screenVertices[] = {
+             0.9f, -0.9f, 1.0f, 0.0f,
+             0.9f,  0.9f, 1.0f, 1.0f,
+            -0.9f,  0.9f, 0.0f, 1.0f,
+            -0.9f, -0.9f, 0.0f, 0.0f
+        };
+
+        uint32_t quadIndices[] = {
+            0, 1, 2, 2, 3, 0
+        };
+
+        meshCreateParams.vertexLayout = &layout;
+        meshCreateParams.vertices = screenVertices;
+        meshCreateParams.verticesArraySize = sizeof(screenVertices);
+        meshCreateParams.indices = quadIndices;
+        meshCreateParams.indexCount = sizeof(quadIndices) / sizeof(uint32_t);
+        this->screen = new mr::Mesh(meshCreateParams);
+
         mr::Texture::CubePaths cubeMapPaths = {};
         cubeMapPaths.right = "D:\\Workspace\\Downloads\\skybox\\right.jpg";
         cubeMapPaths.left = "D:\\Workspace\\Downloads\\skybox\\left.jpg";
@@ -127,6 +154,15 @@ public:
         uboCreateParams.bufferSize = sizeof(glm::mat4) * 2;
         this->camUBO = mr::UniformBuffer::Create(uboCreateParams);
         this->shader->UploadUniformBuffer("CameraMatrices", this->camUBO);
+
+        mr::Framebuffer::CreateParams frameBufferCreateParams = {};
+        frameBufferCreateParams.width = window->GetFramebufferWidth();
+        frameBufferCreateParams.height = window->GetFramebufferHeight();
+        frameBufferCreateParams.attachments = {
+            { mr::Framebuffer::ATTACHMENT_COLOR_0, false },
+            { mr::Framebuffer::ATTACHMENT_DEPTH24_STENCIL8, true }
+        };
+        this->framebuffer = mr::Framebuffer::Create(frameBufferCreateParams);
     }
 
     virtual void OnUpdate() override
@@ -145,6 +181,35 @@ public:
     }
 
     virtual void OnRender(mr::Renderer *renderer) override
+    {
+        mr::Renderer::Command cmd = {};
+        mr::FramebufferUsage framebufferUsage = mr::FRAMEBUFFER_USAGE_READ_WRITE;
+        this->framebuffer->Bind(framebufferUsage);
+        this->framebuffer->Clear(framebufferUsage);
+
+        renderer->EnableRenderPass(
+            mr::RENDER_PASS_DEPTH, true
+        );
+
+            this->RenderScene(renderer);
+
+        this->framebuffer->Unbind(framebufferUsage);
+
+        renderer->Clear();
+        this->gaussianBlurShader->Bind();
+        renderer->EnableRenderPass(
+            mr::RENDER_PASS_DEPTH, false
+        );
+
+        this->gaussianBlurShader->UploadTexture("u_tex", this->framebuffer->GetTextureAttachment(0));
+        
+        cmd = {};
+        cmd.mesh = this->screen;
+        cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
+        renderer->Render(cmd);
+    }
+
+    void RenderScene(mr::Renderer *renderer)
     {
         mr::Renderer::Command cmd = {};
 
@@ -192,6 +257,22 @@ public:
         this->RenderSkybox(renderer);
     }
 
+    void RenderSkybox(mr::Renderer *renderer)
+    {
+        renderer->SetDepthTestFn(mr::RENDER_PASS_FN_LESS_OR_EQUEAL);
+            this->skyboxShader->Bind();
+            this->skyboxShader->UploadMat4(
+                "u_cam.viewProjection", 
+                cam.camera.GetProjectionMatrix() * glm::mat4(glm::mat3(cam.camera.GetViewMatrix()))
+            );
+            this->skyboxShader->UploadTexture("u_skybox", this->skyboxCubeMap);
+            mr::Renderer::Command cmd = {};
+            cmd.mesh = this->skybox;
+            cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
+            renderer->Render(cmd);
+        renderer->SetDepthTestFn(mr::RENDER_PASS_FN_LESS);
+    }
+
     virtual void OnGuiRender() override
     {
         ImGui::Begin("Scene Settings");
@@ -213,37 +294,25 @@ public:
         delete(this->model);
         delete(this->lodge);
         delete(this->skybox);
+        delete(this->screen);
+        delete(this->framebuffer);
         delete(this->directional);
         delete(this->ambient);
         delete(this->shader);
         delete(this->skyboxShader);
     }
 
-    void RenderSkybox(mr::Renderer *renderer)
-    {
-        renderer->SetDepthTestFn(mr::RENDER_PASS_FN_LESS_OR_EQUEAL);
-            this->skyboxShader->Bind();
-            this->skyboxShader->UploadMat4(
-                "u_cam.viewProjection", 
-                cam.camera.GetProjectionMatrix() * glm::mat4(glm::mat3(cam.camera.GetViewMatrix()))
-            );
-            this->skyboxShader->UploadTexture("u_skybox", this->skyboxCubeMap);
-            mr::Renderer::Command cmd = {};
-            cmd.mesh = this->skybox;
-            cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
-            renderer->Render(cmd);
-        renderer->SetDepthTestFn(mr::RENDER_PASS_FN_LESS);
-    }
-
 private:
     mr::Shader *shader = nullptr;
     mr::Shader *skyboxShader = nullptr;
+    mr::Shader *gaussianBlurShader = nullptr;
     mr::UniformBuffer *camUBO = nullptr;
 
     mr::FPSCamera cam;
     mr::Texture *tex = nullptr;
     mr::Texture *lodgeSpecMap = nullptr;
     mr::Texture *skyboxCubeMap = nullptr;
+    mr::Framebuffer *framebuffer = nullptr;
 
     mr::DirectionalLight *directional = nullptr;
     mr::AmbientLight *ambient = nullptr;
@@ -251,6 +320,7 @@ private:
     mr::Model *model = nullptr;
     mr::Model *lodge = nullptr;
     mr::Mesh *skybox = nullptr;
+    mr::Mesh *screen = nullptr;
     bool isCursonVisible;
 };
 

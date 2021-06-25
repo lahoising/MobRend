@@ -71,12 +71,11 @@ void Application::Render(Program *prog)
 {
     this->renderer->OnRenderBegin();
     prog->OnRender(this->renderer);
+    this->renderer->OnRenderEnd();
 
     this->gui->BeginFrame();
     prog->OnGuiRender();
     this->gui->EndFrame();
-
-    this->renderer->OnRenderEnd();
 
     this->window->SwapBuffers();
 }
