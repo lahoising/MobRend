@@ -18,6 +18,7 @@ struct PhongMaterial
 };
 
 layout(binding = 1) uniform sampler2D u_diffuseMap;
+layout(binding = 2) uniform sampler2D u_specularMap;
 
 struct Light
 {
@@ -78,7 +79,10 @@ void main()
             norm, 
             u_scene.material.shininess),
         1.0);
-    specular *= u_scene.material.specular;
+    specular *= mix(
+        u_scene.material.specular,
+        texture(u_specularMap,a_texCoord),
+        u_scene.material.specularMapStrength);
 
     vec4 result = diffuse + specular + ambient;
     if(result.w < 0.1)

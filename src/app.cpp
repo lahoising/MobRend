@@ -56,6 +56,11 @@ public:
         textureLoadParams.invertVertically = false;
         textureLoadParams.filepath = "D:\\Documents\\Clases\\4th Year\\sem-2\\it386\\sprints\\3rd\\Textures\\T_Bell_BaseColor.jpg";
         tex = mr::Texture::Load(textureLoadParams);
+
+        textureLoadParams = {};
+        textureLoadParams.invertVertically = false;
+        textureLoadParams.filepath = "D:\\Documents\\Clases\\4th Year\\sem-2\\it386\\sprints\\3rd\\Textures\\T_Bell_OcclusionRoughnessMetallic.jpg";
+        this->lodgeSpecMap = mr::Texture::Load(textureLoadParams);
         
         mr::VertexLayout layout = {
             {mr::ATTRIBUTE_TYPE_FLOAT, 3}
@@ -158,9 +163,9 @@ public:
         this->directional->Bind(this->shader, "u_scene.directional");
         this->ambient->Bind(this->shader, "u_scene.ambient");
         this->shader->UploadVec4("u_scene.material.diffuse", {1.0f, 0.5f, 0.2f, 1.0f});
-        this->shader->UploadFloat("u_scene.phongMaterial.diffuseMapStrength", 0.0f);
+        this->shader->UploadFloat("u_scene.material.diffuseMapStrength", 0.0f);
         this->shader->UploadVec4("u_scene.material.specular", {0.1f, 0.2f, 1.0f, 1.0f});
-        // this->shader->UploadFloat("u_scene.phongMaterial.specularMapStrength", 0.0f);
+        this->shader->UploadFloat("u_scene.material.specularMapStrength", 0.0f);
         this->shader->UploadFloat("u_scene.material.shininess", 12.0f);
         this->shader->UploadVec3("u_scene.viewPos", this->cam.camera.GetPosition());
 
@@ -176,6 +181,8 @@ public:
         this->shader->UploadMat4("u_model.model", lodgeModelMatrix);
         this->shader->UploadFloat("u_scene.material.diffuseMapStrength", 1.0f);
         this->shader->UploadTexture("u_diffuseMap", this->tex);
+        this->shader->UploadFloat("u_scene.material.specularMapStrength", 1.0f);
+        this->shader->UploadTexture("u_specularMap", this->lodgeSpecMap);
 
         cmd = {};
         cmd.model = this->lodge;
