@@ -68,7 +68,7 @@ void DirectionalLight::Bind(Shader *shader, const char *name)
     shader->UploadFloat(attributeNameBuffer, this->intensity);
 
     snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.type", name);
-    shader->UploadInt(attributeNameBuffer, (int)this->GetType());
+    shader->UploadFloat(attributeNameBuffer, (float)this->GetType());
 }
 
 Spotlight::Spotlight(glm::vec3 color, float intensity)

@@ -149,13 +149,13 @@ public:
         this->shader->Bind();
         this->shader->UploadMat4("u_model.model", identityMat);
 
-        this->directional->Bind(this->shader, "u_scene.ambientLight");
-        this->shader->UploadVec4("u_scene.phongMaterial.diffuse", {0.5f, 0.5f, 0.5f, 1.0f});
-        this->shader->UploadFloat("u_scene.phongMaterial.diffuseMapStrength", 0.0f);
-        this->shader->UploadVec4("u_scene.phongMaterial.specular", {1.0f, 1.0f, 1.0f, 1.0f});
-        this->shader->UploadFloat("u_scene.phongMaterial.specularMapStrength", 0.0f);
-        this->shader->UploadFloat("u_scene.phongMaterial.shininess", 1.0f);
-        this->shader->UploadVec3("u_scene.viewPos", this->cam.camera.GetPosition());
+        this->directional->Bind(this->shader, "u_sceneLights.directional");
+        // this->shader->UploadVec4("u_scene.phongMaterial.diffuse", {0.5f, 0.5f, 0.5f, 1.0f});
+        // this->shader->UploadFloat("u_scene.phongMaterial.diffuseMapStrength", 0.0f);
+        // this->shader->UploadVec4("u_scene.phongMaterial.specular", {1.0f, 1.0f, 1.0f, 1.0f});
+        // this->shader->UploadFloat("u_scene.phongMaterial.specularMapStrength", 0.0f);
+        // this->shader->UploadFloat("u_scene.phongMaterial.shininess", 1.0f);
+        // this->shader->UploadVec3("u_scene.viewPos", this->cam.camera.GetPosition());
 
         cmd = {};
         cmd.model = this->model;
