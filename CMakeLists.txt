@@ -37,6 +37,7 @@ file(
 if(${MOBREND_USE_OPENGL})
     add_compile_definitions(MOBREND_GL_RENDERING)
 
+    set(OpenGL_GL_PREFERENCE GLVND)
     find_package(OpenGL REQUIRED)
     target_link_libraries(app OpenGL::GL)
     
