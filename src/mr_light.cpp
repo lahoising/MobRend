@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <glm/gtx/quaternion.hpp>
 #include "mr_light.h"
 #include "mr_shader.h"

@@ -20,10 +20,11 @@ public:
 public:
     static VertexBuffer *Create(CreateParams &params);
 
-    virtual ~VertexBuffer() = 0 {};
+    virtual ~VertexBuffer() = 0;
     virtual void Bind() const = 0;
     virtual void Unbind() const = 0;
 };
+
 
 } // namespace mr
 

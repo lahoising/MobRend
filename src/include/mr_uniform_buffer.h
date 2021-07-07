@@ -18,7 +18,7 @@ public:
 
 public:
     static UniformBuffer *Create(const CreateParams &params);
-    virtual ~UniformBuffer() = 0 {}
+    virtual ~UniformBuffer() = 0;
     virtual void Bind() const = 0;
     virtual void Unbind() const = 0;
     virtual void SetData(const void *data, uint32_t size, uint32_t offset) = 0;

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <cstring>
 #include "mr_logger.h"
 #include "mr_asset_manager.h"
 

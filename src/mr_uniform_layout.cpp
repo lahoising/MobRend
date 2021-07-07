@@ -1,5 +1,6 @@
 #include <ctype.h>
 #include <memory>
+#include <cstring>
 #include "mr_uniform_layout.h"
 
 namespace mr

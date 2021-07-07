@@ -38,7 +38,7 @@ public:
 
 public:
     static Framebuffer *Create(CreateParams &createParams);
-    virtual ~Framebuffer() = 0 {};
+    virtual ~Framebuffer() = 0;
     virtual void Bind(FramebufferUsage usage) = 0;
     virtual void Unbind(FramebufferUsage usage) = 0;
     virtual void Clear(FramebufferUsage usage) = 0;

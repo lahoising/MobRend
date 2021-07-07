@@ -18,7 +18,7 @@ public:
 
 public:
     static IndexBuffer *Create(CreateParams &params);
-    virtual ~IndexBuffer() = 0 {};
+    virtual ~IndexBuffer() = 0;
     virtual void Bind() const = 0;
     virtual void Unbind() const = 0;
     uint32_t GetElementCount() const { return this->elementCount; }

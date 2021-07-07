@@ -5,17 +5,6 @@
 
 namespace mr {
 
-enum UniformType;
-
-typedef struct
-{
-    UniformType type;
-    unsigned int count;
-} UniformValue;
-
-typedef std::unordered_map<std::string,UniformValue> UniformLayout;
-UniformLayout GetUniformLayout(const char *source);
-
 enum UniformType
 {
     UNIFORM_TYPE_BOOL,
@@ -52,6 +41,15 @@ enum UniformType
     UNIFORM_TYPE_TEX3D,
     UNIFORM_TYPE_UDSTRUCT, // user defined struct
 };
+
+typedef struct
+{
+    UniformType type;
+    unsigned int count;
+} UniformValue;
+
+typedef std::unordered_map<std::string,UniformValue> UniformLayout;
+UniformLayout GetUniformLayout(const char *source);
 
 } // namespace mr
 

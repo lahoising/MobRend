@@ -87,7 +87,7 @@ public:
 public:
     static Texture *Load(const LoadParams &params);
     static Texture *Create(const CreateParams &params);
-    virtual ~Texture() = 0 {};
+    virtual ~Texture() = 0;
     virtual void Bind() = 0;
     virtual void Unbind() = 0;
     uint32_t GetWidth(){ return this->w; }
@@ -118,6 +118,7 @@ private:
 private:
     std::unordered_map<std::string,Texture*> loadedTextures;
 };
+
 
 } // namespace mr
 

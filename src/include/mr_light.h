@@ -2,6 +2,7 @@
 #define _MR_LIGHT_H_
 
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 namespace mr
 {
@@ -21,7 +22,7 @@ public:
     };
 
 public:
-    virtual ~Light() = 0 {}
+    virtual ~Light() = 0;
     virtual void Bind(Shader *shader, const char *name) = 0;
     Type GetType() { return this->type; }
 
@@ -81,6 +82,7 @@ public:
     float innerCutoff;
     float outerCutoff;
 };
+
 
 } // namespace mr
 

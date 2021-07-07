@@ -19,7 +19,7 @@ public:
 
 public:
     static Shader *Create(CreateParams params);
-    virtual ~Shader() = 0 {};
+    virtual ~Shader() = 0;
     virtual void Bind() = 0;
     virtual void Unbind() = 0;
 
@@ -34,6 +34,7 @@ public:
     virtual void UploadTexture(const char *uniformName, Texture *texture) = 0;
     virtual void UploadUniformBuffer(const char *uniformBufferName, UniformBuffer *ubo) = 0;
 };
+
 
 } // namespace mr
 

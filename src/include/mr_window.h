@@ -20,7 +20,7 @@ public:
 public:
     static Window *Create(CreateParams params);
 
-    virtual ~Window() = 0 {};
+    virtual ~Window() = 0;
     virtual void SwapBuffers() = 0;
     virtual void PollEvents() = 0;
     virtual void *GetHandle() = 0;

@@ -4,6 +4,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "mr_logger.h"
 #include "mr_model.h"
@@ -114,7 +115,7 @@ Mesh *ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene)
             case POSITION:
             {
                 auto vert = mesh->mVertices[i];
-                memcpy(bufferPtr, &glm::vec3(vert.x, vert.y, vert.z), sizeof(glm::vec3));
+                memcpy(bufferPtr, glm::value_ptr(glm::vec3(vert.x, vert.y, vert.z)), sizeof(glm::vec3));
                 bufferPtr += sizeof(glm::vec3);
             }
             break;
@@ -122,7 +123,7 @@ Mesh *ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene)
             case NORMAL:
             {
                 auto norm = mesh->mNormals[i];
-                memcpy(bufferPtr, &glm::vec3(norm.x, norm.y, norm.z), sizeof(glm::vec3));
+                memcpy(bufferPtr, glm::value_ptr(glm::vec3(norm.x, norm.y, norm.z)), sizeof(glm::vec3));
                 bufferPtr += sizeof(glm::vec3);
             }
             break;
@@ -130,7 +131,7 @@ Mesh *ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene)
             case TEXCOORD:
             {
                 auto texCoord = mesh->mTextureCoords[texCoordsCount++][i];
-                memcpy(bufferPtr, &glm::vec2(texCoord.x, texCoord.y), sizeof(glm::vec2));
+                memcpy(bufferPtr, glm::value_ptr(glm::vec2(texCoord.x, texCoord.y)), sizeof(glm::vec2));
                 bufferPtr += sizeof(glm::vec2);
             }
             break;

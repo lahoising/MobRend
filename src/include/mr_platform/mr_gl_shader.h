@@ -2,6 +2,8 @@
 #define _MR_GL_SHADER_H_
 
 #include <unordered_map>
+#include <vector>
+#include <inttypes.h>
 #include "mr_shader.h"
 
 namespace mr

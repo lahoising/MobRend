@@ -30,17 +30,17 @@ public:
         );
 
         mr::Shader::CreateParams shaderCreateParams = {};
-        shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.vert.spv";
-        shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\default.frag.spv";
+        shaderCreateParams.vertFilePath = "resources/shaders/default_shader.vert.spv";
+        shaderCreateParams.fragFilePath = "resources/shaders/default.frag.spv";
         shader = mr::Shader::Create(shaderCreateParams);
 
         shaderCreateParams = {};
-        shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\skybox.vert.spv";
-        shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\skybox.frag.spv";
+        shaderCreateParams.vertFilePath = "resources/shaders/skybox.vert.spv";
+        shaderCreateParams.fragFilePath = "resources/shaders/skybox.frag.spv";
         this->skyboxShader = mr::Shader::Create(shaderCreateParams);
 
-        shaderCreateParams.vertFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\quad.vert.spv";
-        shaderCreateParams.fragFilePath = "D:\\Documents\\git\\MobRend\\resources\\shaders\\gaussian.frag.spv";
+        shaderCreateParams.vertFilePath = "resources/shaders/quad.vert.spv";
+        shaderCreateParams.fragFilePath = "resources/shaders/gaussian.frag.spv";
         gaussianBlurShader = mr::Shader::Create(shaderCreateParams);
 
         cam = mr::FPSCamera();
@@ -56,15 +56,15 @@ public:
         cam.movementSpeed = 0.03f;
 
         mr::Texture::LoadParams textureLoadParams = {};
-        textureLoadParams.type = mr::Texture::TEXTURE_TYPE_2D;
-        textureLoadParams.invertVertically = false;
-        textureLoadParams.filepath = "D:\\Documents\\Clases\\4th Year\\sem-2\\it386\\sprints\\3rd\\Textures\\T_Bell_BaseColor.jpg";
-        tex = mr::Texture::Load(textureLoadParams);
+        // textureLoadParams.type = mr::Texture::TEXTURE_TYPE_2D;
+        // textureLoadParams.invertVertically = false;
+        // textureLoadParams.filepath = "D:\\Documents\\Clases\\4th Year\\sem-2\\it386\\sprints\\3rd\\Textures\\T_Bell_BaseColor.jpg";
+        // tex = mr::Texture::Load(textureLoadParams);
 
-        textureLoadParams = {};
-        textureLoadParams.invertVertically = false;
-        textureLoadParams.filepath = "D:\\Documents\\Clases\\4th Year\\sem-2\\it386\\sprints\\3rd\\Textures\\T_Bell_OcclusionRoughnessMetallic.jpg";
-        this->lodgeSpecMap = mr::Texture::Load(textureLoadParams);
+        // textureLoadParams = {};
+        // textureLoadParams.invertVertically = false;
+        // textureLoadParams.filepath = "D:\\Documents\\Clases\\4th Year\\sem-2\\it386\\sprints\\3rd\\Textures\\T_Bell_OcclusionRoughnessMetallic.jpg";
+        // this->lodgeSpecMap = mr::Texture::Load(textureLoadParams);
         
         mr::VertexLayout layout = {
             {mr::ATTRIBUTE_TYPE_FLOAT, 3}
@@ -123,20 +123,19 @@ public:
         this->screen = new mr::Mesh(meshCreateParams);
 
         mr::Texture::CubePaths cubeMapPaths = {};
-        cubeMapPaths.right = "D:\\Workspace\\Downloads\\skybox\\right.jpg";
-        cubeMapPaths.left = "D:\\Workspace\\Downloads\\skybox\\left.jpg";
-        cubeMapPaths.top = "D:\\Workspace\\Downloads\\skybox\\top.jpg";
-        cubeMapPaths.bottom = "D:\\Workspace\\Downloads\\skybox\\bottom.jpg";
-        cubeMapPaths.front = "D:\\Workspace\\Downloads\\skybox\\front.jpg";
-        cubeMapPaths.back = "D:\\Workspace\\Downloads\\skybox\\back.jpg";
+        cubeMapPaths.right = "skybox/right.jpg";
+        cubeMapPaths.left = "skybox/left.jpg";
+        cubeMapPaths.top = "skybox/top.jpg";
+        cubeMapPaths.bottom = "skybox/bottom.jpg";
+        cubeMapPaths.front = "skybox/front.jpg";
+        cubeMapPaths.back = "skybox/back.jpg";
         
         textureLoadParams.cubeMapPaths = &cubeMapPaths;
         textureLoadParams.type = mr::Texture::TEXTURE_TYPE_CUBE;
         textureLoadParams.invertVertically = false;
         this->skyboxCubeMap = mr::Texture::Load(textureLoadParams);
 
-        model = mr::Model::Load("D:\\Documents\\git\\MobRend\\resources\\models\\kunai.fbx");
-        this->lodge = mr::Model::Load("D:\\Documents\\Clases\\4th Year\\sem-2\\it386\\sprints\\3rd\\Meshes\\SM_Bell.fbx");
+        model = mr::Model::Load("resources/models/kunai.fbx");
 
         this->isCursonVisible = false;
 
@@ -239,20 +238,20 @@ public:
         cmd.renderObjectType = mr::RENDER_OBJECT_MODEL;
         renderer->Render(cmd);
 
-        glm::mat4 lodgeModelMatrix = glm::translate(identityMat, {0.0f, 0.0f, 10.0f});
-        normalMat = glm::mat3(glm::transpose(glm::inverse(lodgeModelMatrix)));
-        this->camUBO->SetData(glm::value_ptr(normalMat), sizeof(glm::mat4), sizeof(glm::mat4));
+        // glm::mat4 lodgeModelMatrix = glm::translate(identityMat, {0.0f, 0.0f, 10.0f});
+        // normalMat = glm::mat3(glm::transpose(glm::inverse(lodgeModelMatrix)));
+        // this->camUBO->SetData(glm::value_ptr(normalMat), sizeof(glm::mat4), sizeof(glm::mat4));
         
-        this->shader->UploadMat4("u_model.model", lodgeModelMatrix);
-        this->shader->UploadFloat("u_scene.material.diffuseMapStrength", 1.0f);
-        this->shader->UploadTexture("u_diffuseMap", this->tex);
-        this->shader->UploadFloat("u_scene.material.specularMapStrength", 1.0f);
-        this->shader->UploadTexture("u_specularMap", this->lodgeSpecMap);
+        // this->shader->UploadMat4("u_model.model", lodgeModelMatrix);
+        // this->shader->UploadFloat("u_scene.material.diffuseMapStrength", 1.0f);
+        // this->shader->UploadTexture("u_diffuseMap", this->tex);
+        // this->shader->UploadFloat("u_scene.material.specularMapStrength", 1.0f);
+        // this->shader->UploadTexture("u_specularMap", this->lodgeSpecMap);
 
-        cmd = {};
-        cmd.model = this->lodge;
-        cmd.renderObjectType = mr::RENDER_OBJECT_MODEL;
-        renderer->Render(cmd);
+        // cmd = {};
+        // cmd.model = this->lodge;
+        // cmd.renderObjectType = mr::RENDER_OBJECT_MODEL;
+        // renderer->Render(cmd);
 
         this->RenderSkybox(renderer);
     }
@@ -292,7 +291,7 @@ public:
     {
         delete(this->camUBO);
         delete(this->model);
-        delete(this->lodge);
+        // delete(this->lodge);
         delete(this->skybox);
         delete(this->screen);
         delete(this->framebuffer);
@@ -309,8 +308,8 @@ private:
     mr::UniformBuffer *camUBO = nullptr;
 
     mr::FPSCamera cam;
-    mr::Texture *tex = nullptr;
-    mr::Texture *lodgeSpecMap = nullptr;
+    // mr::Texture *tex = nullptr;
+    // mr::Texture *lodgeSpecMap = nullptr;
     mr::Texture *skyboxCubeMap = nullptr;
     mr::Framebuffer *framebuffer = nullptr;
 
@@ -318,7 +317,7 @@ private:
     mr::AmbientLight *ambient = nullptr;
 
     mr::Model *model = nullptr;
-    mr::Model *lodge = nullptr;
+    // mr::Model *lodge = nullptr;
     mr::Mesh *skybox = nullptr;
     mr::Mesh *screen = nullptr;
     bool isCursonVisible;

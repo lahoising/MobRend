@@ -111,7 +111,7 @@ public:
         TopologyType topologyType;
         RenderObjectType renderObjectType;
 
-        struct command_s()
+        command_s()
             : mesh(nullptr), 
             topologyType(TopologyType::TOPOLOGY_TRIANGLES),
             renderObjectType(RenderObjectType::RENDER_OBJECT_NONE)
@@ -120,7 +120,7 @@ public:
 
 public:
     static Renderer *Create();
-    virtual ~Renderer() = 0 {};
+    virtual ~Renderer() = 0;
     virtual void Clear() = 0;
     virtual void SetViewport(int x, int y, int width, int height) = 0;
     virtual void OnRenderBegin() = 0;
@@ -147,6 +147,7 @@ public:
     virtual void SetFrontFaceWinding(FrontFaceWinding winding) = 0;
 };
     
+
 } // namespace mr
 
 
