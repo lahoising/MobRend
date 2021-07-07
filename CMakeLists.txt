@@ -3,6 +3,7 @@ project(MobRend)
 
 set(MOBREND_USE_GLFW ON CACHE BOOL "Use GLFW windows")
 set(MOBREND_USE_OPENGL ON CACHE BOOL "Use OpenGL for rendering")
+set(MOBREND_ASSETS_RELATIVE_PATH "${CMAKE_SOURCE_DIR}" CACHE PATH "Assets will be loaded relative to this path")
 
 set(BASE_INC_PATH "${CMAKE_CURRENT_SOURCE_DIR}/src/include")
 set(EXTERNAL_INC "${CMAKE_CURRENT_SOURCE_DIR}/external")
@@ -24,6 +25,12 @@ target_include_directories(
     app PUBLIC 
     "${BASE_INC_PATH}"
 )
+
+if(UNIX)
+    set(MOBREND_FILE_SEPARATOR "/")
+endif()
+
+target_compile_definitions(app PUBLIC MOBREND_ASSETS_RELATIVE_PATH="${MOBREND_ASSETS_RELATIVE_PATH}${MOBREND_FILE_SEPARATOR}")
 
 set(IMGUI_PATH "${EXTERNAL_INC}/imgui")
 set(IMGUI_BACKEND "${IMGUI_PATH}/backends/imgui_impl_")

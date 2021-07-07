@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <cstring>
+#include <string>
 #include "mr_logger.h"
 #include "mr_asset_manager.h"
 
@@ -50,7 +51,11 @@ FILE *AssetManager::OpenFile(const char *filepath, long &outSize)
 {
     MR_ASSERT(filepath && strlen(filepath));
 
-    FILE *file = fopen(filepath, "rb");
+    std::string relativePath(strlen(MOBREND_ASSETS_RELATIVE_PATH) + strlen(filepath), 'X');
+    relativePath.assign(MOBREND_ASSETS_RELATIVE_PATH);
+    relativePath.append(filepath);
+
+    FILE *file = fopen(relativePath.c_str(), "rb");
     MR_ASSERT(file);
     int seekRes = fseek(file, 0L, SEEK_END);
     MR_ASSERT(!seekRes);
