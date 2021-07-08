@@ -24,7 +24,7 @@ void AmbientLight::Bind(Shader *shader, const char *name)
     shader->UploadFloat(attributeNameBuffer, this->intensity);
 
     snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.type", name);
-    shader->UploadInt(attributeNameBuffer, (int)this->GetType());
+    shader->UploadFloat(attributeNameBuffer, (float)this->GetType());
 }
 
 /// =================== POINT LIGHT ==============
@@ -45,7 +45,7 @@ void PointLight::Bind(Shader *shader, const char *name)
     shader->UploadFloat(attributeNameBuffer, this->intensity);
 
     snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.type", name);
-    shader->UploadInt(attributeNameBuffer, (int)this->GetType());
+    shader->UploadFloat(attributeNameBuffer, (float)this->GetType());
     
     snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.attenuation", name);
     shader->UploadVec3(attributeNameBuffer, this->attenuation);
@@ -92,7 +92,7 @@ void Spotlight::Bind(Shader *shader, const char *name)
     shader->UploadFloat(attributeNameBuffer, this->intensity);
 
     snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.type", name);
-    shader->UploadInt(attributeNameBuffer, (int)this->GetType());
+    shader->UploadFloat(attributeNameBuffer, (float)this->GetType());
     
     // attenuation will be our direction
     snprintf(attributeNameBuffer, sizeof(attributeNameBuffer), "%s.attenuation", name);
