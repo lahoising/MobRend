@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
+#include "mr_asset_manager.h"
 #include "mr_application.h"
 #include "mr_logger.h"
 #include "mr_model.h"
@@ -30,17 +31,17 @@ public:
         );
 
         mr::Shader::CreateParams shaderCreateParams = {};
-        shaderCreateParams.vertFilePath = "resources/shaders/default_shader.vert.spv";
-        shaderCreateParams.fragFilePath = "resources/shaders/default.frag.spv";
+        mr::AssetManager::GetAssetPath(shaderCreateParams.vertFilePath, "resources/shaders/default_shader.vert.spv");
+        mr::AssetManager::GetAssetPath(shaderCreateParams.fragFilePath, "resources/shaders/default.frag.spv");
         shader = mr::Shader::Create(shaderCreateParams);
 
         shaderCreateParams = {};
-        shaderCreateParams.vertFilePath = "resources/shaders/skybox.vert.spv";
-        shaderCreateParams.fragFilePath = "resources/shaders/skybox.frag.spv";
+        mr::AssetManager::GetAssetPath(shaderCreateParams.vertFilePath, "resources/shaders/skybox.vert.spv");
+        mr::AssetManager::GetAssetPath(shaderCreateParams.fragFilePath, "resources/shaders/skybox.frag.spv");
         this->skyboxShader = mr::Shader::Create(shaderCreateParams);
 
-        shaderCreateParams.vertFilePath = "resources/shaders/quad.vert.spv";
-        shaderCreateParams.fragFilePath = "resources/shaders/gaussian.frag.spv";
+        mr::AssetManager::GetAssetPath(shaderCreateParams.vertFilePath, "resources/shaders/quad.vert.spv");
+        mr::AssetManager::GetAssetPath(shaderCreateParams.fragFilePath, "resources/shaders/gaussian.frag.spv");
         gaussianBlurShader = mr::Shader::Create(shaderCreateParams);
 
         cam = mr::FPSCamera();
@@ -123,19 +124,21 @@ public:
         this->screen = new mr::Mesh(meshCreateParams);
 
         mr::Texture::CubePaths cubeMapPaths = {};
-        cubeMapPaths.right = "skybox/right.jpg";
-        cubeMapPaths.left = "skybox/left.jpg";
-        cubeMapPaths.top = "skybox/top.jpg";
-        cubeMapPaths.bottom = "skybox/bottom.jpg";
-        cubeMapPaths.front = "skybox/front.jpg";
-        cubeMapPaths.back = "skybox/back.jpg";
+        mr::AssetManager::GetAssetPath(cubeMapPaths.right,  "resources/images/skybox/LearnOpenGl/right.jpg");
+        mr::AssetManager::GetAssetPath(cubeMapPaths.left,   "resources/images/skybox/LearnOpenGl/left.jpg");
+        mr::AssetManager::GetAssetPath(cubeMapPaths.top,    "resources/images/skybox/LearnOpenGl/top.jpg");
+        mr::AssetManager::GetAssetPath(cubeMapPaths.bottom, "resources/images/skybox/LearnOpenGl/bottom.jpg");
+        mr::AssetManager::GetAssetPath(cubeMapPaths.front,  "resources/images/skybox/LearnOpenGl/front.jpg");
+        mr::AssetManager::GetAssetPath(cubeMapPaths.back,   "resources/images/skybox/LearnOpenGl/back.jpg");
         
         textureLoadParams.cubeMapPaths = &cubeMapPaths;
         textureLoadParams.type = mr::Texture::TEXTURE_TYPE_CUBE;
         textureLoadParams.invertVertically = false;
         this->skyboxCubeMap = mr::Texture::Load(textureLoadParams);
 
-        model = mr::Model::Load("resources/models/kunai.fbx");
+        char modelPath[MR_MAX_PATH];
+        mr::AssetManager::GetAssetPath(modelPath, "resources/models/kunai.fbx");
+        model = mr::Model::Load(modelPath);
 
         this->isCursonVisible = false;
 

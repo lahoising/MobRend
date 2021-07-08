@@ -3,6 +3,7 @@
 
 #include <inttypes.h>
 #include <unordered_map>
+#include <mr_asset_manager.h>
 #include "mr_image_loader.h"
 
 namespace mr
@@ -59,12 +60,12 @@ public:
 
     struct CubePaths
     {
-        const char *right;
-        const char *left;
-        const char *top;
-        const char *bottom;
-        const char *front;
-        const char *back;
+        char right[MR_MAX_PATH];
+        char left[MR_MAX_PATH];
+        char top[MR_MAX_PATH];
+        char bottom[MR_MAX_PATH];
+        char front[MR_MAX_PATH];
+        char back[MR_MAX_PATH];
     };
 
     struct LoadParams

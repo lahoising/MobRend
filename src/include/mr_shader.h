@@ -2,6 +2,7 @@
 #define _MR_SHADER_H_
 
 #include <glm/glm.hpp>
+#include "mr_asset_manager.h"
 
 namespace mr
 {
@@ -13,8 +14,8 @@ class Shader
 public:
     typedef struct
     {
-        const char *vertFilePath;
-        const char *fragFilePath;
+        char vertFilePath[MR_MAX_PATH];
+        char fragFilePath[MR_MAX_PATH];
     } CreateParams;
 
 public:

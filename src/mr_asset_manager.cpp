@@ -51,11 +51,7 @@ FILE *AssetManager::OpenFile(const char *filepath, long &outSize)
 {
     MR_ASSERT(filepath && strlen(filepath));
 
-    std::string relativePath(strlen(MOBREND_ASSETS_RELATIVE_PATH) + strlen(filepath), 'X');
-    relativePath.assign(MOBREND_ASSETS_RELATIVE_PATH);
-    relativePath.append(filepath);
-
-    FILE *file = fopen(relativePath.c_str(), "rb");
+    FILE *file = fopen(filepath, "rb");
     MR_ASSERT(file);
     int seekRes = fseek(file, 0L, SEEK_END);
     MR_ASSERT(!seekRes);
