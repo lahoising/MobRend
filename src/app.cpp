@@ -1,5 +1,6 @@
 #include <iostream>
 #include <unordered_map>
+#include <chrono>
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 #include "mr_asset_manager.h"
@@ -15,11 +16,13 @@
 class UserApp : public mr::Program
 {
 public:
-    UserApp(){}
+    UserApp() : currentTime(0.0f), deltaTime(0.0f), startTime() {}
     ~UserApp(){}
 
     virtual void OnStart() override
     {
+        this->startTime = std::chrono::high_resolution_clock::now();
+
         mr::DirectionalLight *dirLight = new mr::DirectionalLight(
             glm::vec3(1.0f, 1.0f, 1.0f), 1.0f
         );
@@ -40,10 +43,6 @@ public:
         mr::AssetManager::GetAssetPath(shaderCreateParams.fragFilePath, "resources/shaders/skybox.frag.spv");
         this->skyboxShader = mr::Shader::Create(shaderCreateParams);
 
-        mr::AssetManager::GetAssetPath(shaderCreateParams.vertFilePath, "resources/shaders/quad.vert.spv");
-        mr::AssetManager::GetAssetPath(shaderCreateParams.fragFilePath, "resources/shaders/gaussian.frag.spv");
-        gaussianBlurShader = mr::Shader::Create(shaderCreateParams);
-
         cam = mr::FPSCamera();
         mr::Camera::Config camConfig = {};
         camConfig.perspective.fov = glm::radians(60.0f);
@@ -55,17 +54,6 @@ public:
             camConfig
         );
         cam.movementSpeed = 0.03f;
-
-        mr::Texture::LoadParams textureLoadParams = {};
-        // textureLoadParams.type = mr::Texture::TEXTURE_TYPE_2D;
-        // textureLoadParams.invertVertically = false;
-        // textureLoadParams.filepath = "D:\\Documents\\Clases\\4th Year\\sem-2\\it386\\sprints\\3rd\\Textures\\T_Bell_BaseColor.jpg";
-        // tex = mr::Texture::Load(textureLoadParams);
-
-        // textureLoadParams = {};
-        // textureLoadParams.invertVertically = false;
-        // textureLoadParams.filepath = "D:\\Documents\\Clases\\4th Year\\sem-2\\it386\\sprints\\3rd\\Textures\\T_Bell_OcclusionRoughnessMetallic.jpg";
-        // this->lodgeSpecMap = mr::Texture::Load(textureLoadParams);
         
         mr::VertexLayout layout = {
             {mr::ATTRIBUTE_TYPE_FLOAT, 3}
@@ -100,29 +88,7 @@ public:
         meshCreateParams.indexCount = sizeof(skyboxIndices) / sizeof(uint32_t);
         this->skybox = new mr::Mesh(meshCreateParams);
 
-        layout = {
-            {mr::ATTRIBUTE_TYPE_FLOAT, 2},
-            {mr::ATTRIBUTE_TYPE_FLOAT, 2},
-        };
-
-        float screenVertices[] = {
-             0.9f, -0.9f, 1.0f, 0.0f,
-             0.9f,  0.9f, 1.0f, 1.0f,
-            -0.9f,  0.9f, 0.0f, 1.0f,
-            -0.9f, -0.9f, 0.0f, 0.0f
-        };
-
-        uint32_t quadIndices[] = {
-            0, 1, 2, 2, 3, 0
-        };
-
-        meshCreateParams.vertexLayout = &layout;
-        meshCreateParams.vertices = screenVertices;
-        meshCreateParams.verticesArraySize = sizeof(screenVertices);
-        meshCreateParams.indices = quadIndices;
-        meshCreateParams.indexCount = sizeof(quadIndices) / sizeof(uint32_t);
-        this->screen = new mr::Mesh(meshCreateParams);
-
+        mr::Texture::LoadParams textureLoadParams = {};
         mr::Texture::CubePaths cubeMapPaths = {};
         mr::AssetManager::GetAssetPath(cubeMapPaths.right,  "resources/images/skybox/LearnOpenGl/right.jpg");
         mr::AssetManager::GetAssetPath(cubeMapPaths.left,   "resources/images/skybox/LearnOpenGl/left.jpg");
@@ -156,19 +122,15 @@ public:
         uboCreateParams.bufferSize = sizeof(glm::mat4) * 2;
         this->camUBO = mr::UniformBuffer::Create(uboCreateParams);
         this->shader->UploadUniformBuffer("CameraMatrices", this->camUBO);
-
-        mr::Framebuffer::CreateParams frameBufferCreateParams = {};
-        frameBufferCreateParams.width = window->GetFramebufferWidth();
-        frameBufferCreateParams.height = window->GetFramebufferHeight();
-        frameBufferCreateParams.attachments = {
-            { mr::Framebuffer::ATTACHMENT_COLOR_0, false },
-            { mr::Framebuffer::ATTACHMENT_DEPTH24_STENCIL8, true }
-        };
-        this->framebuffer = mr::Framebuffer::Create(frameBufferCreateParams);
     }
 
     virtual void OnUpdate() override
     {
+        std::chrono::duration<float> frameStartDuration = std::chrono::high_resolution_clock::now() - this->startTime;
+        float frameStartTime = frameStartDuration.count();
+        this->deltaTime = frameStartTime - this->currentTime;
+        this->currentTime = frameStartTime;
+
         mr::Window *mainWindow = mr::Application::GetInstance().GetMainWindow();
         mr::Input &input = mainWindow->input;
         if(input.KeyJustPressed(81))
@@ -184,31 +146,7 @@ public:
 
     virtual void OnRender(mr::Renderer *renderer) override
     {
-        mr::Renderer::Command cmd = {};
-        mr::FramebufferUsage framebufferUsage = mr::FRAMEBUFFER_USAGE_READ_WRITE;
-        this->framebuffer->Bind(framebufferUsage);
-        this->framebuffer->Clear(framebufferUsage);
-
-        renderer->EnableRenderPass(
-            mr::RENDER_PASS_DEPTH, true
-        );
-
-            this->RenderScene(renderer);
-
-        this->framebuffer->Unbind(framebufferUsage);
-
-        renderer->Clear();
-        this->gaussianBlurShader->Bind();
-        renderer->EnableRenderPass(
-            mr::RENDER_PASS_DEPTH, false
-        );
-
-        this->gaussianBlurShader->UploadTexture("u_tex", this->framebuffer->GetTextureAttachment(0));
-        
-        cmd = {};
-        cmd.mesh = this->screen;
-        cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
-        renderer->Render(cmd);
+        this->RenderScene(renderer);
     }
 
     void RenderScene(mr::Renderer *renderer)
@@ -240,21 +178,6 @@ public:
         cmd.model = this->model;
         cmd.renderObjectType = mr::RENDER_OBJECT_MODEL;
         renderer->Render(cmd);
-
-        // glm::mat4 lodgeModelMatrix = glm::translate(identityMat, {0.0f, 0.0f, 10.0f});
-        // normalMat = glm::mat3(glm::transpose(glm::inverse(lodgeModelMatrix)));
-        // this->camUBO->SetData(glm::value_ptr(normalMat), sizeof(glm::mat4), sizeof(glm::mat4));
-        
-        // this->shader->UploadMat4("u_model.model", lodgeModelMatrix);
-        // this->shader->UploadFloat("u_scene.material.diffuseMapStrength", 1.0f);
-        // this->shader->UploadTexture("u_diffuseMap", this->tex);
-        // this->shader->UploadFloat("u_scene.material.specularMapStrength", 1.0f);
-        // this->shader->UploadTexture("u_specularMap", this->lodgeSpecMap);
-
-        // cmd = {};
-        // cmd.model = this->lodge;
-        // cmd.renderObjectType = mr::RENDER_OBJECT_MODEL;
-        // renderer->Render(cmd);
 
         this->RenderSkybox(renderer);
     }
@@ -294,10 +217,7 @@ public:
     {
         delete(this->camUBO);
         delete(this->model);
-        // delete(this->lodge);
         delete(this->skybox);
-        delete(this->screen);
-        delete(this->framebuffer);
         delete(this->directional);
         delete(this->ambient);
         delete(this->shader);
@@ -307,22 +227,20 @@ public:
 private:
     mr::Shader *shader = nullptr;
     mr::Shader *skyboxShader = nullptr;
-    mr::Shader *gaussianBlurShader = nullptr;
     mr::UniformBuffer *camUBO = nullptr;
 
     mr::FPSCamera cam;
-    // mr::Texture *tex = nullptr;
-    // mr::Texture *lodgeSpecMap = nullptr;
     mr::Texture *skyboxCubeMap = nullptr;
-    mr::Framebuffer *framebuffer = nullptr;
 
     mr::DirectionalLight *directional = nullptr;
     mr::AmbientLight *ambient = nullptr;
 
     mr::Model *model = nullptr;
-    // mr::Model *lodge = nullptr;
     mr::Mesh *skybox = nullptr;
-    mr::Mesh *screen = nullptr;
+
+    float deltaTime;
+    float currentTime;
+    std::chrono::high_resolution_clock::time_point startTime;
     bool isCursonVisible;
 };
 
