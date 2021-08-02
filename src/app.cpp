@@ -34,6 +34,7 @@ public:
         );
 
         mr::Shader::CreateParams shaderCreateParams = {};
+        // sprintf(shaderCreateParams.vertFilePath, "%s", "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.vert.spv");
         mr::AssetManager::GetAssetPath(shaderCreateParams.vertFilePath, "resources/shaders/default_shader.vert.spv");
         mr::AssetManager::GetAssetPath(shaderCreateParams.fragFilePath, "resources/shaders/default.frag.spv");
         shader = mr::Shader::Create(shaderCreateParams);

@@ -22,7 +22,7 @@ public:
     
     inline static void GetAssetPath(char *dst, const char *path)
     {
-        snprintf(dst, MR_MAX_PATH, "%s%s", MOBREND_ASSETS_RELATIVE_PATH, path);
+        snprintf(dst, MR_MAX_PATH, "%s/%s", MOBREND_ASSETS_RELATIVE_PATH, path);
     }
 
 private:
