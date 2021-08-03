@@ -1,18 +1,5 @@
 #include <iostream>
-#include <unordered_map>
-#include <chrono>
-#include <imgui.h>
-#include <glm/gtc/type_ptr.hpp>
-#include "mr_asset_manager.h"
 #include "mr_application.h"
-#include "mr_logger.h"
-#include "mr_model.h"
-#include "mr_shader.h"
-#include "mr_fps_camera.h"
-#include "mr_light.h"
-#include "mr_framebuffer.h"
-#include "mr_uniform_buffer.h"
-#include "mr_input.h"
 
 class UserApp : public mr::Program
 {
