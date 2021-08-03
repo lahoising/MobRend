@@ -1,7 +1,9 @@
 #include <iostream>
 #include <glm/glm.hpp>
+#include <imgui.h>
 #include "mr_application.h"
 #include "mr_mesh.h"
+#include "mr_model.h"
 #include "mr_shader.h"
 #include "mr_fps_camera.h"
 
@@ -18,31 +20,9 @@ public:
         mr::AssetManager::GetAssetPath(shaderParams.fragFilePath, "resources/shaders/solid_color.frag.spv");
         this->shader = mr::Shader::Create(shaderParams);
         
-        mr::VertexLayout layout = 
-        {
-            {mr::ATTRIBUTE_TYPE_FLOAT, 3},
-            {mr::ATTRIBUTE_TYPE_FLOAT, 3},
-            {mr::ATTRIBUTE_TYPE_FLOAT, 2}
-        };
-
-        float vertices[] = {
-            -0.5f, -0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   0.0f, 0.0f,
-            0.5f, -0.5f, 0.0f,      0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
-            0.0f, 0.5f, 0.0f,       0.0f, 0.0f, -1.0f,  0.0f, 0.0f
-        };
-
-        uint32_t indices[] = {
-            0, 1, 2
-        };
-
-        mr::Mesh::CreateParams meshParams = {};
-        meshParams.vertexLayout = &layout;
-        meshParams.vertices = vertices;
-        meshParams.verticesArraySize = sizeof(vertices);
-        meshParams.indexCount = sizeof(indices) / sizeof(uint32_t);
-        meshParams.indices = indices;
-
-        this->mesh = new mr::Mesh(meshParams);
+        char filepath[265] = {};
+        mr::AssetManager::GetAssetPath(filepath, "resources/models/kunai.fbx");
+        this->model = mr::Model::Load(filepath);
 
         this->cam = mr::FPSCamera();
         mr::Camera::Config camConfig = {};
@@ -51,16 +31,24 @@ public:
         camConfig.perspective.fov = 90.0f;
         camConfig.perspective.near = 0.1f;
         this->cam.camera.SetConfiguration(mr::Camera::PERSPECTIVE, camConfig);
+
+        this->cam.movementSpeed = 0.01f;
     }
 
     virtual void OnUpdate() override
     {
         this->cam.Update();
 
-        mr::Input &input = mr::Application::GetInstance().GetMainWindow()->input;
+        mr::Window *mainWindow = mr::Application::GetInstance().GetMainWindow();
+        mr::Input &input = mainWindow->input;
         if(input.KeyJustPressed(mr::KEY_ESC))
         {
             mr::Application::GetInstance().Close();
+        }
+
+        if(input.KeyJustPressed(mr::KeyCode::KEY_Q))
+        {
+            mainWindow->SetCursorVisible(this->isCursorVisible = !this->isCursorVisible);
         }
     }
 
@@ -71,25 +59,32 @@ public:
         this->shader->UploadMat4("u_cam.model", glm::identity<glm::mat4>());
 
         mr::Renderer::Command cmd = {};
-        cmd.mesh = this->mesh;
-        cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
+        cmd.model = this->model;
+        cmd.renderObjectType = mr::RENDER_OBJECT_MODEL;
         renderer->Render(cmd);
     }
 
     virtual void OnGuiRender() override
     {
+        // ImGui::Begin("Scene Settings");
+        {
+            // ImGui::DragFloat("Camera Movement Speed", &this->cam.movementSpeed, 0.001f);
+            // ImGui::DragFloat("Camera Sensitivity", &this->cam.sensitivity, 0.01f);
+        }
+        // ImGui::End();
     }
 
     virtual void OnDestroy() override
     {
-        delete(this->mesh);
+        delete(this->model);
         delete(this->shader);
     }
 
 private:
-    mr::Mesh *mesh = nullptr;
+    mr::Model *model = nullptr;
     mr::Shader *shader = nullptr;
     mr::FPSCamera cam;
+    bool isCursorVisible = false;
 };
 
 int main(int argc, char *argv[])
