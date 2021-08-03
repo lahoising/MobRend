@@ -1,6 +1,9 @@
 #include <iostream>
+#include <glm/glm.hpp>
 #include "mr_application.h"
 #include "mr_mesh.h"
+#include "mr_shader.h"
+#include "mr_fps_camera.h"
 
 class UserApp : public mr::Program
 {
@@ -10,15 +13,22 @@ public:
 
     virtual void OnStart() override
     {
+        mr::Shader::CreateParams shaderParams = {};
+        mr::AssetManager::GetAssetPath(shaderParams.vertFilePath, "resources/shaders/solid_color.vert.spv");
+        mr::AssetManager::GetAssetPath(shaderParams.fragFilePath, "resources/shaders/solid_color.frag.spv");
+        this->shader = mr::Shader::Create(shaderParams);
+        
         mr::VertexLayout layout = 
         {
+            {mr::ATTRIBUTE_TYPE_FLOAT, 3},
+            {mr::ATTRIBUTE_TYPE_FLOAT, 3},
             {mr::ATTRIBUTE_TYPE_FLOAT, 2}
         };
 
         float vertices[] = {
-            -0.5f, -0.5f,
-            0.5f, -0.5f,
-            0.0f, 0.5f
+            -0.5f, -0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   0.0f, 0.0f,
+            0.5f, -0.5f, 0.0f,      0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
+            0.0f, 0.5f, 0.0f,       0.0f, 0.0f, -1.0f,  0.0f, 0.0f
         };
 
         uint32_t indices[] = {
@@ -33,14 +43,33 @@ public:
         meshParams.indices = indices;
 
         this->mesh = new mr::Mesh(meshParams);
+
+        this->cam = mr::FPSCamera();
+        mr::Camera::Config camConfig = {};
+        camConfig.perspective.aspectRatio = 16.0f/9.0f;
+        camConfig.perspective.far = 1000.0f;
+        camConfig.perspective.fov = 90.0f;
+        camConfig.perspective.near = 0.1f;
+        this->cam.camera.SetConfiguration(mr::Camera::PERSPECTIVE, camConfig);
     }
 
     virtual void OnUpdate() override
     {
+        this->cam.Update();
+
+        mr::Input &input = mr::Application::GetInstance().GetMainWindow()->input;
+        if(input.KeyJustPressed(mr::KEY_ESC))
+        {
+            mr::Application::GetInstance().Close();
+        }
     }
 
     virtual void OnRender(mr::Renderer *renderer) override
     {
+        this->shader->Bind();
+        this->shader->UploadMat4("u_cam.viewProjection", this->cam.camera.GetViewProjection());
+        this->shader->UploadMat4("u_cam.model", glm::identity<glm::mat4>());
+
         mr::Renderer::Command cmd = {};
         cmd.mesh = this->mesh;
         cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
@@ -54,10 +83,13 @@ public:
     virtual void OnDestroy() override
     {
         delete(this->mesh);
+        delete(this->shader);
     }
 
 private:
     mr::Mesh *mesh = nullptr;
+    mr::Shader *shader = nullptr;
+    mr::FPSCamera cam;
 };
 
 int main(int argc, char *argv[])
