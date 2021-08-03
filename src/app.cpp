@@ -10,6 +10,7 @@
 #include "mr_light.h"
 #include "mr_uniform_buffer.h"
 #include "mr_texture.h"
+#include "mr_framebuffer.h"
 
 class UserApp : public mr::Program
 {
@@ -102,6 +103,44 @@ public:
         textureLoadParams.type = mr::Texture::TEXTURE_TYPE_CUBE;
         textureLoadParams.invertVertically = false;
         this->skyboxCubeMap = mr::Texture::Load(textureLoadParams);
+
+        shaderParams = {};
+        mr::AssetManager::GetAssetPath(shaderParams.vertFilePath, "resources/shaders/quad.vert.spv");
+        mr::AssetManager::GetAssetPath(shaderParams.fragFilePath, "resources/shaders/gaussian.frag.spv");
+        gaussianBlurShader = mr::Shader::Create(shaderParams);
+
+        layout = {
+            {mr::ATTRIBUTE_TYPE_FLOAT, 2},
+            {mr::ATTRIBUTE_TYPE_FLOAT, 2},
+        };
+
+        float screenVertices[] = {
+             0.9f, -0.9f, 1.0f, 0.0f,
+             0.9f,  0.9f, 1.0f, 1.0f,
+            -0.9f,  0.9f, 0.0f, 1.0f,
+            -0.9f, -0.9f, 0.0f, 0.0f
+        };
+
+        uint32_t quadIndices[] = {
+            0, 1, 2, 2, 3, 0
+        };
+
+        meshCreateParams.vertexLayout = &layout;
+        meshCreateParams.vertices = screenVertices;
+        meshCreateParams.verticesArraySize = sizeof(screenVertices);
+        meshCreateParams.indices = quadIndices;
+        meshCreateParams.indexCount = sizeof(quadIndices) / sizeof(uint32_t);
+        this->screen = new mr::Mesh(meshCreateParams);
+
+        mr::Window *window = mr::Application::GetInstance().GetMainWindow();
+        mr::Framebuffer::CreateParams frameBufferCreateParams = {};
+        frameBufferCreateParams.width = window->GetFramebufferWidth();
+        frameBufferCreateParams.height = window->GetFramebufferHeight();
+        frameBufferCreateParams.attachments = {
+            { mr::Framebuffer::ATTACHMENT_COLOR_0, false },
+            { mr::Framebuffer::ATTACHMENT_DEPTH24_STENCIL8, true }
+        };
+        this->framebuffer = mr::Framebuffer::Create(frameBufferCreateParams);
     }
 
     virtual void OnUpdate() override
@@ -123,8 +162,35 @@ public:
 
     virtual void OnRender(mr::Renderer *renderer) override
     {
-        glm::mat4 identityMat = glm::identity<glm::mat4>();
+        mr::FramebufferUsage framebufferUsage = mr::FRAMEBUFFER_USAGE_READ_WRITE;
+        this->framebuffer->Bind(framebufferUsage);
+        this->framebuffer->Clear(framebufferUsage);
 
+        renderer->EnableRenderPass(
+            mr::RENDER_PASS_DEPTH, true
+        );
+
+        RenderScene(renderer);
+
+        this->framebuffer->Unbind(framebufferUsage);
+
+        renderer->Clear();
+        this->gaussianBlurShader->Bind();
+        renderer->EnableRenderPass(
+            mr::RENDER_PASS_DEPTH, false
+        );
+
+        this->gaussianBlurShader->UploadTexture("u_tex", this->framebuffer->GetTextureAttachment(0));
+
+        mr::Renderer::Command cmd = {};
+        cmd.mesh = this->screen;
+        cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
+        renderer->Render(cmd);
+    }
+
+    void RenderScene(mr::Renderer *renderer)
+    {
+        glm::mat4 identityMat = glm::identity<glm::mat4>();
         this->shader->Bind();
         this->light->Bind(this->shader, "u_scene.directional");
         this->shader->UploadVec4("u_scene.material.diffuse", {1.0f, 0.5f, 0.2f, 1.0f});
@@ -160,6 +226,7 @@ public:
             cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
             renderer->Render(cmd);
         renderer->SetDepthTestFn(mr::RENDER_PASS_FN_LESS);
+
     }
 
     virtual void OnGuiRender() override
@@ -180,6 +247,9 @@ public:
         delete(this->camUBO);
         delete(this->skyboxShader);
         delete(this->skybox);
+        delete(this->framebuffer);
+        delete(this->screen);
+        delete(this->gaussianBlurShader);
     }
 
 private:
@@ -192,6 +262,9 @@ private:
     mr::Shader *skyboxShader = nullptr;
     mr::Texture *skyboxCubeMap = nullptr;
     mr::Mesh *skybox = nullptr;
+    mr::Framebuffer *framebuffer = nullptr;
+    mr::Shader *gaussianBlurShader = nullptr;
+    mr::Mesh *screen = nullptr;
     bool isCursorVisible = false;
 };
 
