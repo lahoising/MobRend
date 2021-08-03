@@ -9,6 +9,7 @@
 #include "mr_fps_camera.h"
 #include "mr_light.h"
 #include "mr_uniform_buffer.h"
+#include "mr_texture.h"
 
 class UserApp : public mr::Program
 {
@@ -44,6 +45,63 @@ public:
         uboCreateParams.bufferSize = sizeof(glm::mat4) * 2;
         this->camUBO = mr::UniformBuffer::Create(uboCreateParams);
         this->shader->UploadUniformBuffer("CameraMatrices", this->camUBO);
+
+        shaderParams = {};
+        mr::AssetManager::GetAssetPath(shaderParams.vertFilePath, "resources/shaders/skybox.vert.spv");
+        mr::AssetManager::GetAssetPath(shaderParams.fragFilePath, "resources/shaders/skybox.frag.spv");
+        this->skyboxShader = mr::Shader::Create(shaderParams);
+
+        mr::Texture::LoadParams textureParams = {};
+        textureParams.filepath = "D:\\Documents\\Clases\\4th Year\\sem-2\\it386\\sprints\\3rd\\Textures\\Lodge_Modular_Pieces_Exploded_Lodge_Walls_Set_BaseColor.jpg";
+        textureParams.invertVertically = false;
+        this->diffuseTexture = mr::Texture::Load(textureParams);
+
+        mr::VertexLayout layout = {
+            {mr::ATTRIBUTE_TYPE_FLOAT, 3}
+        };
+
+        float skyboxVertices[] = {
+             1.0f, -1.0f, -1.0f,
+             1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f,
+
+            -1.0f, -1.0f,  1.0f,
+            -1.0f,  1.0f,  1.0f,
+             1.0f,  1.0f,  1.0f,
+             1.0f, -1.0f,  1.0f,
+        };
+
+        uint32_t skyboxIndices[] = {
+            0, 1, 2, 2, 3, 0,   // front
+            4, 5, 6, 6, 7, 4,   // back
+            7, 6, 1, 1, 0, 7,   // right
+            3, 2, 5, 5, 4, 3,   // left
+            1, 6, 5, 5, 2, 1,   // top
+            7, 0, 3, 3, 4, 7    // bottom 
+        };
+
+        mr::Mesh::CreateParams meshCreateParams = {};
+        meshCreateParams.vertexLayout = &layout;
+        meshCreateParams.vertices = skyboxVertices;
+        meshCreateParams.verticesArraySize = sizeof(skyboxVertices);
+        meshCreateParams.indices = skyboxIndices;
+        meshCreateParams.indexCount = sizeof(skyboxIndices) / sizeof(uint32_t);
+        this->skybox = new mr::Mesh(meshCreateParams);
+
+        mr::Texture::LoadParams textureLoadParams = {};
+        mr::Texture::CubePaths cubeMapPaths = {};
+        mr::AssetManager::GetAssetPath(cubeMapPaths.right,  "resources/images/skybox/LearnOpenGl/right.jpg");
+        mr::AssetManager::GetAssetPath(cubeMapPaths.left,   "resources/images/skybox/LearnOpenGl/left.jpg");
+        mr::AssetManager::GetAssetPath(cubeMapPaths.top,    "resources/images/skybox/LearnOpenGl/top.jpg");
+        mr::AssetManager::GetAssetPath(cubeMapPaths.bottom, "resources/images/skybox/LearnOpenGl/bottom.jpg");
+        mr::AssetManager::GetAssetPath(cubeMapPaths.front,  "resources/images/skybox/LearnOpenGl/front.jpg");
+        mr::AssetManager::GetAssetPath(cubeMapPaths.back,   "resources/images/skybox/LearnOpenGl/back.jpg");
+        
+        textureLoadParams.cubeMapPaths = &cubeMapPaths;
+        textureLoadParams.type = mr::Texture::TEXTURE_TYPE_CUBE;
+        textureLoadParams.invertVertically = false;
+        this->skyboxCubeMap = mr::Texture::Load(textureLoadParams);
     }
 
     virtual void OnUpdate() override
@@ -70,11 +128,13 @@ public:
         this->shader->Bind();
         this->light->Bind(this->shader, "u_scene.directional");
         this->shader->UploadVec4("u_scene.material.diffuse", {1.0f, 0.5f, 0.2f, 1.0f});
-        this->shader->UploadFloat("u_scene.material.diffuseMapStrength", 0.0f);
+        this->shader->UploadFloat("u_scene.material.diffuseMapStrength", 1.0f);
         this->shader->UploadVec4("u_scene.material.specular", {0.1f, 0.2f, 1.0f, 1.0f});
         this->shader->UploadFloat("u_scene.material.specularMapStrength", 0.0f);
         this->shader->UploadFloat("u_scene.material.shininess", 12.0f);
         this->shader->UploadVec3("u_scene.viewPos", this->cam.camera.GetPosition());
+
+        this->shader->UploadTexture("u_diffuseMap", this->diffuseTexture);
 
         glm::mat4 normalMat = glm::mat3(glm::transpose(glm::inverse(identityMat)));
         float matrices[16 + 16] = {};
@@ -87,6 +147,19 @@ public:
         cmd.model = this->model;
         cmd.renderObjectType = mr::RENDER_OBJECT_MODEL;
         renderer->Render(cmd);
+
+        renderer->SetDepthTestFn(mr::RENDER_PASS_FN_LESS_OR_EQUEAL);
+            this->skyboxShader->Bind();
+            this->skyboxShader->UploadMat4(
+                "u_cam.viewProjection", 
+                cam.camera.GetProjectionMatrix() * glm::mat4(glm::mat3(cam.camera.GetViewMatrix()))
+            );
+            this->skyboxShader->UploadTexture("u_skybox", this->skyboxCubeMap);
+            cmd = {};
+            cmd.mesh = this->skybox;
+            cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
+            renderer->Render(cmd);
+        renderer->SetDepthTestFn(mr::RENDER_PASS_FN_LESS);
     }
 
     virtual void OnGuiRender() override
@@ -105,6 +178,8 @@ public:
         delete(this->shader);
         delete(this->light);
         delete(this->camUBO);
+        delete(this->skyboxShader);
+        delete(this->skybox);
     }
 
 private:
@@ -113,6 +188,10 @@ private:
     mr::Light *light = nullptr;
     mr::FPSCamera cam;
     mr::UniformBuffer *camUBO = nullptr;
+    mr::Texture *diffuseTexture = nullptr;
+    mr::Shader *skyboxShader = nullptr;
+    mr::Texture *skyboxCubeMap = nullptr;
+    mr::Mesh *skybox = nullptr;
     bool isCursorVisible = false;
 };
 
