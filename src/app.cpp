@@ -1,5 +1,7 @@
 #include <iostream>
 #include "mr_application.h"
+#include "mr_input.h"
+#include "mr_logger.h"
 
 class UserApp : public mr::Program
 {
@@ -13,6 +15,18 @@ public:
 
     virtual void OnUpdate() override
     {
+        mr::Input &input = mr::Application::GetInstance().GetMainWindow()->input;
+
+        if(input.KeyJustPressed(mr::KEY_W))
+        {
+            mrwarn("pressed w!");
+        }
+
+        glm::vec2 delta = input.GetMouseDelta();
+        if( delta.x + delta.y != 0.0f )
+        {
+            mrlog("mouse delta: %.2f, %.2f", delta.x, delta.y);
+        }
     }
 
     virtual void OnRender(mr::Renderer *renderer) override
