@@ -12,6 +12,7 @@
 #include "mr_light.h"
 #include "mr_framebuffer.h"
 #include "mr_uniform_buffer.h"
+#include "mr_input.h"
 
 class UserApp : public mr::Program
 {
@@ -34,7 +35,6 @@ public:
         );
 
         mr::Shader::CreateParams shaderCreateParams = {};
-        // sprintf(shaderCreateParams.vertFilePath, "%s", "D:\\Documents\\git\\MobRend\\resources\\shaders\\default_shader.vert.spv");
         mr::AssetManager::GetAssetPath(shaderCreateParams.vertFilePath, "resources/shaders/default_shader.vert.spv");
         mr::AssetManager::GetAssetPath(shaderCreateParams.fragFilePath, "resources/shaders/default.frag.spv");
         shader = mr::Shader::Create(shaderCreateParams);
@@ -134,12 +134,12 @@ public:
 
         mr::Window *mainWindow = mr::Application::GetInstance().GetMainWindow();
         mr::Input &input = mainWindow->input;
-        if(input.KeyJustPressed(81))
+        if(input.KeyJustPressed(mr::KeyCode::KEY_Q))
         {
             mainWindow->SetCursorVisible(this->isCursonVisible = !this->isCursonVisible);
         }
 
-        if(input.KeyJustPressed(256))
+        if(input.KeyJustPressed(mr::KeyCode::KEY_ESC))
         {
             mr::Application::GetInstance().Close();
         }
