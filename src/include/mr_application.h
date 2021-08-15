@@ -26,6 +26,7 @@ public:
         Window::CreateParams windowCreateParams;
     } RunParams;
 
+private:
     typedef struct
     {
         Window::CreateParams windowCreateParams;

@@ -13,6 +13,7 @@ enum TopologyType
 {
     TOPOLOGY_TRIANGLES = 0,
     TOPOLOGY_WIREFRAME,
+    TOPOLOGY_POINTS,
 };
 
 enum RenderObjectType

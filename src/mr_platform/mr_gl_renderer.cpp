@@ -219,6 +219,7 @@ GLenum GlRenderer::GetTopology(TopologyType type)
     {
     case TopologyType::TOPOLOGY_TRIANGLES: return GL_TRIANGLES;
     case TopologyType::TOPOLOGY_WIREFRAME: return GL_LINE_STRIP;
+    case TopologyType::TOPOLOGY_POINTS: return GL_POINTS;
     default: throw "Unsupported topology type";
     }
 }

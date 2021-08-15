@@ -20,7 +20,15 @@ file(
     "${BASE_INC_PATH}/mr_platform/*.h"
 )
 
-add_library(mobrend ${SRC_FILES} ${INCLUDE_FILES})    
+set(MOBREND_MAKE_SHARED ON CACHE BOOL "Use mobrend as a shared library")
+set(MOBREND_LIBRARY_TYPE STATIC)
+
+if(${MOBREND_MAKE_SHARED})
+    add_compile_options(-fPIC)
+    set(MOBREND_LIBRARY_TYPE SHARED)
+endif()
+
+add_library(mobrend ${MOBREND_LIBRARY_TYPE} ${SRC_FILES} ${INCLUDE_FILES})    
 target_include_directories(
 	mobrend PUBLIC
 	"${BASE_INC_PATH}"
@@ -30,7 +38,7 @@ if(UNIX)
     set(MOBREND_FILE_SEPARATOR "/")
 endif()
 
-target_compile_definitions(mobrend PUBLIC MOBREND_ASSETS_RELATIVE_PATH="${MOBREND_ASSETS_RELATIVE_PATH}${MOBREND_FILE_SEPARATOR}")
+target_compile_definitions(mobrend PUBLIC MOBREND_ASSETS_RELATIVE_PATH="${MOBREND_ASSETS_RELATIVE_PATH}")
 
 set(IMGUI_PATH "${EXTERNAL_INC}/imgui")
 set(IMGUI_BACKEND "${IMGUI_PATH}/backends/imgui_impl_")
@@ -131,13 +139,14 @@ foreach(RESOURCE_DIR ${MOBREND_SHADERS_DIR})
     add_custom_command(
         TARGET mobrend
         POST_BUILD
-        COMMAND ${PYTHON_EXECUTABLE} "${MOBREND_PY_SCRIPTS_DIR}/compile_shaders.py" ${RESOURCE_DIR} $<TARGET_FILE:glslangValidator>)
+        COMMAND ${PYTHON_EXECUTABLE} "${MOBREND_PY_SCRIPTS_DIR}/compile_shaders.py" "${RESOURCE_DIR}" $<TARGET_FILE:glslangValidator>)
 endforeach()
 
 # spirv-cross
 add_subdirectory("${EXTERNAL_INC}/spirv-cross")
 target_link_libraries(mobrend spirv-cross-glsl)
 
+# examples
 set(MOBREND_BUILD_EXAMPLES ON CACHE BOOL "Build mobrend examples")
 if(${MOBREND_BUILD_EXAMPLES})
 	file(GLOB MOBREND_SAMPLE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/examples/**.cpp")
