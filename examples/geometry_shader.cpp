@@ -58,9 +58,12 @@ public:
 
 	virtual void OnRender(mr::Renderer *renderer) override
 	{
+		this->shader->Bind();
+
 		mr::Renderer::Command cmd = {};
 		cmd.mesh = this->mesh;
 		cmd.renderObjectType = mr::RENDER_OBJECT_MESH;
+		cmd.topologyType = mr::TOPOLOGY_POINTS;
 		renderer->Render(cmd);
 	}
 
