@@ -7,3 +7,7 @@ build/
 
 # shader binaries
 resources/**/*.spv
+
+# vim
+.cache/
+**.swp
