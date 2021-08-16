@@ -50,9 +50,10 @@ GlShader::GlShader(Shader::CreateParams params)
 	glAttachShader(this->programId, vertShaderId);
 	glAttachShader(this->programId, fragShaderId);
 
+	GLuint geomShaderId;
 	if(params.geomFilePath[0] != '\0')
 	{
-		GLuint geomShaderId = glCreateShader(GL_GEOMETRY_SHADER);
+		geomShaderId = glCreateShader(GL_GEOMETRY_SHADER);
 		std::string geomShaderCode = "";
 		buffer = assetManager.GetFileContentInBinary(params.geomFilePath);
 		geomShaderCode.assign(
@@ -82,6 +83,12 @@ GlShader::GlShader(Shader::CreateParams params)
 	
 	glDeleteShader(vertShaderId);
 	glDeleteShader(fragShaderId);
+
+	if(params.geomFilePath[0] != '\0')
+	{
+		glDetachShader(this->programId, geomShaderId);
+		glDeleteShader(geomShaderId);
+	}
 }
 
 GlShader::~GlShader()
