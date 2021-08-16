@@ -18,6 +18,7 @@ public:
 		mr::Shader::CreateParams shaderParams = {};
 		mr::AssetManager::GetAssetPath(shaderParams.vertFilePath, "resources/shaders/geometry_example.vert.spv");
 		mr::AssetManager::GetAssetPath(shaderParams.fragFilePath, "resources/shaders/geometry_example.frag.spv");
+		mr::AssetManager::GetAssetPath(shaderParams.geomFilePath, "resources/shaders/geometry_example.geom.spv");
 		this->shader = mr::Shader::Create(shaderParams);
 
 		mr::VertexLayout layout = {

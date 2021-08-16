@@ -134,13 +134,13 @@ endif()
 
 set(MOBREND_SHADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders" CACHE PATH "Directories holding relevant shaders")
 set(MOBREND_PY_SCRIPTS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/scripts")
+set(mobrend_shader_cmds "")
 foreach(RESOURCE_DIR ${MOBREND_SHADERS_DIR})
     message("${RESOURCE_DIR}")
-    add_custom_command(
-        TARGET mobrend
-        POST_BUILD
+    set(mobrend_shader_cmds ${mobrend_shader_cmds}
         COMMAND ${PYTHON_EXECUTABLE} "${MOBREND_PY_SCRIPTS_DIR}/compile_shaders.py" "${RESOURCE_DIR}" $<TARGET_FILE:glslangValidator>)
 endforeach()
+add_custom_target(mr_shaders ${mobrend_shader_cmds})
 
 # spirv-cross
 add_subdirectory("${EXTERNAL_INC}/spirv-cross")
