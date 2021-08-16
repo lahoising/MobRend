@@ -12,10 +12,17 @@ class UniformBuffer;
 class Shader
 {
 public:
-    typedef struct
+    typedef struct create_params_s
     {
         char vertFilePath[MR_MAX_PATH];
         char fragFilePath[MR_MAX_PATH];
+        char geomFilePath[MR_MAX_PATH];
+
+        create_params_s()
+            : vertFilePath(""),
+            fragFilePath(""),
+            geomFilePath("")
+        {}
     } CreateParams;
 
 public:

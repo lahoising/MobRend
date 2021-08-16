@@ -29,21 +29,15 @@ GlShader::GlShader(Shader::CreateParams params)
     std::string fragmentShaderCode = "";
 
 	AssetManager &assetManager = AssetManager::GetInstance();
-	if(params.vertFilePath)
-	{
-		auto buffer = assetManager.GetFileContentInBinary(params.vertFilePath);
-		vertexShaderCode.assign(
-			this->CompileFromSpirV(buffer)
-		);
-	}
+	auto buffer = assetManager.GetFileContentInBinary(params.vertFilePath);
+	vertexShaderCode.assign(
+		this->CompileFromSpirV(buffer)
+	);
 
-	if(params.fragFilePath)
-	{
-		auto buffer = assetManager.GetFileContentInBinary(params.fragFilePath);
-		fragmentShaderCode.assign(
-			this->CompileFromSpirV(buffer)
-		);
-	}
+	buffer = assetManager.GetFileContentInBinary(params.fragFilePath);
+	fragmentShaderCode.assign(
+		this->CompileFromSpirV(buffer)
+	);
 
 	GetUniformLayout(vertexShaderCode.c_str());
 	GetUniformLayout(fragmentShaderCode.c_str());
@@ -55,6 +49,20 @@ GlShader::GlShader(Shader::CreateParams params)
 	this->programId = glCreateProgram();
 	glAttachShader(this->programId, vertShaderId);
 	glAttachShader(this->programId, fragShaderId);
+
+	if(params.geomFilePath[0] != '\0')
+	{
+		GLuint geomShaderId = glCreateShader(GL_GEOMETRY_SHADER);
+		std::string geomShaderCode = "";
+		buffer = assetManager.GetFileContentInBinary(params.geomFilePath);
+		geomShaderCode.assign(
+			this->CompileFromSpirV(buffer)
+		);
+		GetUniformLayout(geomShaderCode.c_str());
+		this->CompileShader(geomShaderId, geomShaderCode.c_str());
+		glAttachShader(this->programId, geomShaderId);
+	}
+
 	glLinkProgram(this->programId);
 
 	GLint result = GL_FALSE;
