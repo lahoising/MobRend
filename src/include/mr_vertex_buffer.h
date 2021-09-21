@@ -1,6 +1,7 @@
 #ifndef _MR_VERTEX_BUFFER_H_
 #define _MR_VERTEX_BUFFER_H_
 
+#include <cinttypes>
 #include "mr_buffer.h"
 #include "mr_vertex_layout.h"
 
@@ -13,7 +14,7 @@ public:
     typedef struct
     {
         const void *data;
-        size_t bufferSize;
+		std::size_t bufferSize;
         const VertexLayout *vertexLayout;
     } CreateParams;
 

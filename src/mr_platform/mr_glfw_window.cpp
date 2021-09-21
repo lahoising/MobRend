@@ -227,7 +227,7 @@ GlfwWindow::~GlfwWindow()
     if(windowManager.GetWindowCount() == 0)
     {
         glfwTerminate();
-        printf("window bye!\n");
+        mrlog("window bye!\n");
     }
 }
 

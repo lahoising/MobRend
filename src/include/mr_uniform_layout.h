@@ -2,6 +2,7 @@
 #define _MR_UNIFORM_LAYOUT_H_
 
 #include <unordered_map>
+#include <string>
 
 namespace mr {
 

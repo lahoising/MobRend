@@ -1,4 +1,5 @@
 #include <glad/glad.h>
+#include <cstdint>
 #include "mr_platform/mr_gl_vertex_buffer.h"
 
 namespace mr
@@ -26,7 +27,7 @@ GlVertexBuffer::GlVertexBuffer(VertexBuffer::CreateParams &params)
             GetAttribType(attrib.type),
             GL_FALSE,
             params.vertexLayout->GetStride(),
-            (const void *)((size_t)offset)
+            (const void *)((std::size_t)offset)
         );
         offset += attribSize;
     }
