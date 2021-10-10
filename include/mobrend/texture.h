@@ -3,8 +3,8 @@
 
 #include <inttypes.h>
 #include <unordered_map>
-#include <mr_asset_manager.h>
-#include "mr_image_loader.h"
+#include <mobrend/asset_manager.h>
+#include <mobrend/image_loader.h>
 
 namespace mr
 {

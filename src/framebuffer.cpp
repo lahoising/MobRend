@@ -1,4 +1,4 @@
-#include "mr_framebuffer.h"
+#include <mobrend/framebuffer.h>
 
 #ifdef MOBREND_GL_RENDERING
 #include "mr_platform/mr_gl_framebuffer.h"
@@ -12,7 +12,7 @@ Framebuffer *Framebuffer::Create(CreateParams &createParams)
     #ifdef MOBREND_GL_RENDERING
     return new GlFramebuffer(createParams);
     #else
-    return nullptr
+    return nullptr;
     #endif
 }
 

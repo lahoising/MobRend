@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(MobRend)
 
 set(MOBREND_LIB_TYPE SHARED CACHE STRING "Build as Shared or Static library")
+set(MOBREND_ASSETS_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Assets will be loaded relative to this path")
 
 file(
 	GLOB_RECURSE src_files
@@ -38,8 +39,16 @@ set(link_libs ${link_libs} glm)
 add_subdirectory("${EXTERNAL_PATH}/mobrend_logger")
 set(link_libs ${link_libs} mr_logger)
 
+# stb image
+add_library(stb INTERFACE)
+target_sources(stb INTERFACE "${EXTERNAL_PATH}/stb_image/stb_image.h")
+target_include_directories(stb INTERFACE "${EXTERNAL_PATH}/stb_image")
+set(link_libs ${link_libs} stb)
+
 # mobrend
 set(BIN_NAME mobrend)
 add_library(${BIN_NAME} ${MOBREND_LIB_TYPE} ${src_files} ${inc_files})
 target_include_directories(${BIN_NAME} PUBLIC ${inc_dirs})
 target_link_libraries(${BIN_NAME} PUBLIC ${link_libs})
+
+target_compile_definitions(${BIN_NAME} PUBLIC MOBREND_ASSETS_RELATIVE_PATH="${MOBREND_ASSETS_DIR}/")

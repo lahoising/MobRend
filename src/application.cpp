@@ -1,10 +1,10 @@
 #include <iostream>
-#include "mr_application.h"
-#include "mr_window.h"
-#include "mr_gui.h"
+#include <mobrend/application.h>
+#include <mobrend/window.h>
+#include <mobrend/gui.h>
 
-#include "mr_image_loader.h"
-#include "mr_logger.h"
+#include <mobrend/image_loader.h>
+#include <mr_logger.h>
 
 namespace mr
 {

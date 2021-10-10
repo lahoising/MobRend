@@ -1,6 +1,6 @@
 #include <glm/gtx/quaternion.hpp>
 #include "mr_logger.h"
-#include "mr_camera.h"
+#include <mobrend/camera.h>
 
 namespace mr
 {

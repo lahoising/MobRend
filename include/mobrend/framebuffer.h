@@ -2,7 +2,7 @@
 #define _MR_FRAMEBUFFER_H_
 
 #include <vector>
-#include "mr_texture.h"
+#include <mobrend/texture.h>
 
 namespace mr
 {

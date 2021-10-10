@@ -3,7 +3,7 @@
 #include <string>
 #include <algorithm>
 #include "mr_logger.h"
-#include "mr_asset_manager.h"
+#include <mobrend/asset_manager.h>
 
 namespace mr
 {

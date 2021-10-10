@@ -1,7 +1,7 @@
 #include <imgui.h>
 
-#include "mr_gui.h"
-#include "mr_application.h"
+#include <mobrend/gui.h>
+#include <mobrend/application.h>
 
 #ifdef MOBREND_GLFW_WINDOW
 #include <imgui_impl_glfw.h>

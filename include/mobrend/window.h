@@ -3,7 +3,7 @@
 
 #include <inttypes.h>
 #include <unordered_map>
-#include "mr_input.h"
+#include <mobrend/input.h>
 
 namespace mr
 {

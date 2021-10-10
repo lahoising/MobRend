@@ -2,7 +2,7 @@
 #define _MR_INPUT_H_
 
 #include <glm/glm.hpp>
-#include "mr_input_event.h"
+#include <mobrend/input_event.h>
 
 #define INPUT_STATE_KEY_EVENT_NUM 512
 

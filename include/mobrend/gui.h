@@ -1,7 +1,7 @@
 #ifndef _MR_GUI_H_
 #define _MR_GUI_H_
 
-#include "mr_renderer.h"
+#include <mobrend/renderer.h>
 
 namespace mr
 {

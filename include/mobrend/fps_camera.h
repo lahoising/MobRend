@@ -1,7 +1,7 @@
 #ifndef _MR_FPS_CAMERA_H_
 #define _MR_FPS_CAMERA_H_
 
-#include "mr_camera.h"
+#include <mobrend/camera.h>
 
 namespace mr
 {

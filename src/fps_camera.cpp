@@ -1,9 +1,9 @@
 #include <GLFW/glfw3.h>
-#include "mr_logger.h"
-#include "mr_fps_camera.h"
-#include "mr_application.h"
-#include "mr_window.h"
-#include "mr_input.h"
+#include <mr_logger.h>
+#include <mobrend/fps_camera.h>
+#include <mobrend/application.h>
+#include <mobrend/window.h>
+#include <mobrend/input.h>
 
 namespace mr
 {
