@@ -1,9 +1,9 @@
 #ifndef _MR_APPLICATION_H_
 #define _MR_APPLICATION_H_
 
-#include "mr_window.h"
-#include "mr_renderer.h"
-#include "mr_gui.h"
+#include <mobrend/window.h>
+#include <mobrend/renderer.h>
+#include <mobrend/gui.h>
 
 namespace mr
 {
