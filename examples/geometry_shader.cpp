@@ -1,14 +1,14 @@
 #include <cstdint>
 #include <iostream>
-#include <mr_application.h>
-#include "mr_asset_manager.h"
-#include "mr_input.h"
-#include "mr_input_event.h"
-#include "mr_renderer.h"
-#include "mr_shader.h"
-#include "mr_vertex_layout.h"
-#include "mr_window.h"
-#include "mr_mesh.h"
+#include <mobrend/application.h>
+#include <mobrend/asset_manager.h>
+#include <mobrend/input.h>
+#include <mobrend/input_event.h>
+#include <mobrend/renderer.h>
+#include <mobrend/shader.h>
+#include <mobrend/vertex_layout.h>
+#include <mobrend/window.h>
+#include <mobrend/mesh.h>
 
 class Sample : public mr::Program
 {

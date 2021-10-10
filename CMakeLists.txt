@@ -79,3 +79,15 @@ target_compile_definitions(${BIN_NAME} PUBLIC MOBREND_ASSETS_RELATIVE_PATH="${MO
 if(MOBREND_BACKEND STREQUAL OPENGL)
 	target_compile_definitions(${BIN_NAME} PUBLIC MOBREND_GL_RENDERING)
 endif()
+
+# examples
+set(MOBREND_BUILD_EXAMPLES ON CACHE BOOL "Build mobrend examples")
+
+if(${MOBREND_BUILD_EXAMPLES})
+	file(GLOB examples "${CMAKE_CURRENT_SOURCE_DIR}/examples/**.cpp")
+	foreach(f ${examples})
+		get_filename_component(sample "${f}" NAME_WE)
+		add_executable(${sample} "${f}")
+		target_link_libraries(${sample} PUBLIC ${BIN_NAME})
+	endforeach()
+endif()
