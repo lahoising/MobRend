@@ -5,7 +5,7 @@ set(MOBREND_LIB_TYPE SHARED CACHE STRING "Build as Shared or Static library")
 
 file(
 	GLOB_RECURSE src_files
-	"${CMAKE_CURRENT_SOURCE_DIR}/**.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/**.cpp"
 )
 
 set(inc_dirs "${CMAKE_CURRENT_SOURCE_DIR}/include")
@@ -33,6 +33,10 @@ set(link_libs ${link_libs} imgui)
 # glm
 add_subdirectory("${EXTERNAL_PATH}/glm")
 set(link_libs ${link_libs} glm)
+
+# mr logger
+add_subdirectory("${EXTERNAL_PATH}/mobrend_logger")
+set(link_libs ${link_libs} mr_logger)
 
 # mobrend
 set(BIN_NAME mobrend)
