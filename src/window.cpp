@@ -1,5 +1,5 @@
-#include "mr_window.h"
-#include "mr_platform/mr_glfw_window.h"
+#include <mobrend/window.h>
+#include <mobrend/glfw/window.h>
 
 namespace mr
 {

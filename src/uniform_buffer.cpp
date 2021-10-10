@@ -1,7 +1,7 @@
-#include "mr_uniform_buffer.h"
+#include <mobrend/uniform_buffer.h>
 
 #ifdef MOBREND_GL_RENDERING
-#include "mr_platform/mr_gl_uniform_buffer.h"
+#include <mobrend/opengl/uniform_buffer.h>
 #endif
 
 namespace mr

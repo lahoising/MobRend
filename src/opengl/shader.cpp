@@ -8,11 +8,11 @@
 #include <spirv_glsl.hpp>
 
 #include "mr_logger.h"
-#include "mr_platform/mr_gl_shader.h"
-#include "mr_texture.h"
-#include "mr_asset_manager.h"
-#include "mr_uniform_layout.h"
-#include "mr_platform/mr_gl_uniform_buffer.h"
+#include <mobrend/opengl/shader.h>
+#include <mobrend/texture.h>
+#include <mobrend/asset_manager.h>
+#include <mobrend/uniform_layout.h>
+#include <mobrend/opengl/uniform_buffer.h>
 
 namespace mr
 {

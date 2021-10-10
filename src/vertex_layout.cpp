@@ -1,4 +1,4 @@
-#include "mr_vertex_layout.h"
+#include <mobrend/vertex_layout.h>
 
 namespace mr
 {

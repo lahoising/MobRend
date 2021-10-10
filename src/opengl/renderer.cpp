@@ -8,12 +8,12 @@
 #endif
 
 #include "mr_logger.h"
-#include "mr_platform/mr_gl_renderer.h"
-#include "mr_gui.h"
-#include "mr_application.h"
+#include <mobrend/opengl/renderer.h>
+#include <mobrend/gui.h>
+#include <mobrend/application.h>
 
-#include "mr_model.h"
-#include "mr_mesh.h"
+#include <mobrend/model.h>
+#include <mobrend/mesh.h>
 
 #include <assimp/Importer.hpp>
 

@@ -1,8 +1,8 @@
 #ifndef _MR_GL_TEXTURE_H_
 #define _MR_GL_TEXTURE_H_
 
-#include "mr_image_loader.h"
-#include "mr_texture.h"
+#include <mobrend/image_loader.h>
+#include <mobrend/texture.h>
 
 namespace mr
 {

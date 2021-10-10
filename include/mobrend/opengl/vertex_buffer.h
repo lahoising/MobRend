@@ -1,8 +1,8 @@
 #ifndef _MR_GL_VERTEX_BUFFER_H_
 #define _MR_GL_VERTEX_BUFFER_H_
 
-#include "mr_vertex_buffer.h"
-#include "mr_vertex_layout.h"
+#include <mobrend/vertex_buffer.h>
+#include <mobrend/vertex_layout.h>
 
 namespace mr
 {

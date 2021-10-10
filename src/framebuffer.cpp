@@ -1,7 +1,7 @@
 #include <mobrend/framebuffer.h>
 
 #ifdef MOBREND_GL_RENDERING
-#include "mr_platform/mr_gl_framebuffer.h"
+#include <mobrend/opengl/framebuffer.h>
 #endif
 
 namespace mr

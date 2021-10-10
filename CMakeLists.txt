@@ -18,6 +18,7 @@ file(
 
 set(EXTERNAL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/external")
 set(link_libs)
+set(definitions)
 
 # imgui
 file(GLOB imgui_src "${EXTERNAL_PATH}/imgui/**.cpp" "${EXTERNAL_PATH}/imgui/**.h")
@@ -27,8 +28,7 @@ set(imgui_src ${imgui_src} "${EXTERNAL_PATH}/imgui/backends/imgui_impl_glfw.cpp"
 set(imgui_src ${imgui_src} "${EXTERNAL_PATH}/imgui/backends/imgui_impl_glfw.h")
 
 add_library(imgui ${MOBREND_LIB_TYPE} ${imgui_src})
-target_include_directories(imgui PUBLIC "${EXTERNAL_PATH}/imgui")
-target_include_directories(imgui PRIVATE "${EXTERNAL_PATH}/imgui/backends")
+target_include_directories(imgui PUBLIC "${EXTERNAL_PATH}/imgui" "${EXTERNAL_PATH}/imgui/backends")
 
 set(link_libs ${link_libs} imgui)
 
@@ -65,6 +65,10 @@ if(MOBREND_BACKEND STREQUAL OPENGL)
 	set(link_libs ${link_libs} glad_gl ${CMAKE_DL_LIBS})
 endif()
 
+# spirv
+add_subdirectory("${EXTERNAL_PATH}/spirv-cross")
+set(link_libs ${link_libs} spirv-cross-glsl)
+
 # mobrend
 set(BIN_NAME mobrend)
 add_library(${BIN_NAME} ${MOBREND_LIB_TYPE} ${src_files} ${inc_files})
@@ -72,3 +76,6 @@ target_include_directories(${BIN_NAME} PUBLIC ${inc_dirs})
 target_link_libraries(${BIN_NAME} PUBLIC ${link_libs})
 
 target_compile_definitions(${BIN_NAME} PUBLIC MOBREND_ASSETS_RELATIVE_PATH="${MOBREND_ASSETS_DIR}/")
+if(MOBREND_BACKEND STREQUAL OPENGL)
+	target_compile_definitions(${BIN_NAME} PUBLIC MOBREND_GL_RENDERING)
+endif()

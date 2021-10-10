@@ -1,7 +1,7 @@
 #include <mobrend/index_buffer.h>
 
 #ifdef MOBREND_GL_RENDERING
-#include "mr_platform/mr_gl_index_buffer.h"
+#include <mobrend/opengl/index_buffer.h>
 #endif
 
 namespace mr

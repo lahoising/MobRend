@@ -1,5 +1,5 @@
 #include <glad/glad.h>
-#include "mr_platform/mr_gl_index_buffer.h"
+#include <mobrend/opengl/index_buffer.h>
 
 namespace mr
 {

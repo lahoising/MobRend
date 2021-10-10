@@ -1,6 +1,6 @@
 #include <glad/glad.h>
 #include "mr_logger.h"
-#include "mr_platform/mr_gl_texture.h"
+#include <mobrend/opengl/texture.h>
 
 namespace mr
 {

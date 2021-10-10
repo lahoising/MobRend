@@ -1,7 +1,7 @@
-#include "mr_shader.h"
+#include <mobrend/shader.h>
 
 #ifdef MOBREND_GL_RENDERING
-#include "mr_platform/mr_gl_shader.h"
+#include <mobrend/opengl/shader.h>
 #endif
 
 namespace mr

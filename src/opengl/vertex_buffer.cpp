@@ -1,6 +1,6 @@
 #include <glad/glad.h>
 #include <cstdint>
-#include "mr_platform/mr_gl_vertex_buffer.h"
+#include <mobrend/opengl/vertex_buffer.h>
 
 namespace mr
 {

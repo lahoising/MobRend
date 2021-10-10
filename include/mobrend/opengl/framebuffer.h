@@ -2,8 +2,8 @@
 #define _MR_GL_FRAMEBUFFER_H_
 
 #include <vector>
-#include "mr_framebuffer.h"
-#include "mr_platform/mr_gl_texture.h"
+#include <mobrend/framebuffer.h>
+#include <mobrend/opengl/texture.h>
 
 namespace mr
 {

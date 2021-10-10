@@ -3,8 +3,8 @@
 #ifdef MOBREND_GL_RENDERING
 
 #include <glad/glad.h>
-#include "mr_renderer.h"
-#include "mr_vertex_layout.h"
+#include <mobrend/renderer.h>
+#include <mobrend/vertex_layout.h>
 
 namespace mr
 {

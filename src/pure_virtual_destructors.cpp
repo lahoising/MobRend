@@ -1,13 +1,13 @@
-#include <mr_window.h>
-#include <mr_buffer.h>
-#include <mr_vertex_buffer.h>
-#include <mr_index_buffer.h>
-#include <mr_framebuffer.h>
-#include <mr_renderer.h>
-#include <mr_uniform_buffer.h>
-#include <mr_texture.h>
-#include <mr_shader.h>
-#include <mr_light.h>
+#include <mobrend/window.h>
+#include <mobrend/buffer.h>
+#include <mobrend/vertex_buffer.h>
+#include <mobrend/index_buffer.h>
+#include <mobrend/framebuffer.h>
+#include <mobrend/renderer.h>
+#include <mobrend/uniform_buffer.h>
+#include <mobrend/texture.h>
+#include <mobrend/shader.h>
+#include <mobrend/light.h>
 
 namespace mr
 {

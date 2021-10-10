@@ -1,7 +1,7 @@
 #ifndef _MR_GL_UNIFORM_BUFFER_H_
 #define _MR_GL_UNIFORM_BUFFER_H_
 
-#include "mr_uniform_buffer.h"
+#include <mobrend/uniform_buffer.h>
 
 namespace mr
 {

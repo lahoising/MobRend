@@ -1,7 +1,7 @@
 #ifndef _MR_GL_INDEX_BUFFER_H_
 #define _MR_GL_INDEX_BUFFER_H_
 
-#include "mr_index_buffer.h"
+#include <mobrend/index_buffer.h>
 
 namespace mr
 {

@@ -1,7 +1,7 @@
-#include "mr_texture.h"
+#include <mobrend/texture.h>
 
 #ifdef MOBREND_GL_RENDERING
-#include "mr_platform/mr_gl_texture.h"
+#include <mobrend/opengl/texture.h>
 #endif
 
 namespace mr

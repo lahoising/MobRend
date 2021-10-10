@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <vector>
 #include <inttypes.h>
-#include "mr_shader.h"
+#include <mobrend/shader.h>
 
 namespace mr
 {

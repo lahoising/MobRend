@@ -1,6 +1,6 @@
 #include <glad/glad.h>
 #include "mr_logger.h"
-#include "mr_platform/mr_gl_framebuffer.h"
+#include <mobrend/opengl/framebuffer.h>
 
 namespace mr
 {
