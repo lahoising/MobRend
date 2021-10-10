@@ -1,6 +1,6 @@
 #include <stb_image.h>
 
-#include "mr_image_loader.h"
+#include <mobrend/image_loader.h>
 
 namespace mr
 {

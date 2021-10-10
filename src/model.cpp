@@ -7,7 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "mr_logger.h"
-#include "mr_model.h"
+#include <mobrend/model.h>
 
 namespace mr
 {

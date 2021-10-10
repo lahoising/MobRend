@@ -1,8 +1,8 @@
 #include <glm/gtx/quaternion.hpp>
-#include "mr_observer_camera.h"
-#include "mr_application.h"
-#include "mr_window.h"
-#include "mr_input.h"
+#include <mobrend/observer_camera.h>
+#include <mobrend/application.h>
+#include <mobrend/window.h>
+#include <mobrend/input.h>
 
 namespace mr
 {

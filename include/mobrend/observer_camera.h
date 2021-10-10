@@ -2,7 +2,7 @@
 #define _MR_OBSERVER_CAMERA_H_
 
 #include <glm/glm.hpp>
-#include "mr_camera.h"
+#include <mobrend/camera.h>
 
 namespace mr
 {

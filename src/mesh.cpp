@@ -1,5 +1,5 @@
 #include "mr_logger.h"
-#include "mr_mesh.h"
+#include <mobrend/mesh.h>
 
 // #ifdef MOBREND_GL_RENDERING
 // #include "mr_platform/mr_gl_mesh.h"

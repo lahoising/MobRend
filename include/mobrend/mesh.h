@@ -3,8 +3,11 @@
 
 #include <unordered_map>
 #include <string>
-#include "mr_buffer.h"
-#include "mr_texture.h"
+#include <mobrend/buffer.h>
+#include <mobrend/vertex_layout.h>
+#include <mobrend/vertex_buffer.h>
+#include <mobrend/index_buffer.h>
+#include <mobrend/texture.h>
 
 namespace mr
 {

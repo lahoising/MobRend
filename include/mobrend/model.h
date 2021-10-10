@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-#include "mr_mesh.h"
+#include <mobrend/mesh.h>
 
 namespace mr
 {

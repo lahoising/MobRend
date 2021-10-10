@@ -2,7 +2,7 @@
 #define _MR_INDEX_BUFFER_H_
 
 #include <inttypes.h>
-#include "mr_buffer.h"
+#include <mobrend/buffer.h>
 
 namespace mr
 {

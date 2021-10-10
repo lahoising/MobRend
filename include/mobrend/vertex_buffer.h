@@ -2,8 +2,8 @@
 #define _MR_VERTEX_BUFFER_H_
 
 #include <cinttypes>
-#include "mr_buffer.h"
-#include "mr_vertex_layout.h"
+#include <mobrend/buffer.h>
+#include <mobrend/vertex_layout.h>
 
 namespace mr
 {

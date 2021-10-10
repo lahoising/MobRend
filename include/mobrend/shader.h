@@ -2,7 +2,7 @@
 #define _MR_SHADER_H_
 
 #include <glm/glm.hpp>
-#include "mr_asset_manager.h"
+#include <mobrend/asset_manager.h>
 
 namespace mr
 {

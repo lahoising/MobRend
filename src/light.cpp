@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <glm/gtx/quaternion.hpp>
-#include "mr_light.h"
-#include "mr_shader.h"
+#include <mobrend/light.h>
+#include <mobrend/shader.h>
 
 namespace mr
 {

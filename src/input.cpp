@@ -1,5 +1,5 @@
 #include <memory>
-#include "mr_input.h"
+#include <mobrend/input.h>
 
 namespace mr
 {
