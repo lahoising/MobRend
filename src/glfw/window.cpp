@@ -2,8 +2,8 @@
 #include <unordered_map>
 
 #include "mr_logger.h"
-#include "mr_platform/mr_glfw_window.h"
-#include "mr_application.h"
+#include <mobrend/glfw/window.h>
+#include <mobrend/application.h>
 
 #ifdef MOBREND_GL_RENDERING
 #include "glad/glad.h"

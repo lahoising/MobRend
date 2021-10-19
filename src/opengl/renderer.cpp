@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 
 #ifdef MOBREND_GLFW_WINDOW
-#include "mr_platform/mr_glfw_window.h"
+#include <mobrend/glfw/window.h>
 #endif
 
 #include "mr_logger.h"
