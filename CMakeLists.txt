@@ -42,7 +42,6 @@ set(link_libs ${link_libs} mr_logger)
 
 # stb image
 add_library(stb INTERFACE)
-target_sources(stb INTERFACE "${EXTERNAL_PATH}/stb_image/stb_image.h")
 target_include_directories(stb INTERFACE "${EXTERNAL_PATH}/stb_image")
 set(link_libs ${link_libs} stb)
 
@@ -62,6 +61,7 @@ if(MOBREND_BACKEND STREQUAL OPENGL)
 	target_include_directories(glad_gl PUBLIC ${GLAD_INC_DIR})
 	target_link_libraries(glad_gl PUBLIC OpenGL::GL)
 
+	target_link_libraries(imgui PUBLIC glad_gl)
 	set(link_libs ${link_libs} glad_gl ${CMAKE_DL_LIBS})
 endif()
 
