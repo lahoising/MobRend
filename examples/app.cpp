@@ -3,16 +3,16 @@
 #include <chrono>
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
-#include "mr_asset_manager.h"
-#include "mr_application.h"
-#include "mr_logger.h"
-#include "mr_model.h"
-#include "mr_shader.h"
-#include "mr_fps_camera.h"
-#include "mr_light.h"
-#include "mr_framebuffer.h"
-#include "mr_uniform_buffer.h"
-#include "mr_input.h"
+#include <mobrend/asset_manager.h>
+#include <mobrend/application.h>
+#include <mr_logger.h>
+#include <mobrend/model.h>
+#include <mobrend/shader.h>
+#include <mobrend/fps_camera.h>
+#include <mobrend/light.h>
+#include <mobrend/framebuffer.h>
+#include <mobrend/uniform_buffer.h>
+#include <mobrend/input.h>
 
 class UserApp : public mr::Program
 {
