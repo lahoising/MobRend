@@ -27,20 +27,6 @@ if(${MOBREND_USE_GLFW})
 	set(definitions MOBREND_GLFW_WINDOW)
 endif()
 
-# imgui
-file(GLOB imgui_src "${EXTERNAL_PATH}/imgui/**.cpp" "${EXTERNAL_PATH}/imgui/**.h")
-set(imgui_src ${imgui_src} "${EXTERNAL_PATH}/imgui/backends/imgui_impl_opengl3.cpp")
-set(imgui_src ${imgui_src} "${EXTERNAL_PATH}/imgui/backends/imgui_impl_opengl3.h")
-if(${MOBREND_USE_GLFW})
-	set(imgui_src ${imgui_src} "${EXTERNAL_PATH}/imgui/backends/imgui_impl_glfw.cpp")
-	set(imgui_src ${imgui_src} "${EXTERNAL_PATH}/imgui/backends/imgui_impl_glfw.h")
-endif()
-
-add_library(imgui ${MOBREND_LIB_TYPE} ${imgui_src})
-target_include_directories(imgui PUBLIC "${EXTERNAL_PATH}/imgui" "${EXTERNAL_PATH}/imgui/backends")
-
-set(link_libs ${link_libs} imgui)
-
 # glm
 add_subdirectory("${EXTERNAL_PATH}/glm")
 set(link_libs ${link_libs} glm)
@@ -70,9 +56,27 @@ if(MOBREND_BACKEND STREQUAL OPENGL)
 	target_include_directories(glad_gl PUBLIC ${GLAD_INC_DIR})
 	target_link_libraries(glad_gl PUBLIC OpenGL::GL)
 
-	target_link_libraries(imgui PUBLIC glad_gl)
+	# target_link_libraries(imgui PUBLIC glad_gl)
 	set(link_libs ${link_libs} glad_gl ${CMAKE_DL_LIBS})
 endif()
+
+# imgui
+file(GLOB imgui_src "${EXTERNAL_PATH}/imgui/**.cpp" "${EXTERNAL_PATH}/imgui/**.h")
+if(${MOBREND_USE_GLFW})
+	set(imgui_src ${imgui_src} "${EXTERNAL_PATH}/imgui/backends/imgui_impl_glfw.cpp")
+	set(imgui_src ${imgui_src} "${EXTERNAL_PATH}/imgui/backends/imgui_impl_glfw.h")
+endif()
+set(imgui_src ${imgui_src} "${EXTERNAL_PATH}/imgui/backends/imgui_impl_opengl3.cpp")
+set(imgui_src ${imgui_src} "${EXTERNAL_PATH}/imgui/backends/imgui_impl_opengl3.h")
+
+# quick dirty fix. remove glew dependency in the future
+find_package(GLEW)
+
+add_library(imgui ${MOBREND_LIB_TYPE} ${imgui_src})
+target_include_directories(imgui PUBLIC ${GLEW_INCLUDE_DIRS} "${EXTERNAL_PATH}/imgui" "${EXTERNAL_PATH}/imgui/backends")
+target_link_libraries(imgui PUBLIC glfw glad_gl ${GLEW_LIBRARIES})
+
+set(link_libs ${link_libs} imgui)
 
 # spirv
 add_subdirectory("${EXTERNAL_PATH}/spirv-cross")
@@ -88,6 +92,23 @@ target_compile_definitions(${BIN_NAME} PUBLIC MOBREND_ASSETS_RELATIVE_PATH="${MO
 if(MOBREND_BACKEND STREQUAL OPENGL)
 	target_compile_definitions(${BIN_NAME} PUBLIC MOBREND_GL_RENDERING)
 endif()
+
+# glslang
+set(MOBREND_BUILD_GLSLANG ON CACHE BOOL "Build glslang, used to convert glsl shaders to SPIR-V")
+if(${MOBREND_BUILD_GLSLANG})
+	add_subdirectory("${EXTERNAL_PATH}/glslang")
+endif()
+
+# compile shaders command
+set(MOBREND_SHADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders" CACHE PATH "Directories holding relevant shaders")
+set(MOBREND_PY_SCRIPTS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/scripts")
+
+foreach(RESOURCE_DIR ${MOBREND_SHADERS_DIR})
+add_custom_target(
+	compile_shaders
+	ALL
+	${PYTHON_EXECUTABLE} "${MOBREND_PY_SCRIPTS_DIR}/compile_shaders.py" ${RESOURCE_DIR} $<TARGET_FILE:glslangValidator>)
+endforeach()
 
 # examples
 set(MOBREND_BUILD_EXAMPLES ON CACHE BOOL "Build mobrend examples")
