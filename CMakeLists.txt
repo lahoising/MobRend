@@ -76,6 +76,9 @@ target_link_libraries(imgui PUBLIC glfw glad_gl)
 set(link_libs ${link_libs} imgui)
 
 # spirv
+if(${MOBREND_LIB_TYPE} STREQUAL SHARED)
+	set(SPIRV_CROSS_FORCE_PIC OFF CACHE BOOL "" FORCE)
+endif()
 add_subdirectory("${EXTERNAL_PATH}/spirv-cross")
 set(link_libs ${link_libs} spirv-cross-glsl)
 
