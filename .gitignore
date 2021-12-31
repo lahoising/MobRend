@@ -4,6 +4,11 @@ build/
 # Visual Studio Files
 .vscode/
 .vs/
+.vimspector.json
 
 # shader binaries
 resources/**/*.spv
+
+# vim
+.cache/
+**.swp
