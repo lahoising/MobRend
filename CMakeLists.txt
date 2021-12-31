@@ -69,12 +69,9 @@ endif()
 set(imgui_src ${imgui_src} "${EXTERNAL_PATH}/imgui/backends/imgui_impl_opengl3.cpp")
 set(imgui_src ${imgui_src} "${EXTERNAL_PATH}/imgui/backends/imgui_impl_opengl3.h")
 
-# quick dirty fix. remove glew dependency in the future
-find_package(GLEW)
-
 add_library(imgui ${MOBREND_LIB_TYPE} ${imgui_src})
-target_include_directories(imgui PUBLIC ${GLEW_INCLUDE_DIRS} "${EXTERNAL_PATH}/imgui" "${EXTERNAL_PATH}/imgui/backends")
-target_link_libraries(imgui PUBLIC glfw glad_gl ${GLEW_LIBRARIES})
+target_include_directories(imgui PUBLIC "${EXTERNAL_PATH}/imgui" "${EXTERNAL_PATH}/imgui/backends")
+target_link_libraries(imgui PUBLIC glfw glad_gl)
 
 set(link_libs ${link_libs} imgui)
 
