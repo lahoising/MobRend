@@ -3,6 +3,7 @@
 
 #include <inttypes.h>
 #include <unordered_map>
+#include <string>
 #include <mobrend/input.h>
 
 namespace mr
@@ -11,10 +12,13 @@ namespace mr
 class Window
 {
 public:
+	static constexpr int WINDOW_NAME_MAX_LEN = 64;
+
     typedef struct
     {
-        uint32_t width, height;
-        char *windowName;
+        uint32_t width = 800;
+		uint32_t height = 600;
+		std::string windowName = "";
     } CreateParams;
 
 public:

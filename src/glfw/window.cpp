@@ -192,7 +192,7 @@ GlfwWindow::GlfwWindow(Window::CreateParams createParams)
     this->window = glfwCreateWindow(
         createParams.width,
         createParams.height,
-        createParams.windowName,
+        createParams.windowName.c_str(),
         NULL, NULL
     );
 
@@ -227,7 +227,7 @@ GlfwWindow::~GlfwWindow()
     if(windowManager.GetWindowCount() == 0)
     {
         glfwTerminate();
-        mrlog("window bye!\n");
+        mrlog("window bye!");
     }
 }
 
