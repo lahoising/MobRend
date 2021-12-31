@@ -76,8 +76,9 @@ target_link_libraries(imgui PUBLIC glfw glad_gl)
 set(link_libs ${link_libs} imgui)
 
 # spirv
-if(${MOBREND_LIB_TYPE} STREQUAL SHARED)
-	set(SPIRV_CROSS_FORCE_PIC OFF CACHE BOOL "" FORCE)
+if(MOBREND_LIB_TYPE STREQUAL SHARED)
+	option(SPIRV_CROSS_FORCE_PIC "" ON)
+	message("spirv forced to PIC")
 endif()
 add_subdirectory("${EXTERNAL_PATH}/spirv-cross")
 set(link_libs ${link_libs} spirv-cross-glsl)
@@ -91,6 +92,10 @@ target_link_libraries(${BIN_NAME} PUBLIC ${link_libs})
 target_compile_definitions(${BIN_NAME} PUBLIC MOBREND_ASSETS_RELATIVE_PATH="${MOBREND_ASSETS_DIR}/" ${definitions})
 if(MOBREND_BACKEND STREQUAL OPENGL)
 	target_compile_definitions(${BIN_NAME} PUBLIC MOBREND_GL_RENDERING)
+endif()
+
+if(MOBREND_LIB_TYPE STREQUAL SHARED)
+	set_target_properties(${BIN_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 endif()
 
 # glslang
