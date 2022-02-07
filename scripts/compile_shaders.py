@@ -4,12 +4,18 @@ import os
 
 def main():
     
-    resources_dir = sys.argv[1]
-    glslangValidator = sys.argv[2]
+    # resources_dir = sys.argv[1]
+    glslangValidator = sys.argv[1]
+
+    resource_dirs = []
+    for i in range(2, len(sys.argv)):
+        resource_dirs.append(sys.argv[i])
 
     supported_shaders = ( '.vert', '.tesc', '.tese', '.geom', '.frag', '.comp' )
-    shaders = [ f.path for f in os.scandir(resources_dir) 
-                if f.is_file() and f.path.endswith(supported_shaders) ]
+    shaders = []
+    for res_dir in resource_dirs:
+        shaders = shaders + [ f.path for f in os.scandir(res_dir) 
+                    if f.is_file() and f.path.endswith(supported_shaders) ]
 
     for source in shaders:
         out_spirv_file = source + '.spv'

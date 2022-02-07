@@ -34,7 +34,7 @@ void Camera::SetConfiguration(Type type, Config config)
 void Camera::SetPerspective(PerspectiveConfig config)
 {
     this->type = Camera::Type::PERSPECTIVE;
-    this->projMatrix = glm::perspectiveLH(
+    this->projMatrix = glm::perspective(
         config.fov,
         config.aspectRatio, 
         config.near,
@@ -61,10 +61,10 @@ void Camera::SetOrtho(OrthographicConfig config)
 {
     this->type = Camera::Type::ORTHOGRAPHIC;
 
-    float w = config.size;
-    float h = config.size / config.aspectRatio;
+    float w = config.size * 0.5f;
+    float h = config.size / config.aspectRatio * 0.5f;
 
-    this->projMatrix = glm::ortho(
+    this->projMatrix = glm::orthoLH(
         -w,             w,
         -h,             h,
         config.near,    config.far
@@ -75,7 +75,7 @@ void Camera::SetOrtho(OrthographicConfig config)
 void Camera::RecalculateViewMatrix()
 {
     glm::vec3 fwd = this->rotation * glm::vec3(0.0f, 0.0f, 1.0f);
-    this->viewMatrix = glm::lookAtLH(
+    this->viewMatrix = glm::lookAt(
         this->position,
         fwd + this->position,
         glm::vec3(0.0f, 1.0f, 0.0f)

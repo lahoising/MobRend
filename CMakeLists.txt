@@ -108,12 +108,14 @@ endif()
 set(MOBREND_SHADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders" CACHE PATH "Directories holding relevant shaders")
 set(MOBREND_PY_SCRIPTS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/scripts")
 
+set(resource_dirs)
 foreach(RESOURCE_DIR ${MOBREND_SHADERS_DIR})
+	set(resource_dirs "${resource_dirs} ${RESOURCE_DIR}")
+endforeach()
 add_custom_target(
 	compile_shaders
 	ALL
-	${PYTHON_EXECUTABLE} "${MOBREND_PY_SCRIPTS_DIR}/compile_shaders.py" ${RESOURCE_DIR} $<TARGET_FILE:glslangValidator>)
-endforeach()
+	${PYTHON_EXECUTABLE} "${MOBREND_PY_SCRIPTS_DIR}/compile_shaders.py" $<TARGET_FILE:glslangValidator> ${MOBREND_SHADERS_DIR})
 
 # examples
 set(MOBREND_BUILD_EXAMPLES ON CACHE BOOL "Build mobrend examples")

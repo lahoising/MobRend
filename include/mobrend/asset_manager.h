@@ -22,7 +22,15 @@ public:
     
     inline static void GetAssetPath(char *dst, const char *path)
     {
-        snprintf(dst, MR_MAX_PATH, "%s/%s", MOBREND_ASSETS_RELATIVE_PATH, path);
+		char stringFormat[] = "%s%s%s";
+		const char *lastSlash = strrchr(MOBREND_ASSETS_RELATIVE_PATH,'/');
+		bool lastIsSlash = strlen(lastSlash) == 1;
+
+        snprintf(
+				dst, MR_MAX_PATH, stringFormat, 
+				MOBREND_ASSETS_RELATIVE_PATH, 
+				lastIsSlash? "" : "/",
+				path);
     }
 
 private:

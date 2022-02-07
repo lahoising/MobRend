@@ -31,6 +31,7 @@ public:
     virtual void SetCursorVisible(bool visible) = 0;
     virtual uint32_t GetWidth() = 0;
     virtual uint32_t GetHeight() = 0;
+	virtual void SetDimensions(uint32_t width, uint32_t height) = 0;
     virtual uint32_t GetFramebufferWidth() = 0;
     virtual uint32_t GetFramebufferHeight() = 0;
 

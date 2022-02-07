@@ -20,6 +20,7 @@ public:
     virtual void *GetHandle() override { return this->window; }
     virtual uint32_t GetWidth()  override;
     virtual uint32_t GetHeight() override;
+	virtual void SetDimensions(uint32_t width, uint32_t height) override;
     virtual uint32_t GetFramebufferWidth() override;
     virtual uint32_t GetFramebufferHeight() override;
     GLFWwindow *GetWindow() { return this->window; }

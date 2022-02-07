@@ -261,6 +261,11 @@ uint32_t GlfwWindow::GetHeight()
     return (uint32_t)height;
 }
 
+void GlfwWindow::SetDimensions(uint32_t width, uint32_t height)
+{
+	glfwSetWindowSize(this->window, width, height);
+}
+
 uint32_t GlfwWindow::GetFramebufferWidth()
 {
     int width = 0;

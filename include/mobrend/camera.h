@@ -18,16 +18,16 @@ public:
 
     typedef struct
     {
-        float fov;
-        float aspectRatio;
-        float near, far;
+        float fov = 60.0f;
+        float aspectRatio = 16.0f / 9.0f;
+        float near = 0.01f, far = 100.0f;
     } PerspectiveConfig;
     
     typedef struct
     {
-        float size;
-        float aspectRatio;
-        float near, far;
+        float size = 10.0f;
+        float aspectRatio = 16.0f / 9.0f;
+        float near = -1.0f, far = 100.0f;
     } OrthographicConfig;
 
     union Config
@@ -49,9 +49,9 @@ public:
     const glm::mat4 &GetProjectionMatrix() const { return this->projMatrix; }
     
     const glm::vec3 &GetPosition() const { return this->position; }
-    void      SetPosition(const glm::vec3 &position);
+    void  SetPosition(const glm::vec3 &position);
     const glm::quat &GetRotation() const { return this->rotation; }
-    void      SetRotation(const glm::quat &rotation);
+    void  SetRotation(const glm::quat &rotation);
 
 private:
     void SetPerspective(PerspectiveConfig config);

@@ -26,7 +26,7 @@ public:
 
 public:
     // static Mesh *Create(CreateParams &params);
-    Mesh(CreateParams &params);
+    Mesh(const CreateParams &params);
     ~Mesh();
 
     const VertexBuffer *GetVertexBuffer() const;

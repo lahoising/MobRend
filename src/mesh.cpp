@@ -17,7 +17,7 @@ namespace mr
 //     #endif
 // }
 
-Mesh::Mesh(CreateParams &params)
+Mesh::Mesh(const CreateParams &params)
 {
     VertexBuffer::CreateParams vertexCreateParams = {};
     vertexCreateParams.bufferSize = params.verticesArraySize;
