@@ -42,6 +42,9 @@ public:
 	Material(mr::Shader *shader);
 	~Material();
 
+	void SetBool(const std::string &name, bool val);
+	bool GetBool(const std::string &name);
+
 	mr::Shader *GetShader(){ return this->shader; }
 };
 
