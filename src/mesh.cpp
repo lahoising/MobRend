@@ -29,6 +29,8 @@ Mesh::Mesh(const CreateParams &params)
     indexCreateParams.data = params.indices;
     indexCreateParams.elementCount = params.indexCount;
     this->indexBuffer = IndexBuffer::Create(indexCreateParams);
+
+	this->mat = params.mat;
 }
 
 Mesh::~Mesh()
@@ -40,6 +42,8 @@ Mesh::~Mesh()
     MR_ASSERT(this->indexBuffer);
     delete(this->indexBuffer);
     this->indexBuffer = nullptr;
+
+	this->mat = nullptr;
 }
 
 const VertexBuffer *Mesh::GetVertexBuffer() const { return this->vertexBuffer; }

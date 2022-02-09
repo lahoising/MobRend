@@ -8,6 +8,7 @@
 #include <mobrend/vertex_buffer.h>
 #include <mobrend/index_buffer.h>
 #include <mobrend/texture.h>
+#include <mobrend/material.h>
 
 namespace mr
 {
@@ -22,6 +23,7 @@ public:
         uint32_t verticesArraySize;
         const uint32_t *indices;
         uint32_t indexCount;
+		Material *mat = nullptr;
     } CreateParams;
 
 public:
@@ -35,6 +37,7 @@ public:
 protected:
     VertexBuffer *vertexBuffer;
     IndexBuffer *indexBuffer;
+	Material *mat;
 };
 
 }
