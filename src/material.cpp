@@ -16,34 +16,64 @@ namespace mr
 
 	void Material::SetBool(const std::string &name, bool val)
 	{
+		this->SetValue<bool>(name, val);
+	}
+
+	bool Material::GetBool(const std::string &name)
+	{
+		return GetValue<bool>(name);
+	}
+
+	void Material::SetInt(const std::string &name, int32_t val)
+	{
+		return SetValue<int32_t>(name, val);
+	}
+
+	int32_t Material::GetInt(const std::string &name)
+	{
+		return this->GetValue<int32_t>(name);
+	}
+
+	template<typename T>
+	void Material::SetValue(const std::string &name, T val)
+	{
 		if(this->info.find(name) == this->info.end())
 		{
-			this->data.resize(this->data.size() + sizeof(bool));
-			void *ptr = (void*)(this->data.data() + this->data.size() - sizeof(bool));
+			this->data.resize(this->data.size() + sizeof(T));
+			void *ptr = (void*)(this->data.data() + this->data.size() - sizeof(T));
 
 			Material::ValuesInfo valInfo = {};
-			valInfo.dataType = MAT_DATA_TYPE_BOOL;
+			valInfo.dataType = GetType<T>();
 			valInfo.ptr = ptr;
 			this->info[name] = valInfo;
 
-			bool *d = (bool*)ptr;
+			T *d = (T*)ptr;
 			*d = val;
 
 			return;
 		}
 
-		bool *ptr = (bool*)this->info[name].ptr;
+		T *ptr = (T*)this->info[name].ptr;
 		*ptr = val;
 	}
 
-	bool Material::GetBool(const std::string &name)
+	template<typename T>
+	T Material::GetValue(const std::string &name)
 	{
 		if(this->info.find(name) == this->info.end())
 		{
-			return false;
+			return T();
 		}
 
 		void *ptr = this->info[name].ptr;
-		return *(bool*)ptr;
+		return *(T*)ptr;
 	}
+
+	template<>
+	Material::DataType Material::GetType<bool>()
+	{ return MAT_DATA_TYPE_BOOL; }
+
+	template<>
+	Material::DataType Material::GetType<int32_t>()
+	{ return MAT_DATA_TYPE_INT; }
 }

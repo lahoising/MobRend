@@ -1,6 +1,7 @@
 #ifndef _MR_MATERIAL_H_
 #define _MR_MATERIAL_H_
 
+#include <bits/stdint-intn.h>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -45,7 +46,20 @@ public:
 	void SetBool(const std::string &name, bool val);
 	bool GetBool(const std::string &name);
 
+	void SetInt(const std::string &name, int32_t val);
+	int32_t GetInt(const std::string &name);
+
 	mr::Shader *GetShader(){ return this->shader; }
+
+private:
+	template<typename T>
+	void SetValue(const std::string &name, T val);
+
+	template<typename T>
+	T GetValue(const std::string &name);
+
+	template<typename T>
+	static DataType GetType();
 };
 
 } // namespace mr
