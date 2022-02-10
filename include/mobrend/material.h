@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <glm/glm.hpp>
 #include <mobrend/shader.h>
 
 namespace mr
@@ -18,9 +19,9 @@ public:
 		MAT_DATA_TYPE_BOOL,
 		MAT_DATA_TYPE_INT,
 		MAT_DATA_TYPE_FLOAT,
-		MAT_DATA_TYPE_FLOAT2,
-		MAT_DATA_TYPE_FLOAT3,
-		MAT_DATA_TYPE_FLOAT4,
+		MAT_DATA_TYPE_VEC2,
+		MAT_DATA_TYPE_VEC3,
+		MAT_DATA_TYPE_VEC4,
 		MAT_DATA_TYPE_MAT3,
 		MAT_DATA_TYPE_MAT4,
 		MAT_DATA_TYPE_TEXTURE,
@@ -48,6 +49,15 @@ public:
 
 	void SetInt(const std::string &name, int32_t val);
 	int32_t GetInt(const std::string &name);
+
+	void SetFloat(const std::string &name, float val);
+	float GetFloat(const std::string &name);
+
+	void SetVec2(const std::string &name, const glm::vec2 &val);
+	glm::vec2 GetVec2(const std::string &name);
+
+	void SetVec3(const std::string &name,const glm::vec3 &val);
+	glm::vec3 GetVec3(const std::string &name);
 
 	mr::Shader *GetShader(){ return this->shader; }
 
