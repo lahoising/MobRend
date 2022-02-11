@@ -64,6 +64,56 @@ namespace mr
 		return GetValue<glm::vec3>(name);
 	}
 
+	void Material::SetVec4(const std::string &name, const glm::vec4 &val)
+	{
+		SetValue<glm::vec4>(name, val);
+	}
+
+	glm::vec4 Material::GetVec4(const std::string &name)
+	{
+		return GetValue<glm::vec4>(name);
+	}
+
+	void Material::SetMat3(const std::string &name, const glm::mat3 &val)
+	{
+		SetValue<glm::mat3>(name, val);
+	}
+
+	glm::mat3 Material::GetMat3(const std::string &name)
+	{
+		return GetValue<glm::mat3>(name);
+	}
+
+	void Material::SetMat4(const std::string &name, const glm::mat4 &val)
+	{
+		SetValue<glm::mat4>(name, val);
+	}
+
+	glm::mat4 Material::GetMat4(const std::string &name)
+	{
+		return GetValue<glm::mat4>(name);
+	}
+
+	void Material::SetTexture(const std::string &name, const mr::Texture *tex)
+	{
+		SetValue<const Texture*>(name, tex);
+	}
+
+	const mr::Texture *Material::GetTexture(const std::string &name)
+	{
+		return GetValue<const mr::Texture*>(name);
+	}
+
+	void Material::SetUniformBuffer(const std::string &name, const mr::UniformBuffer *ubo)
+	{
+		SetValue<const mr::UniformBuffer*>(name, ubo);
+	}
+
+	const mr::UniformBuffer *Material::GetUniformBuffer(const std::string &name)
+	{
+		return GetValue<const mr::UniformBuffer*>(name);
+	}
+
 	template<typename T>
 	void Material::SetValue(const std::string &name, T val)
 	{
@@ -118,4 +168,24 @@ namespace mr
 	template<>
 	Material::DataType Material::GetType<glm::vec3>()
 	{ return MAT_DATA_TYPE_VEC3; }
+
+	template<>
+	Material::DataType Material::GetType<glm::vec4>()
+	{ return MAT_DATA_TYPE_VEC4; }
+
+	template<>
+	Material::DataType Material::GetType<glm::mat3>()
+	{ return MAT_DATA_TYPE_MAT3; }
+
+	template<>
+	Material::DataType Material::GetType<glm::mat4>()
+	{ return MAT_DATA_TYPE_MAT4; }
+
+	template<>
+	Material::DataType Material::GetType<const Texture*>()
+	{ return MAT_DATA_TYPE_TEXTURE; }
+
+	template<>
+	Material::DataType Material::GetType<const UniformBuffer*>()
+	{ return MAT_DATA_TYPE_UNIFORM_BUFFER; }
 }

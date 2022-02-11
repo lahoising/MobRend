@@ -59,6 +59,23 @@ public:
 	void SetVec3(const std::string &name,const glm::vec3 &val);
 	glm::vec3 GetVec3(const std::string &name);
 
+	void SetVec4(const std::string &name, const glm::vec4 &val);
+	glm::vec4 GetVec4(const std::string &name);
+
+	void SetMat3(const std::string &name, const glm::mat3 &val);
+	glm::mat3 GetMat3(const std::string &name);
+
+	void SetMat4(const std::string &name, const glm::mat4 &val);
+	glm::mat4 GetMat4(const std::string &name);
+
+	// MAT_DATA_TYPE_TEXTURE,
+	void SetTexture(const std::string &name, const mr::Texture *tex);
+	const mr::Texture *GetTexture(const std::string &name);
+
+	// MAT_DATA_TYPE_UNIFORM_BUFFER,
+	void SetUniformBuffer(const std::string &name, const mr::UniformBuffer *ubo);
+	const mr::UniformBuffer *GetUniformBuffer(const std::string &name);
+
 	mr::Shader *GetShader(){ return this->shader; }
 
 private:
