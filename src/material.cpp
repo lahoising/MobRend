@@ -114,6 +114,25 @@ namespace mr
 		return GetValue<const mr::UniformBuffer*>(name);
 	}
 
+	void Material::Bind()
+	{
+		this->shader->Bind();
+		for(auto valsInfo : this->info)
+		{
+			const ValuesInfo &i = valsInfo.second;
+			switch(i.dataType)
+			{
+			case MAT_DATA_TYPE_VEC3:
+				this->shader->UploadVec3(
+					valsInfo.first.c_str(),
+					*((glm::vec3*)i.ptr));
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
 	template<typename T>
 	void Material::SetValue(const std::string &name, T val)
 	{

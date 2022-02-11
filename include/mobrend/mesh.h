@@ -34,10 +34,12 @@ public:
     const VertexBuffer *GetVertexBuffer() const;
     const IndexBuffer *GetIndexBuffer() const;
 
+public:
+	Material *mat;
+
 protected:
     VertexBuffer *vertexBuffer;
     IndexBuffer *indexBuffer;
-	Material *mat;
 };
 
 }

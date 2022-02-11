@@ -76,6 +76,8 @@ public:
 	void SetUniformBuffer(const std::string &name, const mr::UniformBuffer *ubo);
 	const mr::UniformBuffer *GetUniformBuffer(const std::string &name);
 
+	void Bind();
+
 	mr::Shader *GetShader(){ return this->shader; }
 
 private:
