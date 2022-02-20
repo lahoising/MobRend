@@ -134,38 +134,36 @@ namespace mr
 						valsInfo.first.c_str(),
 						*((int*)ptr));
 					break;
-			case MAT_DATA_TYPE_FLOAT:
-				this->shader->UploadFloat(
-					valsInfo.first.c_str(),
-					*((float*)ptr));
-				break;
-			case MAT_DATA_TYPE_VEC3:
-				this->shader->UploadVec3(
-					valsInfo.first.c_str(),
-					*((glm::vec3*)ptr));
-				break;
-			case MAT_DATA_TYPE_VEC4:
-				this->shader->UploadVec4(
-					valsInfo.first.c_str(),
-					*((glm::vec4*)ptr));
-				break;
-			case MAT_DATA_TYPE_MAT3:
-				this->shader->UploadMat3(
-					valsInfo.first.c_str(),
-					*((glm::mat3*)ptr));
-				break;
-			case MAT_DATA_TYPE_MAT4:
-				this->shader->UploadMat4(
-					valsInfo.first.c_str(),
-					*((glm::mat4*)ptr));
-				break;
-			case MAT_DATA_TYPE_TEXTURE:
-				this->shader->UploadTexture(
-					valsInfo.first.c_str(),
-					*((mr::Texture**)ptr));
-				break;
-			case MAT_DATA_TYPE_UNIFORM_BUFFER:
-				break;
+				case MAT_DATA_TYPE_FLOAT:
+					this->shader->UploadFloat(
+						valsInfo.first.c_str(),
+						*((float*)ptr));
+					break;
+				case MAT_DATA_TYPE_VEC3:
+					this->shader->UploadVec3(
+						valsInfo.first.c_str(),
+						*((glm::vec3*)ptr));
+					break;
+				case MAT_DATA_TYPE_VEC4:
+					this->shader->UploadVec4(
+						valsInfo.first.c_str(),
+						*((glm::vec4*)ptr));
+					break;
+				case MAT_DATA_TYPE_MAT3:
+					this->shader->UploadMat3(
+						valsInfo.first.c_str(),
+						*((glm::mat3*)ptr));
+					break;
+				case MAT_DATA_TYPE_MAT4:
+					this->shader->UploadMat4(
+						valsInfo.first.c_str(),
+						*((glm::mat4*)ptr));
+					break;
+				case MAT_DATA_TYPE_TEXTURE:
+					this->shader->UploadTexture(
+						valsInfo.first.c_str(),
+						*((mr::Texture**)ptr));
+					break;
 			default:
 				break;
 			}
