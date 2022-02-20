@@ -123,6 +123,17 @@ namespace mr
 			const void *ptr = this->data.data() + i.ptrOffset;
 			switch(i.dataType)
 			{
+
+				case MAT_DATA_TYPE_BOOL:
+					this->shader->UploadBool(
+						valsInfo.first.c_str(),
+						*((bool*)ptr));
+					break;
+				case MAT_DATA_TYPE_INT:
+					this->shader->UploadInt(
+						valsInfo.first.c_str(),
+						*((int*)ptr));
+					break;
 			case MAT_DATA_TYPE_FLOAT:
 				this->shader->UploadFloat(
 					valsInfo.first.c_str(),
@@ -138,10 +149,22 @@ namespace mr
 					valsInfo.first.c_str(),
 					*((glm::vec4*)ptr));
 				break;
+			case MAT_DATA_TYPE_MAT3:
+				this->shader->UploadMat3(
+					valsInfo.first.c_str(),
+					*((glm::mat3*)ptr));
+				break;
+			case MAT_DATA_TYPE_MAT4:
+				this->shader->UploadMat4(
+					valsInfo.first.c_str(),
+					*((glm::mat4*)ptr));
+				break;
 			case MAT_DATA_TYPE_TEXTURE:
 				this->shader->UploadTexture(
 					valsInfo.first.c_str(),
 					*((mr::Texture**)ptr));
+				break;
+			case MAT_DATA_TYPE_UNIFORM_BUFFER:
 				break;
 			default:
 				break;
