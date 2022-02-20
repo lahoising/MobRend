@@ -122,10 +122,25 @@ namespace mr
 			const ValuesInfo &i = valsInfo.second;
 			switch(i.dataType)
 			{
+			case MAT_DATA_TYPE_FLOAT:
+				this->shader->UploadFloat(
+					valsInfo.first.c_str(),
+					*((float*)this->data.data() + i.ptrOffset));
+				break;
 			case MAT_DATA_TYPE_VEC3:
 				this->shader->UploadVec3(
 					valsInfo.first.c_str(),
-					*((glm::vec3*)i.ptr));
+					*((glm::vec3*)this->data.data() + i.ptrOffset));
+				break;
+			case MAT_DATA_TYPE_VEC4:
+				this->shader->UploadVec4(
+					valsInfo.first.c_str(),
+					*((glm::vec4*)this->data.data() + i.ptrOffset));
+				break;
+			case MAT_DATA_TYPE_TEXTURE:
+				this->shader->UploadTexture(
+					valsInfo.first.c_str(),
+					*((mr::Texture**)this->data.data() + i.ptrOffset));
 				break;
 			default:
 				break;
@@ -138,21 +153,21 @@ namespace mr
 	{
 		if(this->info.find(name) == this->info.end())
 		{
-			this->data.resize(this->data.size() + sizeof(T));
-			void *ptr = (void*)(this->data.data() + this->data.size() - sizeof(T));
+			const std::size_t dataSize = this->data.size();
+			this->data.resize(dataSize + sizeof(T));
 
 			Material::ValuesInfo valInfo = {};
 			valInfo.dataType = GetType<T>();
-			valInfo.ptr = ptr;
+			valInfo.ptrOffset = dataSize;
 			this->info[name] = valInfo;
 
-			T *d = (T*)ptr;
+			T *d = (T*)(this->data.data() + dataSize);
 			*d = val;
 
 			return;
 		}
 
-		T *ptr = (T*)this->info[name].ptr;
+		T *ptr = (T*)(this->data.data() + this->info[name].ptrOffset);
 		*ptr = val;
 	}
 
@@ -164,7 +179,7 @@ namespace mr
 			return T();
 		}
 
-		void *ptr = this->info[name].ptr;
+		void *ptr = this->data.data() + this->info[name].ptrOffset;
 		return *(T*)ptr;
 	}
 

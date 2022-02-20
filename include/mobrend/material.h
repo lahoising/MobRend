@@ -32,7 +32,7 @@ private:
 	struct ValuesInfo
 	{
 		DataType dataType;
-		void *ptr;
+		std::size_t ptrOffset;
 	};
 
 private:
