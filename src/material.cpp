@@ -120,27 +120,28 @@ namespace mr
 		for(auto valsInfo : this->info)
 		{
 			const ValuesInfo &i = valsInfo.second;
+			const void *ptr = this->data.data() + i.ptrOffset;
 			switch(i.dataType)
 			{
 			case MAT_DATA_TYPE_FLOAT:
 				this->shader->UploadFloat(
 					valsInfo.first.c_str(),
-					*((float*)this->data.data() + i.ptrOffset));
+					*((float*)ptr));
 				break;
 			case MAT_DATA_TYPE_VEC3:
 				this->shader->UploadVec3(
 					valsInfo.first.c_str(),
-					*((glm::vec3*)this->data.data() + i.ptrOffset));
+					*((glm::vec3*)ptr));
 				break;
 			case MAT_DATA_TYPE_VEC4:
 				this->shader->UploadVec4(
 					valsInfo.first.c_str(),
-					*((glm::vec4*)this->data.data() + i.ptrOffset));
+					*((glm::vec4*)ptr));
 				break;
 			case MAT_DATA_TYPE_TEXTURE:
 				this->shader->UploadTexture(
 					valsInfo.first.c_str(),
-					*((mr::Texture**)this->data.data() + i.ptrOffset));
+					*((mr::Texture**)ptr));
 				break;
 			default:
 				break;
