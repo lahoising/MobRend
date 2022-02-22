@@ -26,11 +26,7 @@ std::vector<char> AssetManager::GetFileContent(const char *filepath)
     std::vector<char> ret;
     ret.resize(fileSize);
     int c = 0;
-    while((c = fgetc(file)) != EOF)
-    {
-        ret.push_back(c);
-    }
-
+	fread(ret.data(), fileSize, 1, file);
     fclose(file);
     return ret;
 }
