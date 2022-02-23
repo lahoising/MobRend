@@ -28,11 +28,11 @@ Texture *Texture::Create(const CreateParams &params)
     
 Texture *Texture::Load(const LoadParams &params)
 {
-    TextureManager &manager = TextureManager::GetInstance();
-    if(manager.Contains(params.filepath))
-    {
-        return manager.GetTexture(params.filepath);
-    }
+    // TextureManager &manager = TextureManager::GetInstance();
+    // if(manager.Contains(params.filepath))
+    // {
+    //     return manager.GetTexture(params.filepath);
+    // }
     
     Texture *ret = nullptr;
     #ifdef MOBREND_GL_RENDERING
@@ -41,7 +41,7 @@ Texture *Texture::Load(const LoadParams &params)
     ret = nullptr;
     #endif
 
-    manager.AddTexture(params.filepath, ret);
+    // manager.AddTexture(params.filepath, ret);
     return ret;
 }
 
